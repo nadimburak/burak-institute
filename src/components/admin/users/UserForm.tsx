@@ -10,6 +10,7 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Snackbar,
 } from '@mui/material';
 import { userSchema } from '@/schemas/userSchema';
 import { UserFormData } from '@/types/user';
@@ -28,6 +29,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
     formState: { errors, isSubmitting },
     reset,
     setValue,
+    setError,
   } = useForm<UserFormData>({
     resolver: yupResolver(userSchema),
     defaultValues: {
@@ -46,9 +48,27 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
   }, [initialData, setValue]);
 
   const handleFormSubmit = async (data: UserFormData) => {
-    const result = await onSubmit(data);
-    if (result.success) {
-      reset();
+    try {
+      const result = await onSubmit(data);
+      
+      if (result.success) {
+        reset();
+        return result;
+      } else if (result.error) {
+        // Handle specific errors
+        if (result.error.includes('email') || result.error.includes('Email')) {
+          setError('email', { message: result.error });
+        } else {
+          throw new Error(result.error);
+        }
+      }
+      
+      return result;
+    } catch (error: any) {
+      setError('root', { 
+        message: error.message || 'An unexpected error occurred' 
+      });
+      return { success: false, error: error.message };
     }
   };
 
@@ -57,6 +77,12 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
       <Typography variant="h5" component="h2" gutterBottom>
         {isEditing ? 'Edit User' : 'Add New User'}
       </Typography>
+
+      {errors.root && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errors.root.message}
+        </Alert>
+      )}
 
       <Box component="form" onSubmit={handleSubmit(handleFormSubmit)} sx={{ mt: 2 }}>
         <TextField
@@ -67,6 +93,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
           helperText={errors.name?.message}
           margin="normal"
           variant="outlined"
+          disabled={isSubmitting}
         />
 
         <TextField
@@ -78,6 +105,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
           helperText={errors.email?.message}
           margin="normal"
           variant="outlined"
+          disabled={isSubmitting}
         />
 
         <TextField
@@ -90,6 +118,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
           margin="normal"
           variant="outlined"
           inputProps={{ min: 0, max: 150 }}
+          disabled={isSubmitting}
         />
 
         <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
@@ -107,6 +136,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
               type="button"
               variant="outlined"
               onClick={onCancel}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
