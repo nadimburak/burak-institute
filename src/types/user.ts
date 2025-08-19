@@ -12,3 +12,9 @@ export interface ApiResponse<T> {
   data?: T;
   error?: string;
 }
+
+export interface UserFormData {
+  name: string;
+  email: string;
+  age: number;
+}
