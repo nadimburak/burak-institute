@@ -6,7 +6,7 @@ export default function Page() {
 
   return (
     <Box>
-      <Typography>Page</Typography>
+      <Typography>webPage</Typography>
     </Box>
   );
 }
