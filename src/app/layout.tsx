@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { NextAppProvider } from "@toolpad/core/nextjs";
 import { SessionProvider } from "next-auth/react";
+import ThemeRegistry from "@/theme/account/ThemeRegistry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
