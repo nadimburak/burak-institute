@@ -31,7 +31,7 @@ const UserSchema: Schema = new Schema(
         },
         age: {
             type: Number,
-            required: true,
+            required: false,
             min: [0, 'Age cannot be negative'],
             max: [150, 'Age cannot be more than 150'],
         },
