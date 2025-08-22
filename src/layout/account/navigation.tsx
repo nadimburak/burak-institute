@@ -18,26 +18,14 @@ const accountNavigation: Navigation = [
     icon: <DashboardIcon />,
   },
   {
-    title: "Appointment",
+    title: "User",
     icon: <EditCalendarIcon />,
     children: [
       {
-        title: "Appointments",
-        segment: "account/appointments",
+        title: "Users",
+        segment: "dashboard/users",
         icon: <>{DotIcon}</>,
       },
-      {
-        title: "Appointment Apply",
-        segment: "account/appointment-apply",
-        icon: <>{DotIcon}</>,
-      },
-      {
-        icon: <>{DotIcon}</>,
-        title: "Invoice",
-        segment: "account/invoice",
-
-      },
-
     ],
   },
 ];
