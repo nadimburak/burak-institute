@@ -1,12 +1,10 @@
 "use client";
 
-// import { AuthProvider } from "@/providers/AuthProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 // import "./globals.css";
 
 import { NextAppProvider } from "@toolpad/core/nextjs";
-import { AuthProvider } from "@/providers/AuthProvider";
-import ThemeRegistry from "@/theme/account/ThemeRegistry";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,11 +30,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeRegistry>
-          <NextAppProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </NextAppProvider>
-        </ThemeRegistry>
+        <SessionProvider>
+          <ThemeRegistry>
+            <NextAppProvider>
+              {children}
+            </NextAppProvider>
+          </ThemeRegistry>
+        </SessionProvider>
       </body>
     </html>
   );
