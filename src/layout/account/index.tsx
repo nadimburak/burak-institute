@@ -1,7 +1,5 @@
 "use client";
 
-import useAuth from "@/hooks/useAuth";
-import theme from "@/theme/account/theme";
 import { PageContainer } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { NextAppProvider } from "@toolpad/core/nextjs";
@@ -9,6 +7,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import accountNavigation from "./navigation";
+import { signOut, useSession } from 'next-auth/react';
 
 export default function AdminLayout({
   window,
@@ -17,32 +16,40 @@ export default function AdminLayout({
   window?: () => Window;
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
+
+  const user = session?.user
+
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout, isAuthenticated } = useAuth();
   const demoWindow = window !== undefined ? window() : undefined;
 
   React.useEffect(() => {
-    if (!isAuthenticated && pathname !== "/account/sign-in") {
-      router.push("/account/sign-in");
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [status, router]);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/auth/signin');
+    router.refresh();
+  };
 
   return (
     <NextAppProvider
       navigation={accountNavigation}
-      theme={theme}
       branding={{
         logo: (
           <Image
             src="/logo1.png"
-            alt="Customer Logo"
+            alt="Account Logo"
             width={70}
             height={70}
             style={{ borderRadius: "8px", objectFit: "cover" }}
           />
         ),
-        title: "Customer Panel",
+        title: "Account Panel",
         homeUrl: "/",
       }}
       router={{
@@ -54,36 +61,25 @@ export default function AdminLayout({
       session={{
         user: user
           ? {
-              ...user,
-              id: user.id?.toString() || null,
-              name: user.name || "",
-              email: user.email || "",
-              image: user.image
-                ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${user.image}`
-                : "",
-            }
+            ...user,
+            id: user.id?.toString() || null,
+            name: user.name || "",
+            email: user.email || "",
+            image: user.image
+              ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${user.image}`
+              : "",
+          }
           : undefined,
       }}
       authentication={{
         signIn: () => router.push("/account/sign-in"),
         signOut: async () => {
-          await logout();
-          router.push("/account/sign-in");
+          await handleSignOut();
         },
       }}
     >
       <DashboardLayout>
-        <PageContainer
-          sx={{
-            backgroundColor: "background.default",
-            "& .MuiBreadcrumbs-root": {
-              display: "none",
-            },
-            "& .css-5abyqd-MuiTypography-root": {
-              fontSize: "1.5rem",
-            },
-          }}
-        >
+        <PageContainer>
           {children}
         </PageContainer>
       </DashboardLayout>
