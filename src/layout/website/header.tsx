@@ -28,7 +28,7 @@ import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 import { useRouter } from "next/navigation";
-import { useThemeMode } from "@/theme/website/themeContext";
+
 import { websiteNavigation } from "./navigation";
 
 // ✅ NextAuth
@@ -62,7 +62,7 @@ const WebsiteHeader = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-  const { mode, toggleMode } = useThemeMode();
+  // const { mode, toggleMode } = useThemeMode();
 
   const scrollDir = useScrollDirection();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -112,6 +112,10 @@ const WebsiteHeader = () => {
           >
             MyWebsite
           </Typography>
+          {/* <Typography sx={{ ml: 2 }}>
+            Current Mode: {mode}
+          </Typography> */}
+
 
           {/* 🔹 Nav Links (Desktop only) */}
           {!isMobile && (
@@ -153,9 +157,9 @@ const WebsiteHeader = () => {
           {/* 🔹 Right Actions */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {/* 🌙 Theme Toggle */}
-            <IconButton onClick={toggleMode} color="inherit">
+            {/* <IconButton onClick={toggleMode} color="inherit">
               {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
-            </IconButton>
+            </IconButton> */}
 
             {isAuthenticated ? (
               <>
@@ -175,7 +179,7 @@ const WebsiteHeader = () => {
                   open={Boolean(anchorElUser)}
                   onClose={() => setAnchorElUser(null)}
                 >
-                  <ListItemButton onClick={() => router.push("/account/dashboard")}>
+                  <ListItemButton onClick={() => router.push("/dashboard")}>
                     <ListItemText primary="Dashboard" />
                   </ListItemButton>
                   <ListItemButton onClick={handleLogout}>
