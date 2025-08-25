@@ -2,16 +2,16 @@
 
 import WebsiteLayout from "@/layout/website";
 import { websiteNavigation } from "@/layout/website/navigation";
-// import WebsiteThemeRegistry from "@/theme/website/webThemeRegistry";
+import WebsiteThemeRegistry from "@/theme/website/webThemeRegistry";
 import { AppProvider } from "@toolpad/core";
 import { PropsWithChildren } from "react";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    // <WebsiteThemeRegistry>
-    <AppProvider navigation={websiteNavigation}>
-      <WebsiteLayout>{children}</WebsiteLayout>
-    </AppProvider>
-    // </WebsiteThemeRegistry>
+    <WebsiteThemeRegistry>
+      <AppProvider navigation={websiteNavigation}>
+        <WebsiteLayout>{children}</WebsiteLayout>
+      </AppProvider>
+    </WebsiteThemeRegistry>
   );
 }

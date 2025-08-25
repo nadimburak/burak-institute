@@ -47,7 +47,7 @@ export function useUsers() {
           }
           return current;
         }, false);
-        
+
         return { success: true, data: result.data };
       } else {
         return { success: false, error: result.error };
@@ -75,14 +75,14 @@ export function useUsers() {
           if (current?.data) {
             return {
               ...current,
-              data: current.data.map(user => 
+              data: current.data.map(user =>
                 user._id === id ? result.data! : user
               ),
             };
           }
           return current;
         }, false);
-        
+
         return { success: true, data: result.data };
       } else {
         return { success: false, error: result.error };
@@ -111,7 +111,7 @@ export function useUsers() {
           }
           return current;
         }, false);
-        
+
         return { success: true };
       } else {
         return { success: false, error: result.error };

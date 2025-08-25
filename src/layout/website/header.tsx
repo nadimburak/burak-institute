@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import LogoImage from "@/assets/images/logo";
-
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+
 import {
   AppBar,
   Avatar,
@@ -23,13 +24,16 @@ import {
   useMediaQuery,
   useTheme,
   Slide,
-  useScrollTrigger,
+  Divider,
 } from "@mui/material";
+
 import { useRouter } from "next/navigation";
 import { websiteNavigation } from "./navigation";
 import useAuth from "@/hooks/useAuth";
+import { useThemeMode } from "@/theme/website/themeContext";
 
-// Custom hook to detect scroll direction
+
+// 🔽 scroll direction hook
 const useScrollDirection = () => {
   const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
 
@@ -39,7 +43,10 @@ const useScrollDirection = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const direction = currentScrollY > lastScrollY ? "down" : "up";
-      if (direction !== scrollDir && Math.abs(currentScrollY - lastScrollY) > 10) {
+      if (
+        direction !== scrollDir &&
+        Math.abs(currentScrollY - lastScrollY) > 10
+      ) {
         setScrollDir(direction);
       }
       lastScrollY = currentScrollY;
@@ -58,6 +65,7 @@ const WebsiteHeader = () => {
   const router = useRouter();
 
   const { isAuthenticated, user, logout } = useAuth();
+  const { mode, toggleMode } = useThemeMode(); // 🌙 light/dark hook
 
   const scrollDir = useScrollDirection();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -83,9 +91,8 @@ const WebsiteHeader = () => {
           borderColor: "divider",
           backdropFilter: "blur(10px)",
           zIndex: 1300,
-          transition: "top 0.3s ease-in-out",
-          borderRadius: 0, // 👈 explicitly set to 0
-          boxShadow: scrollDir === "up" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
+          boxShadow:
+            scrollDir === "up" ? "0 2px 6px rgba(0,0,0,0.08)" : "none",
         }}
       >
         <Toolbar
@@ -97,10 +104,10 @@ const WebsiteHeader = () => {
             gap: 2,
           }}
         >
-          {/* Logo */}
+          {/* 🔹 Logo (abhi comment rakha hai, chahe to add karo) */}
           {/* <LogoImage light={false} /> */}
 
-          {/* Nav Links */}
+          {/* 🔹 Nav Links (Desktop only) */}
           {!isMobile && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, ml: 4 }}>
               {websiteNavigation.map(({ title, segment }) => (
@@ -137,86 +144,24 @@ const WebsiteHeader = () => {
             </Box>
           )}
 
-          {/* Right Actions */}
+          {/* 🔹 Right Actions */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* 🌙 Theme Toggle */}
+            <IconButton onClick={toggleMode} color="inherit">
+              {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+
             {isAuthenticated ? (
               <>
                 <Tooltip title="Account">
-                  <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
+                  <IconButton
+                    onClick={(e) => setAnchorElUser(e.currentTarget)}
+                    sx={{ p: 0 }}
+                  >
                     <Avatar alt={user?.name} src={avatarUrl} />
                   </IconButton>
                 </Tooltip>
-
-                <Menu
-                  anchorEl={anchorElUser}
-                  open={Boolean(anchorElUser)}
-                  onClose={() => setAnchorElUser(null)}
-                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                  transformOrigin={{ vertical: "top", horizontal: "right" }}
-                  disableScrollLock
-                  sx={{
-                    mt: 5,
-                    "& .MuiPaper-root": {
-                      minWidth: 260,
-                      p: 1,
-                      boxShadow:
-                        "0px 2px 8px rgba(0, 0, 0, 0.1), 0px 4px 20px rgba(0, 0, 0, 0.15)",
-                      bgcolor: "background.paper",
-                    },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1.5,
-                      px: 2,
-                      py: 1,
-                      borderBottom: 1,
-                      borderColor: "divider",
-                    }}
-                  >
-                    <Avatar alt={user?.name || "User"} src={avatarUrl} sx={{ width: 48, height: 48 }} />
-                    <Box>
-                      <Typography variant="subtitle2" fontWeight={600} noWrap>
-                        {user?.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ wordBreak: "break-word" }}>
-                        {user?.email}
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <Box sx={{ px: 1, py: 1, display: "flex", flexDirection: "column", gap: 1 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      fullWidth
-                      onClick={() => {
-                        setAnchorElUser(null);
-                        router.push("/account");
-                      }}
-                      sx={{ textTransform: "none", fontWeight: 600, borderRadius: 2 }}
-                    >
-                      Dashboard
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      fullWidth
-                      onClick={() => {
-                        setAnchorElUser(null);
-                        localStorage.setItem("suppressRedirect", "true");
-                        logout();
-                      }}
-                      sx={{ textTransform: "none", fontWeight: 600, borderRadius: 2 }}
-                    >
-                      Sign Out
-                    </Button>
-                  </Box>
-                </Menu>
+                {/* User Menu yahan add karna chahe to */}
               </>
             ) : (
               !isMobile && (
@@ -224,14 +169,19 @@ const WebsiteHeader = () => {
                   variant="contained"
                   color="primary"
                   onClick={handleLogin}
-                  sx={{ textTransform: "none", fontWeight: 600 }}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: "8px",
+                    px: 3,
+                  }}
                 >
                   Log in
                 </Button>
               )
             )}
 
-            {/* Hamburger for Mobile */}
+            {/* 🔹 Mobile Menu Button */}
             {isMobile && (
               <IconButton onClick={() => setDrawerOpen(true)}>
                 <MenuIcon />
@@ -240,36 +190,47 @@ const WebsiteHeader = () => {
           </Box>
         </Toolbar>
 
-        {/* Mobile Drawer */}
-        <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-          <Box sx={{ width: 250, height: "100%", display: "flex", flexDirection: "column" }}>
-            <Box sx={{ p: 2, display: "flex", justifyContent: "flex-end" }}>
+        {/* 🔹 Mobile Drawer */}
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+        >
+          <Box sx={{ width: 250, p: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">Menu</Typography>
               <IconButton onClick={() => setDrawerOpen(false)}>
                 <CloseIcon />
               </IconButton>
             </Box>
+            <Divider sx={{ my: 2 }} />
+
             <List>
               {websiteNavigation.map(({ title, segment }) => (
-                <ListItem key={title} disablePadding>
+                <ListItem key={segment} disablePadding>
                   <ListItemButton onClick={() => handleNavigation(segment)}>
                     <ListItemText primary={title} />
                   </ListItemButton>
                 </ListItem>
               ))}
             </List>
+
             {!isAuthenticated && (
-              <Box sx={{ mt: "auto", p: 2 }}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={() => {
-                    setDrawerOpen(false);
-                    handleLogin();
-                  }}
-                >
-                  Log in
-                </Button>
-              </Box>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={handleLogin}
+                sx={{ mt: 2, borderRadius: "8px" }}
+              >
+                Log in
+              </Button>
             )}
           </Box>
         </Drawer>

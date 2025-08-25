@@ -110,7 +110,7 @@ export default function Home() {
       )}
 
       <Grid container spacing={3} alignItems="flex-start">
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Button
               variant="contained"
@@ -139,7 +139,7 @@ export default function Home() {
           </Box>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 8 }}>
+        <Grid item xs={12} md={8}>
           <UserList
             users={users}
             onEdit={handleEdit}
