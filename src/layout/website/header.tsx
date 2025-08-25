@@ -1,11 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import MenuIcon from "@mui/icons-material/Menu";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-
 import {
   AppBar,
   Avatar,
@@ -27,11 +22,17 @@ import {
   Divider,
 } from "@mui/material";
 
-import { useRouter } from "next/navigation";
-import { websiteNavigation } from "./navigation";
-import useAuth from "@/hooks/useAuth";
-import { useThemeMode } from "@/theme/website/themeContext";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
+import { useRouter } from "next/navigation";
+import { useThemeMode } from "@/theme/website/themeContext";
+import { websiteNavigation } from "./navigation";
+
+// ✅ NextAuth
+import { useSession, signOut } from "next-auth/react";
 
 // 🔽 scroll direction hook
 const useScrollDirection = () => {
@@ -39,7 +40,6 @@ const useScrollDirection = () => {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const direction = currentScrollY > lastScrollY ? "down" : "up";
@@ -51,7 +51,6 @@ const useScrollDirection = () => {
       }
       lastScrollY = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollDir]);
@@ -63,23 +62,24 @@ const WebsiteHeader = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-
-  const { isAuthenticated, user, logout } = useAuth();
-  const { mode, toggleMode } = useThemeMode(); // 🌙 light/dark hook
+  const { mode, toggleMode } = useThemeMode();
 
   const scrollDir = useScrollDirection();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleLogin = () => router.push("/account/sign-in");
+  // ✅ NextAuth session
+  const { data: session, status } = useSession();
+  const isAuthenticated = !!session;
+  const user = session?.user;
+
+  const handleLogin = () => router.push("/auth/signin");
+  const handleLogout = () => signOut();
+
   const handleNavigation = (path: string) => {
     setDrawerOpen(false);
     router.push(`/${path}`);
   };
-
-  const avatarUrl = user?.image
-    ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${user.image}`
-    : "";
 
   return (
     <Slide appear={false} direction="down" in={scrollDir === "up"}>
@@ -104,8 +104,14 @@ const WebsiteHeader = () => {
             gap: 2,
           }}
         >
-          {/* 🔹 Logo (abhi comment rakha hai, chahe to add karo) */}
-          {/* <LogoImage light={false} /> */}
+          {/* 🔹 Logo */}
+          <Typography
+            variant="h6"
+            sx={{ cursor: "pointer" }}
+            onClick={() => router.push("/")}
+          >
+            MyWebsite
+          </Typography>
 
           {/* 🔹 Nav Links (Desktop only) */}
           {!isMobile && (
@@ -158,10 +164,24 @@ const WebsiteHeader = () => {
                     onClick={(e) => setAnchorElUser(e.currentTarget)}
                     sx={{ p: 0 }}
                   >
-                    <Avatar alt={user?.name} src={avatarUrl} />
+                    <Avatar
+                      alt={user?.name ?? ""}
+                      src={user?.image ?? ""}
+                    />
                   </IconButton>
                 </Tooltip>
-                {/* User Menu yahan add karna chahe to */}
+                <Menu
+                  anchorEl={anchorElUser}
+                  open={Boolean(anchorElUser)}
+                  onClose={() => setAnchorElUser(null)}
+                >
+                  <ListItemButton onClick={() => router.push("/account/dashboard")}>
+                    <ListItemText primary="Dashboard" />
+                  </ListItemButton>
+                  <ListItemButton onClick={handleLogout}>
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
+                </Menu>
               </>
             ) : (
               !isMobile && (
@@ -221,7 +241,7 @@ const WebsiteHeader = () => {
               ))}
             </List>
 
-            {!isAuthenticated && (
+            {!isAuthenticated ? (
               <Button
                 fullWidth
                 variant="contained"
@@ -230,6 +250,16 @@ const WebsiteHeader = () => {
                 sx={{ mt: 2, borderRadius: "8px" }}
               >
                 Log in
+              </Button>
+            ) : (
+              <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                onClick={handleLogout}
+                sx={{ mt: 2, borderRadius: "8px" }}
+              >
+                Logout
               </Button>
             )}
           </Box>
