@@ -1,12 +1,21 @@
 "use client";
 
 import AdminLayout from "@/layout/account";
-import { PropsWithChildren } from "react";
+import ThemeRegistry from "@/theme/account/ThemeRegistry";
+import { SessionProvider } from "next-auth/react";
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function AccountLayout({ children }: { children: React.ReactNode }) {
     return (
-        <AdminLayout>
-            {children}
-        </AdminLayout>
+        <html lang="en">
+            <body>
+                <ThemeRegistry>
+                    <SessionProvider>
+                        <AdminLayout>
+                            {children}
+                        </AdminLayout>
+                    </SessionProvider>
+                </ThemeRegistry>
+            </body>
+        </html>
     );
 }

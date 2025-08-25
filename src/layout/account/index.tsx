@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import accountNavigation from "./navigation";
 import { signOut, useSession } from 'next-auth/react';
+import theme from "@/theme/account/theme";
 
 export default function AdminLayout({
   window,
@@ -37,7 +38,7 @@ export default function AdminLayout({
   };
 
   return (
-    <NextAppProvider
+    <NextAppProvider theme={theme}
       navigation={accountNavigation}
       branding={{
         logo: (
