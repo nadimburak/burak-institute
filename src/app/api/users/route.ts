@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User, { IUser } from '@/models/User';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         await connectDB();
 

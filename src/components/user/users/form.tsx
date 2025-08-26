@@ -1,6 +1,9 @@
 "use client";
 
 import ImageFileUpload from "@/components/form/imageUpload";
+import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
+import { IUser } from "@/models/User";
+import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -28,10 +31,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
 import { defaultValues, fetchUserUrl } from "./constant";
-import axiosInstance from "@/utils/axiosInstance";
-import { IUser } from "@/models/User";
 
 // Validation schema
 const validationSchema = yup.object().shape({
