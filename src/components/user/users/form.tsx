@@ -1,6 +1,9 @@
 "use client";
 
 import ImageFileUpload from "@/components/form/imageUpload";
+import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
+import { IUser } from "@/models/User";
+import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -28,10 +31,8 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
 import { defaultValues, fetchUserUrl } from "./constant";
-import axiosInstance from "@/utils/axiosInstance";
-import { IUser } from "@/models/User";
+import { useSession } from 'next-auth/react';
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -70,6 +71,9 @@ export default function UserForm({ id, open, onClose }: FormProps) {
   const notifications = useNotifications();
   const [showPassword, setShowPassword] = useState(false);
 
+  const { data: session } = useSession();
+
+  const user = session?.user
   const {
     handleSubmit,
     reset,
@@ -111,31 +115,11 @@ export default function UserForm({ id, open, onClose }: FormProps) {
 
       onClose("true");
     } catch (error: unknown) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof (error as { response?: unknown }).response === "object" &&
-        (error as { response?: unknown }).response !== null &&
-        "data" in (error as { response: { data?: unknown } }).response
-      ) {
-        notifications.show(
-          (
-            error as {
-              response: { data: { message: string } };
-            }
-          ).response.data.message,
-          {
-            severity: "error",
-            autoHideDuration: 3000,
-          }
-        );
-      } else {
-        notifications.show("An unexpected error occurred.", {
-          severity: "error",
-          autoHideDuration: 3000,
-        });
-      }
+      const errorMessage = handleErrorMessage(error);
+      notifications.show(errorMessage, {
+        severity: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 

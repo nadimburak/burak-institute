@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: Params) {
             return NextResponse.json({ success: false, error: 'permission not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, data: permission });
+        return NextResponse.json(permission);
     } catch (error) {
         return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
