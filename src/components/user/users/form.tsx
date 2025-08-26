@@ -1,7 +1,6 @@
 "use client";
 
 import ImageFileUpload from "@/components/form/imageUpload";
-import useAuth from "@/hooks/useAuth"; // 🔹 assume ki aapka auth hook yaha se aata hai
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -71,8 +70,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
   const notifications = useNotifications();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { user } = useAuth(); // 🔹 Logged-in user ka data
-
   const {
     handleSubmit,
     reset,
@@ -88,12 +85,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
 
   const role = watch("role");
 
-  // Agar login type user hai → default type user set karo
-  useEffect(() => {
-    if (user?.type === "user") {
-      setValue("type", "user");
-    }
-  }, [user, setValue]);
 
   const onSubmit = async (data: IUser) => {
     let url = `${fetchUserUrl}/`;
