@@ -169,12 +169,12 @@ export default function UserForm({ id, open, onClose }: FormProps) {
           <Grid container mt={1} spacing={2}>
             <Grid size={12}>
               <RoleAutocomplete
-                trigger={trigger}
-                setValue={setValue}
                 value={role}
+                setValue={setValue}   // react-hook-form ka setValue
                 error={!!errors.role}
                 helperText={errors.role ? "Role is required" : ""}
               />
+
             </Grid>
 
             <Grid size={12}>
