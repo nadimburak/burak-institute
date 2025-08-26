@@ -1,71 +1,97 @@
-import mongoose, { Document, Schema } from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcrypt";
+import mongoose, { Document, Model, Schema } from "mongoose";
+import Role from "./Role";
+import { Gender } from "../enums/gender";
+import { MaritalStatus } from "../enums/maritalStatus";
+
+export type UserType = "user" | "student" | "super_admin";
 
 export interface IUser extends Document {
-    name: string;
-    email: string;
-    age: number;
-    password?: string;
-    image?: string;
-    emailVerified?: Date;
-    createdAt: Date;
-    updatedAt: Date;
-    comparePassword(candidatePassword: string): Promise<boolean>;
+  role: mongoose.Types.ObjectId;
+  name: string;
+  mobile?: number;
+  image?: string;
+  email: string;
+  password: string;
+  dob: Date;
+  spouse_name?: string;
+  father_name?: string;
+  mother_name?: string;
+  status: boolean;
+  type: UserType;
+  marital_status?: MaritalStatus;
+  gender?: Gender;
+  language?: mongoose.Types.ObjectId[];
+  comparePassword(password: string): Promise<boolean>;
+  toProfileJSON(options?: { includeLanguage?: boolean }): Record<string, unknown>;
 }
 
-const UserSchema: Schema = new Schema(
+const UserSchema: Schema<IUser> = new Schema({
+  role: { type: Schema.Types.ObjectId, ref: Role, required: false },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  mobile: { type: Number, required: false },
+  image: { type: String, required: false },
+  password: { type: String, required: true },
+  spouse_name: { type: String, required: false },
+  father_name: { type: String, required: false },
+  mother_name: { type: String, required: false },
+  dob: {
+    type: Date,
+    required: false,
+  },
+  marital_status: {
+    type: String,
+    enum: Object.values(MaritalStatus),
+    required: false,
+  },
+  gender: {
+    type: String,
+    enum: Object.values(Gender),
+    required: false,
+  },
+  type: {
+    type: String,
+    enum: ["user", "student", "super_admin"],
+    required: true,
+  },
+  language: [
     {
-        name: {
-            type: String,
-            required: [true, 'Please provide a name'],
-            maxlength: [50, 'Name cannot be more than 50 characters'],
-        },
-        email: {
-            type: String,
-            required: [true, 'Please provide an email'],
-            unique: true,
-            match: [
-                /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                'Please provide a valid email',
-            ],
-        },
-        age: {
-            type: Number,
-            required: false,
-            min: [0, 'Age cannot be negative'],
-            max: [150, 'Age cannot be more than 150'],
-        },
-        password: {
-            type: String,
-            select: false,
-        },
-        image: {
-            type: String,
-        },
-        emailVerified: {
-            type: Date,
-        },
+      type: Schema.Types.ObjectId,
+      ref: "Language",
+      required: false,
     },
-    {
-        timestamps: true,
-    }
-);
-
-UserSchema.pre<IUser>('save', async function (next) {
-    if (!this.isModified('password')) return next();
-
-    if (this.password) {
-        const salt = await bcrypt.genSalt(12);
-        this.password = await bcrypt.hash(this.password, salt);
-    }
-    next();
+  ],
+  status: { type: Boolean, required: false },
 });
 
+// 🔒 Hash password before saving
+UserSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// 🔍 Compare password method
 UserSchema.methods.comparePassword = async function (
-    candidatePassword: string
+  password: string
 ): Promise<boolean> {
-    if (!this.password) return false;
-    return await bcrypt.compare(candidatePassword, this.password);
+  return bcrypt.compare(password, this.password);
 };
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+// ✅ Custom dynamic JSON response
+UserSchema.methods.toProfileJSON = function (options?: {
+  includeLanguage?: boolean;
+}) {
+  const obj = this.toObject();
+  delete obj.password;
+
+  if (!options?.includeLanguage || !obj.language || obj.language.length === 0) {
+    delete obj.language;
+  }
+
+  return obj;
+};
+
+const User: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
+export default User;

@@ -27,11 +27,11 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SessionProvider>
-          {/* <ThemeRegistry> */}
-          {/* <NextAppProvider> */}
-          {children}
-          {/* </NextAppProvider> */}
-          {/* </ThemeRegistry> */}
+          <ThemeRegistry>
+            <NextAppProvider>
+              {children}
+            </NextAppProvider>
+          </ThemeRegistry>
         </SessionProvider>
       </body>
     </html>
