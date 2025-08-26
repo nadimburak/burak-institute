@@ -19,6 +19,7 @@
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
+    "filepond": "^4.32.8",
     "filepond-plugin-file-encode": "^2.1.14",
     "filepond-plugin-file-poster": "^2.5.2",
     "filepond-plugin-file-validate-size": "^2.2.8",
