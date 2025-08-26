@@ -35,7 +35,7 @@ const PermissionSelect: React.FC<FormSelectProps> = ({
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const response = await axiosInstance.get("/user/all_permissions");
+        const response = await axiosInstance.get("/all-permissions");
         setPermissions(response.data as PermissionModel[]);
       } catch (error) {
         console.error("Error fetching permissions:", error);
