@@ -8,13 +8,13 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
     return (
         <html lang="en">
             <body>
-                <ThemeRegistry>
-                    <SessionProvider>
+                <SessionProvider>
+                    <ThemeRegistry>
                         <AdminLayout>
                             {children}
                         </AdminLayout>
-                    </SessionProvider>
-                </ThemeRegistry>
+                    </ThemeRegistry>
+                </SessionProvider>
             </body>
         </html>
     );
