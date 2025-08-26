@@ -1,14 +1,14 @@
 "use client";
 
+import theme from "@/theme/account/theme";
 import { PageContainer } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { NextAppProvider } from "@toolpad/core/nextjs";
+import { signOut, useSession } from 'next-auth/react';
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import accountNavigation from "./navigation";
-import { signOut, useSession } from 'next-auth/react';
-import theme from "@/theme/account/theme";
 
 export default function AdminLayout({
   window,

@@ -1,0 +1,329 @@
+"use client";
+
+import ImageFileUpload from "@/components/form/imageUpload";
+import useAuth from "@/hooks/useAuth"; // 🔹 assume ki aapka auth hook yaha se aata hai
+import { UserModel } from "@/models/User.model";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  Icon,
+  IconButton,
+  InputAdornment,
+  Radio,
+  RadioGroup,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { DialogProps, useNotifications } from "@toolpad/core";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import RoleAutocomplete from "../../autocomplete/user/roleAutocomplete";
+import { defaultValues, fetchUserUrl } from "./constant";
+import axiosInstance from "@/utils/axiosInstance";
+
+// Validation schema
+const validationSchema = yup.object().shape({
+  role: yup.object().shape({
+    _id: yup.string().required("Role is required"),
+    name: yup.string().required("Role is required"),
+  }),
+  name: yup.string().required("Name is required"),
+  email: yup
+    .string()
+    .required("Email is required")
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Invalid Email Address"
+    ),
+  password: yup
+    .string()
+    .required("Password is required.")
+    .matches(
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+      "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
+    ),
+  status: yup.boolean().required("Status is required"),
+  type: yup
+    .string()
+    .oneOf(["user", "customer", "super_admin"])
+    .required("Type is required"),
+});
+
+interface FormProps extends DialogProps<undefined, string | null> {
+  id: unknown;
+}
+
+export default function UserForm({ id, open, onClose }: FormProps) {
+  const router = useRouter();
+  const notifications = useNotifications();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { user } = useAuth(); // 🔹 Logged-in user ka data
+
+  const {
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    register,
+    trigger,
+    formState: { errors },
+  } = useForm<UserModel>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: defaultValues,
+  });
+
+  const role = watch("role");
+
+  // Agar login type user hai → default type user set karo
+  useEffect(() => {
+    if (user?.type === "user") {
+      setValue("type", "user");
+    }
+  }, [user, setValue]);
+
+  const onSubmit = async (data: UserModel) => {
+    let url = `${fetchUserUrl}/`;
+    let method: "post" | "put" = "post";
+
+    if (id != "new") {
+      url = `${fetchUserUrl}/${id}`;
+      method = "put";
+    }
+
+    try {
+      const response = await axiosInstance.request({
+        url,
+        method,
+        data,
+      });
+
+      if (response.status == 200 || response.status == 201) {
+        notifications.show(response.data.message, {
+          severity: "success",
+          autoHideDuration: 3000,
+        });
+      }
+
+      onClose("true");
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        typeof (error as { response?: unknown }).response === "object" &&
+        (error as { response?: unknown }).response !== null &&
+        "data" in (error as { response: { data?: unknown } }).response
+      ) {
+        notifications.show(
+          (
+            error as {
+              response: { data: { message: string } };
+            }
+          ).response.data.message,
+          {
+            severity: "error",
+            autoHideDuration: 3000,
+          }
+        );
+      } else {
+        notifications.show("An unexpected error occurred.", {
+          severity: "error",
+          autoHideDuration: 3000,
+        });
+      }
+    }
+  };
+
+  const bindData = useCallback(
+    async (id: unknown) => {
+      try {
+        const response = await axiosInstance.get(`${fetchUserUrl}/${id}`);
+        reset(response.data);
+      } catch (error: unknown) {
+        const { response } = error as unknown as {
+          response: { status: number };
+        };
+        if (response && response.status == 403) {
+          router.push("/forbidden");
+        }
+      }
+    },
+    [router, reset]
+  );
+
+  useEffect(() => {
+    if (id && id != "new") {
+      bindData(id);
+    }
+  }, [id, bindData]);
+
+  return (
+    <Dialog fullWidth open={open} onClose={() => onClose(null)}>
+      <DialogTitle>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="h5">
+            {id != "new" ? "Update User" : "Create User"}
+          </Typography>
+          <IconButton onClick={() => onClose(null)}>
+            <Icon>close</Icon>
+          </IconButton>
+        </Stack>
+      </DialogTitle>
+
+      <DialogContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container mt={1} spacing={2}>
+            <Grid size={12}>
+              <RoleAutocomplete
+                trigger={trigger}
+                setValue={setValue}
+                value={role}
+                error={!!errors.role}
+                helperText={errors.role ? "Role is required" : ""}
+              />
+            </Grid>
+
+            <Grid size={12}>
+              <ImageFileUpload
+                value={watch("image") ?? ""}
+                maxFileSize="50MB"
+                setValue={(e) => setValue("image", e)}
+              />
+            </Grid>
+
+            <Grid size={12}>
+              <TextField
+                label="Name"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                {...register("name")}
+              />
+            </Grid>
+
+            <Grid size={12}>
+              <TextField
+                label="Email"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                {...register("email")}
+              />
+            </Grid>
+
+            <Grid size={{ md: 12, sm: 12, xs: 12 }}>
+              <TextField
+                fullWidth
+                label="Password*"
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                error={!!errors.password}
+                InputLabelProps={{ shrink: true }}
+                helperText={
+                  errors.password?.type === "required"
+                    ? errors.password.message
+                    : errors.password?.type === "matches"
+                      ? "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
+                      : ""
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+
+            {/* 🔹 Radio Group sirf super_admin ke liye */}
+            {user?.type === "super_admin" && (
+              <Grid size={12}>
+                <FormControl component="fieldset" error={!!errors.type}>
+                  <FormLabel component="legend">User Type</FormLabel>
+                  <RadioGroup
+                    row
+                    value={watch("type")}
+                    onChange={(e) =>
+                      setValue("type", e.target.value as UserModel["type"], {
+                        shouldValidate: true,
+                      })
+                    }
+                  >
+                    <FormControlLabel
+                      value="super_admin"
+                      control={<Radio />}
+                      label="Super Admin"
+                    />
+                    <FormControlLabel
+                      value="user"
+                      control={<Radio />}
+                      label="User"
+                    />
+                  </RadioGroup>
+                  {typeof errors.type?.message === "string" && (
+                    <Typography variant="caption" color="error">
+                      {errors.type.message}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid>
+            )}
+          </Grid>
+
+          <FormControlLabel
+            control={
+              <Switch
+                {...register("status")}
+                checked={watch("status")}
+                onChange={(e) => setValue("status", e.target.checked)}
+                color="primary"
+              />
+            }
+            label={watch("status") ? "Active" : "Inactive"}
+          />
+
+          <Box marginTop={2} display="flex" justifyContent="space-between">
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={() => reset()}
+            >
+              Reset
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              {id != "new" ? "Update" : "Create"}
+            </Button>
+          </Box>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
