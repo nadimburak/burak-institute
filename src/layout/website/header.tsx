@@ -109,8 +109,9 @@ const WebsiteHeader = () => {
             variant="h6"
             sx={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
+            color="primary.main"
           >
-            MyWebsite
+            Burak Institute
           </Typography>
           {/* <Typography sx={{ ml: 2 }}>
             Current Mode: {mode}
