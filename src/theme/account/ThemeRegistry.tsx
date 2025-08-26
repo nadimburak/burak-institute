@@ -10,22 +10,15 @@ export default function ThemeRegistry({
   children: React.ReactNode;
 }) {
   const [mode, setMode] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const prefersLight = window.matchMedia(
-      "(prefers-color-scheme: light)"
-    ).matches;
+    const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
     setMode(prefersLight ? "light" : "dark");
-    setMounted(true);
+
+    // Smooth background transition
+    document.body.style.transition =
+      "background-color 0.3s ease, color 0.3s ease";
   }, []);
-
-  // When the component is mounted
-  useEffect(() => {
-    document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-  }, [mode]);
-
-  if (!mounted) return null;
 
   return (
     <CssVarsProvider

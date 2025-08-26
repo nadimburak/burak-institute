@@ -108,11 +108,9 @@ export default function SignIn() {
           </Box>
 
           <Box textAlign="center">
-            <NextLink href="/auth/signup" passHref>
-              <Link variant="body2">
-                Don't have an account? Sign Up
-              </Link>
-            </NextLink>
+            <Link component={NextLink} href="/auth/signup" variant="body2">
+              Don't have an account? Sign Up
+            </Link>
           </Box>
         </Paper>
       </Box>

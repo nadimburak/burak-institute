@@ -1,19 +1,18 @@
 'use client';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Alert,
-  CircularProgress,
-  Snackbar,
-} from '@mui/material';
 import { userSchema } from '@/schemas/userSchema';
 import { UserFormData } from '@/types/user';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  TextField,
+  Typography
+} from '@mui/material';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface UserFormProps {
   onSubmit: (data: UserFormData) => Promise<{ success: boolean; error?: string }>;
@@ -50,7 +49,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
   const handleFormSubmit = async (data: UserFormData) => {
     try {
       const result = await onSubmit(data);
-      
+
       if (result.success) {
         reset();
         return result;
@@ -62,11 +61,11 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
           throw new Error(result.error);
         }
       }
-      
+
       return result;
     } catch (error: any) {
-      setError('root', { 
-        message: error.message || 'An unexpected error occurred' 
+      setError('root', {
+        message: error.message || 'An unexpected error occurred'
       });
       return { success: false, error: error.message };
     }
@@ -130,7 +129,7 @@ export default function UserForm({ onSubmit, onCancel, initialData, isEditing = 
           >
             {isSubmitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}
           </Button>
-          
+
           {onCancel && (
             <Button
               type="button"

@@ -6,16 +6,12 @@ import { SessionProvider } from "next-auth/react";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
-            <body>
-                <SessionProvider>
-                    <ThemeRegistry>
-                        <AdminLayout>
-                            {children}
-                        </AdminLayout>
-                    </ThemeRegistry>
-                </SessionProvider>
-            </body>
-        </html>
+        <SessionProvider>
+            <ThemeRegistry>
+                <AdminLayout>
+                    {children}
+                </AdminLayout>
+            </ThemeRegistry>
+        </SessionProvider>
     );
 }

@@ -4,7 +4,7 @@ const websiteTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#4B7BE5", // Indigo
+      main: "#9333EA", // Purple
       contrastText: "#ffffff",
     },
     secondary: {
