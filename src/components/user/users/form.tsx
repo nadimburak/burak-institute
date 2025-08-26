@@ -2,7 +2,6 @@
 
 import ImageFileUpload from "@/components/form/imageUpload";
 import useAuth from "@/hooks/useAuth"; // 🔹 assume ki aapka auth hook yaha se aata hai
-import { UserModel } from "@/models/User.model";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -33,6 +32,7 @@ import * as yup from "yup";
 import RoleAutocomplete from "../../autocomplete/user/roleAutocomplete";
 import { defaultValues, fetchUserUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
+import { IUser } from "@/models/User";
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -81,7 +81,7 @@ export default function UserForm({ id, open, onClose }: FormProps) {
     register,
     trigger,
     formState: { errors },
-  } = useForm<UserModel>({
+  } = useForm<IUser>({
     resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
@@ -95,7 +95,7 @@ export default function UserForm({ id, open, onClose }: FormProps) {
     }
   }, [user, setValue]);
 
-  const onSubmit = async (data: UserModel) => {
+  const onSubmit = async (data: IUser) => {
     let url = `${fetchUserUrl}/`;
     let method: "post" | "put" = "post";
 
@@ -271,7 +271,7 @@ export default function UserForm({ id, open, onClose }: FormProps) {
                     row
                     value={watch("type")}
                     onChange={(e) =>
-                      setValue("type", e.target.value as UserModel["type"], {
+                      setValue("type", e.target.value as IUser["type"], {
                         shouldValidate: true,
                       })
                     }
