@@ -29,7 +29,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import RoleAutocomplete from "../../autocomplete/user/roleAutocomplete";
+import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
 import { defaultValues, fetchUserUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
 import { IUser } from "@/models/User";
