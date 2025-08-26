@@ -9,7 +9,7 @@ interface Params {
 export async function GET(request: NextRequest, { params }: Params) {
     try {
         await connectDB();
-        const role: IRole | null = await Role.findById(params.id);
+        const role: IRole | null = await Role.findById(params.id).populate("permissions", "name");
 
         if (!role) {
             return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
