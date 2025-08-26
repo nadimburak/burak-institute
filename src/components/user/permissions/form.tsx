@@ -1,6 +1,5 @@
 "use client";
 
-import { PermissionModel } from "@/models/Permission.model";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Box,
@@ -23,6 +22,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
+import { IPermission } from "@/models/Permission";
 
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({
@@ -45,13 +45,13 @@ export default function PermissionForm({ id, open, onClose }: FormProps) {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<PermissionModel>({
+  } = useForm<IPermission>({
     resolver: yupResolver(validationSchema),
     defaultValues: defaultValues,
   });
 
   // Handle form submission
-  const onSubmit = async (data: PermissionModel) => {
+  const onSubmit = async (data: IPermission) => {
     console.log("Form Submitted:", data);
 
     // Define the endpoint based on whether it's a create or update operation

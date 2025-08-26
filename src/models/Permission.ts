@@ -32,7 +32,7 @@ const PermissionSchema: Schema<IPermission> = new Schema(
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
   }
 );
-PermissionSchema.index({ name: 1, company: 1 }, { unique: true });
+PermissionSchema.index({ name: 1 }, { unique: true });
 // Model Definition
 const Permission: Model<IPermission> = mongoose.model<IPermission>(
   "Permission",
