@@ -32,6 +32,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUserUrl } from "./constant";
+import { useSession } from 'next-auth/react';
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -70,6 +71,9 @@ export default function UserForm({ id, open, onClose }: FormProps) {
   const notifications = useNotifications();
   const [showPassword, setShowPassword] = useState(false);
 
+  const { data: session } = useSession();
+
+  const user = session?.user
   const {
     handleSubmit,
     reset,
@@ -111,31 +115,11 @@ export default function UserForm({ id, open, onClose }: FormProps) {
 
       onClose("true");
     } catch (error: unknown) {
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof (error as { response?: unknown }).response === "object" &&
-        (error as { response?: unknown }).response !== null &&
-        "data" in (error as { response: { data?: unknown } }).response
-      ) {
-        notifications.show(
-          (
-            error as {
-              response: { data: { message: string } };
-            }
-          ).response.data.message,
-          {
-            severity: "error",
-            autoHideDuration: 3000,
-          }
-        );
-      } else {
-        notifications.show("An unexpected error occurred.", {
-          severity: "error",
-          autoHideDuration: 3000,
-        });
-      }
+      const errorMessage = handleErrorMessage(error);
+      notifications.show(errorMessage, {
+        severity: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 
