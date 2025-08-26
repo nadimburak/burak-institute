@@ -53,9 +53,8 @@ export default function RoleList() {
       searchParams.append("sort", sortModel[0].field);
       searchParams.append("order", sortModel[0].sort ?? "");
     }
-    searchParams.append("company_id", company?._id);
     return searchParams.toString(); // Return a string to use as a stable key
-  }, [paginationModel, searchText, sortModel, company]);
+  }, [paginationModel, searchText, sortModel]);
 
   // Fetch data with SWR
   const { data, error, isLoading } = useSWR(
@@ -148,21 +147,7 @@ export default function RoleList() {
           </>
         ),
       },
-      {
-        field: "company",
-        headerName: "Company",
-        width: 200,
-        renderCell: (params) => {
-          const hasCompany = !!params?.row?.company?.name;
-          return (
-            <Chip
-              icon={hasCompany ? <BusinessIcon /> : <SecurityIcon />}
-              label={hasCompany ? params.row.company.name : "Super Admin Role"}
-              color={hasCompany ? "primary" : "secondary"}
-            />
-          );
-        },
-      },
+      
       { field: "name", headerName: "Name", width: 200 },
     ],
     [handleDelete, handleEdit]

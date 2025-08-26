@@ -1,15 +1,12 @@
 "use client";
 
 import axiosInstance from "@/utils/axiosInstance";
-import BusinessIcon from "@mui/icons-material/Business";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SecurityIcon from "@mui/icons-material/Security";
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Chip,
   CircularProgress,
   Grid,
   Icon,
@@ -150,21 +147,7 @@ export default function PermissionList() {
           </>
         ),
       },
-      {
-        field: "company",
-        headerName: "Company",
-        width: 200,
-        renderCell: (params) => {
-          const hasCompany = !!params?.row?.company?.name;
-          return (
-            <Chip
-              icon={hasCompany ? <BusinessIcon /> : <SecurityIcon />}
-              label={hasCompany ? params.row.company.name : "Super Admin Role"}
-              color={hasCompany ? "primary" : "secondary"}
-            />
-          );
-        },
-      },
+      
       { field: "name", headerName: "Name", width: 200 },
     ],
     [handleDelete, handleEdit]
