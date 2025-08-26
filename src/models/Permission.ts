@@ -34,9 +34,8 @@ const PermissionSchema: Schema<IPermission> = new Schema(
 );
 PermissionSchema.index({ name: 1 }, { unique: true });
 // Model Definition
-const Permission: Model<IPermission> = mongoose.model<IPermission>(
-  "Permission",
-  PermissionSchema
-);
+const Permission =
+  mongoose.models.Permission ||
+  mongoose.model<IPermission>("Permission", PermissionSchema);
 
 export default Permission;
