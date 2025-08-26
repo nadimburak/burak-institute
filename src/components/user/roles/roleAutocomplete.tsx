@@ -1,4 +1,4 @@
-import { getUserFetcher } from "@/utils/fetcher";
+import { getFetcher } from "@/utils/fetcher";
 import { Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -29,7 +29,7 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
     data,
     error: isError,
     isLoading,
-  } = useSWR(`${fetchUrl}?${params.toString()}`, getUserFetcher);
+  } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
 
   if (isError) {
     return (

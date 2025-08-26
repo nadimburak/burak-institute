@@ -3,7 +3,6 @@ import {
   Notification,
   NotificationType,
 } from "@/interfaces/notification.interface";
-import { getSession } from "@/utils/jwt";
 import { Alert, Box, CircularProgress, Icon, IconButton } from "@mui/material";
 import axios from "axios";
 import {
@@ -49,7 +48,7 @@ const ImageFileUpload = ({
   maxFiles = 1,
   allowedFileTypes = ["image/jpeg", "image/png", "image/svg+xml"],
 }: ImageFileUploadProps) => {
-  const token = getSession();
+  const token = "11";
   const uploadUrl = `${process.env.NEXT_PUBLIC_UPLOAD_URL}/single-file-pond/upload`;
   const [files, setFiles] = useState<
     (string | FilePondInitialFile | Blob | File)[]
