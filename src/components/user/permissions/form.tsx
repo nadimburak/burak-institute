@@ -23,6 +23,7 @@ import * as yup from "yup";
 import { defaultValues, fetchUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
 import { IPermission } from "@/models/Permission";
+import { handleErrorMessage } from "@/utils/errorHandler";
 
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({
@@ -84,7 +85,8 @@ export default function PermissionForm({ id, open, onClose }: FormProps) {
 
       onClose("true");
     } catch (error: any) {
-      notifications.show(error?.response?.data?.message, {
+      const errorMessage = handleErrorMessage(error);
+      notifications.show(errorMessage, {
         severity: "error",
         autoHideDuration: 3000,
       });
