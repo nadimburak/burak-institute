@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Permission, { IPermission } from '@/models/Permission';
-import { QueryParams } from '@/types/query.params';
+import Permission from '@/models/Permission';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         await connectDB();
 
