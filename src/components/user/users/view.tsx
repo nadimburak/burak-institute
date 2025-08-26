@@ -68,7 +68,6 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
   };
 
   const usersData = data;
-  console.log("COMPANY USER", data);
 
   const details = [
     { label: "Name", value: usersData?.name },
@@ -96,7 +95,6 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
       label: "Languages",
       value: usersData?.language?.map((l: any) => l.name).join(", "),
     },
-    { label: "Company Branch", value: usersData?.company_branch?.name },
     { label: "Designation", value: usersData?.designation?.name },
     {
       label: "Employment Status",
@@ -106,7 +104,6 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     { label: "Role", value: usersData?.role?.name },
     { label: "Dependents", value: usersData?.dependents },
     { label: "Driver", value: usersData?.driver },
-    { label: "Company", value: data?.user?.company?.name },
   ];
 
   const labelIconMap: Record<string, React.ReactNode> = {
@@ -130,13 +127,11 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     "Passport Number": <FingerprintIcon fontSize="small" />,
     "Emergency Contact": <ContactsIcon fontSize="small" />,
     Languages: <TranslateIcon fontSize="small" />,
-    "Company Branch": <WorkIcon fontSize="small" />,
     "Employment Status": <WorkIcon fontSize="small" />,
     "Legal Guardian": <GavelIcon fontSize="small" />,
     Role: <WorkIcon fontSize="small" />,
     Dependents: <PeopleIcon fontSize="small" />,
     Driver: <BadgeIcon fontSize="small" />,
-    Company: <WorkIcon fontSize="small" />,
   };
 
   const renderSection = (title: string, fields: string[]) => (
@@ -155,8 +150,6 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
                   md:
                     title === "Personal Information"
                       ? 3
-                      : title === "Company & Role"
-                        ? 6
                         : title === "Other Details"
                           ? 6
                           : 6,

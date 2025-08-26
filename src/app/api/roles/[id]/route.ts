@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User, { IUser } from '@/models/User';
+import Role, { IRole } from '@/models/Role';
 
 interface Params {
     params: { id: string };
@@ -9,15 +9,15 @@ interface Params {
 export async function GET(request: NextRequest, { params }: Params) {
     try {
         await connectDB();
-        const user: IUser | null = await User.findById(params.id);
+        const role: IRole | null = await Role.findById(params.id);
 
-        if (!user) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+        if (!role) {
+            return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, data: user });
+        return NextResponse.json({ success: true, data: role });
     } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to fetch user' }, { status: 400 });
+        return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
 }
 
@@ -26,16 +26,16 @@ export async function PUT(request: NextRequest, { params }: Params) {
         await connectDB();
         const body = await request.json();
 
-        const user: IUser | null = await User.findByIdAndUpdate(params.id, body, {
+        const role: IRole | null = await Role.findByIdAndUpdate(params.id, body, {
             new: true,
             runValidators: true,
         });
 
-        if (!user) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+        if (!role) {
+            return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, data: user });
+        return NextResponse.json({ success: true, data: role });
     } catch (error: any) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
     }
@@ -44,14 +44,14 @@ export async function PUT(request: NextRequest, { params }: Params) {
 export async function DELETE(request: NextRequest, { params }: Params) {
     try {
         await connectDB();
-        const deletedUser: IUser | null = await User.findByIdAndDelete(params.id);
+        const deletedRole: IRole | null = await Role.findByIdAndDelete(params.id);
 
-        if (!deletedUser) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+        if (!deletedRole) {
+            return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to delete user' }, { status: 400 });
+        return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
 }

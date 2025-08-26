@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, updatePasswordUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
+import { handleErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileFormProps extends DialogProps<undefined, string | null> {
   id?: any;
@@ -86,9 +87,10 @@ export default function UpdateProfilePassword({
         onClose("true");
       }
     } catch (error: any) {
-      notifications.show(error?.response?.data?.message, {
+      const errorMessage = handleErrorMessage(error);
+      notifications.show(errorMessage, {
         severity: "error",
-        autoHideDuration: 2000,
+        autoHideDuration: 3000,
       });
       onClose("false");
     }

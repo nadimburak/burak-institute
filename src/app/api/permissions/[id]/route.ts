@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: Params) {
 
         return NextResponse.json({ success: true, data: permission });
     } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to fetch permission' }, { status: 400 });
+        return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
 }
 
@@ -36,8 +36,8 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: permission });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    } catch (error) {
+        return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
 }
 
@@ -52,6 +52,6 @@ export async function DELETE(request: NextRequest, { params }: Params) {
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to delete permission' }, { status: 400 });
+        return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
 }
