@@ -1,8 +1,8 @@
 "use client";
 
 import ImageFileUpload from "@/components/form/imageUpload";
-import useAuth from "@/hooks/useAuth"; // 🔹 assume ki aapka auth hook yaha se aata hai
-import { UserModel } from "@/models/User.model";
+// import useAuth from "@/hooks/useAuth"; // 🔹 assume ki aapka auth hook yaha se aata hai
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -30,9 +30,10 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import RoleAutocomplete from "../../autocomplete/user/roleAutocomplete";
+
 import { defaultValues, fetchUserUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
+import RoleAutocomplete from "@/components/autocomplete/RoleAutocomplete";
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -194,12 +195,12 @@ export default function UserForm({ id, open, onClose }: FormProps) {
           <Grid container mt={1} spacing={2}>
             <Grid size={12}>
               <RoleAutocomplete
-                trigger={trigger}
-                setValue={setValue}
                 value={role}
+                setValue={setValue}   // react-hook-form ka setValue
                 error={!!errors.role}
                 helperText={errors.role ? "Role is required" : ""}
               />
+
             </Grid>
 
             <Grid size={12}>
