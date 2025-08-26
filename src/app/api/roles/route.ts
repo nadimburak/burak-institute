@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
         // Execute queries in parallel for better performance
         const [data, totalData] = await Promise.all([
             Role.find(query)
-                .populate("role", "name")
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
