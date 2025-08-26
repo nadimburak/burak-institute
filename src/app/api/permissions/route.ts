@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Permission, { IPermission } from '@/models/Permission';
-
-interface QueryParams {
-    page?: string;
-    limit?: string;
-    sortBy?: string;
-    order?: string;
-    search?: string;
-}
+import { QueryParams } from '@/types/query.params';
 
 export async function GET(request: NextRequest) {
     try {
