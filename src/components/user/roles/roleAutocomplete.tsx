@@ -5,11 +5,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 import { fetchUrl } from "./constant";
-
-interface Role {
-  _id: any;
-  name: any;
-}
+import { IRole } from "@/models/Role";
 
 interface RoleAutocompleteProps {
   setValue: any;
@@ -48,8 +44,8 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
   return (
     <Autocomplete
       options={data?.data || []}
-      getOptionLabel={(option: Role) => option.name || ""}
-      getOptionKey={(option: Role) => option._id.toString()}
+      getOptionLabel={(option: IRole) => option.name || ""}
+      getOptionKey={(option: IRole) => option._id.toString()}
       loading={isLoading}
       onChange={(_, data) => {
         setValue("role", { _id: data?._id, name: data?.name });

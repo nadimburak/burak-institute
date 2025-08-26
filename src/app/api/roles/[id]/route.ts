@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: Params) {
             return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ success: true, data: role });
+        return NextResponse.json(role);
     } catch (error) {
         return NextResponse.json({ success: false, error: error }, { status: 400 });
     }
