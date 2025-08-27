@@ -7,7 +7,9 @@ export async function POST(request: NextRequest) {
     await connectDB();
    
     
+    
     const { name, email, password } = await request.json();
+   
     
     
     if (!name || !email || !password) {
@@ -31,30 +33,35 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+   
 
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      type:"student",
     });
+    
 
     await user.save();
 
-    const LogedInUser:any = await User.findOne({email:email.toLowerCase()});
+  
 
     return NextResponse.json(
       {
         message: 'User created successfully',
         user: {
-          id: LogedInUser._id.toString(),
-          name: LogedInUser.name,
-          email: LogedInUser.email,
+          id: user._id,
+          name: user.name,
+          email: user.email,
         }
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error('Signup error:', error);
+    // console.log(error);
+    
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }
