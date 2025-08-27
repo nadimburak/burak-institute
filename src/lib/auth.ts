@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
         signUp: '/auth/signup',
         error: '/auth/error',
     }as any,
-    //
+    
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
