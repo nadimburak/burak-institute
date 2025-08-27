@@ -11,14 +11,14 @@ export const authOptions: NextAuthOptions = {
                 email: { label: 'Email', type: 'email' },
                 password: { label: 'Password', type: 'password' }
             },
-            async authorize(credentials) {
+            async authorize(credentials){
                 await connectDB();
 
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error('Please provide email and password');
                 }
 
-                const user = await UserModel.findOne({ email: credentials.email.toLowerCase() })
+                const user = await UserModel.findOne({ email: credentials.email.toLowerCase()})
                     .select('+password')
                     .exec();
 
@@ -31,9 +31,10 @@ export const authOptions: NextAuthOptions = {
                 if (!isPasswordValid) {
                     throw new Error('Invalid password');
                 }
+                const userId = String(user._id)
 
                 return {
-                    id: user._id.toString(),
+                    id: userId,
                     email: user.email,
                     name: user.name,
                 };
@@ -48,7 +49,7 @@ export const authOptions: NextAuthOptions = {
         signIn: '/auth/signin',
         signUp: '/auth/signup',
         error: '/auth/error',
-    },
+    }as any,
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
