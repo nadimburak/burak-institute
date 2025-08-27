@@ -106,8 +106,8 @@ const WebsiteHeader = () => {
         >
           {/* 🔹 Logo */}
           <Typography
-            variant="h6"
-            sx={{ cursor: "pointer" }}
+            variant="h1"
+            sx={{ cursor: "pointer"}}
             onClick={() => router.push("/")}
             color="primary.main"
           >

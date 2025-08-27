@@ -5,9 +5,13 @@ import User from '@/models/User';
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
-
+   
+    
+    
     const { name, email, password } = await request.json();
-
+   
+    
+    
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: 'Missing required fields' },
@@ -29,28 +33,35 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+   
 
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      type:"student",
     });
+    
 
     await user.save();
+
+  
 
     return NextResponse.json(
       {
         message: 'User created successfully',
         user: {
-          id: user._id.toString(),
+          id: user._id,
           name: user.name,
           email: user.email,
         }
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error('Signup error:', error);
+    // console.log(error);
+    
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }
