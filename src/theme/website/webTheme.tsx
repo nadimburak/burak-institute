@@ -1,28 +1,60 @@
 import { createTheme } from "@mui/material/styles";
 
 const websiteTheme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#9333EA", // Purple
-      contrastText: "#ffffff",
+  cssVariables: {
+    colorSchemeSelector: "data-toolpad-color-scheme",
+  },
+  colorSchemes: {
+    light: {
+      palette: {
+        mode: "light",
+        primary: {
+          main: "#7C3AED", // Purple
+          contrastText: "#ffffff",
+        },
+        secondary: {
+          main: "#E11D48",
+          contrastText: "#ffffff",
+        },
+        background: {
+          default: "#F9FAFB",
+          paper: "#FFFFFF",
+        },
+        error: {
+          main: "#DC2626",
+        },
+        text: {
+          primary: "#111827",
+          secondary: "#6B7280",
+        },
+        divider: "#E5E7EB",
+      },
     },
-    secondary: {
-      main: "#E11D48", // Rose Red
-      contrastText: "#ffffff",
+    dark: {
+      palette: {
+        mode: "dark",
+        primary: {
+          main: "#7C3AED", // Purple
+          contrastText: "#ffffff",
+        },
+        secondary: {
+          main: "#E11D48",
+          contrastText: "#ffffff",
+        },
+        background: {
+          default: "#111827",
+          paper: "#1F2937",
+        },
+        error: {
+          main: "#F87171",
+        },
+        text: {
+          primary: "#F3F4F6",
+          secondary: "#9CA3AF",
+        },
+        divider: "#374151",
+      },
     },
-    background: {
-      default: "#F9FAFB",
-      paper: "#FFFFFF",
-    },
-    error: {
-      main: "#DC2626", // Strong red for error
-    },
-    text: {
-      primary: "#111827",
-      secondary: "#6B7280",
-    },
-    divider: "#E5E7EB",
   },
   shape: {
     borderRadius: 12,

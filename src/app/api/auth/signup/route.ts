@@ -5,9 +5,11 @@ import User from '@/models/User';
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
-
+   
+    
     const { name, email, password } = await request.json();
-
+    
+    
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: 'Missing required fields' },
@@ -38,13 +40,15 @@ export async function POST(request: NextRequest) {
 
     await user.save();
 
+    const LogedInUser:any = await User.findOne({email:email.toLowerCase()});
+
     return NextResponse.json(
       {
         message: 'User created successfully',
         user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
+          id: LogedInUser._id.toString(),
+          name: LogedInUser.name,
+          email: LogedInUser.email,
         }
       },
       { status: 201 }
