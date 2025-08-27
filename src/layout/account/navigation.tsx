@@ -38,6 +38,22 @@ const accountNavigation: Navigation = [
       },
     ],
   },
+  {
+    title: "Courses",
+    icon: <EditCalendarIcon />,
+    children: [
+      {
+        title: "Course Types",
+        segment: "dashboard/courses/course-types",
+        icon: <>{DotIcon}</>,
+      },
+      {
+        title: "Courses",
+        segment: "dashboard/user/roles",
+        icon: <>{DotIcon}</>,
+      },
+    ],
+  },
 ];
 
 export default accountNavigation;
