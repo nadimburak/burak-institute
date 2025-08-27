@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User, { IUser } from '@/models/User';
+import Permission, { IPermission } from '@/models/Permission';
+import { QueryParams } from '@/types/query.params';
 
 export async function GET(request: NextRequest) {
     try {
@@ -37,14 +38,12 @@ export async function GET(request: NextRequest) {
 
         // Execute queries in parallel for better performance
         const [data, totalData] = await Promise.all([
-            User.find(query)
-                .populate("role", "name")
-                .select("-password")
+            Permission.find(query)
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
                 .lean(), // Use lean() for better performance
-            User.countDocuments(query)
+            Permission.countDocuments(query)
         ]);
 
         return NextResponse.json({
@@ -56,9 +55,9 @@ export async function GET(request: NextRequest) {
             hasPrevPage: parsedPage > 1,
         });
     } catch (error) {
-        console.error('GET Role Error:', error);
+        console.error('GET Permission Error:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch users' },
+            { error: 'Failed to fetch permissions' },
             { status: 500 }
         );
     }
@@ -69,12 +68,58 @@ export async function POST(request: NextRequest) {
         await connectDB();
         const body = await request.json();
 
-        const user: IUser = await User.create(body);
-        return NextResponse.json({ success: true, data: user }, { status: 201 });
-    } catch (error: any) {
-        if (error.code === 11000) {
-            return NextResponse.json({ success: false, error: 'Email already exists' }, { status: 400 });
+        // Basic validation
+        if (!body.name || typeof body.name !== 'string') {
+            return NextResponse.json(
+                { error: 'Name is required and must be a string' },
+                { status: 400 }
+            );
         }
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+
+        // Check if permission already exists
+        const existingPermission = await Permission.findOne({
+            name: body.name
+        });
+
+        if (existingPermission) {
+            return NextResponse.json(
+                { error: 'Permission already exists' },
+                { status: 409 }
+            );
+        }
+
+        const permission: IPermission = await Permission.create(body);
+
+        return NextResponse.json(
+            {
+                data: permission,
+                message: 'Permission created successfully'
+            },
+            { status: 201 }
+        );
+    } catch (error: any) {
+        console.error('POST Permission Error:', error);
+
+        // Handle MongoDB validation errors
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map((err: any) => err.message);
+            return NextResponse.json(
+                { error: 'Validation failed', details: errors },
+                { status: 400 }
+            );
+        }
+
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            return NextResponse.json(
+                { error: 'Permission already exists' },
+                { status: 409 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'Failed to create permission' },
+            { status: 500 }
+        );
     }
 }

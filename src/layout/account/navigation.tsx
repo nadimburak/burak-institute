@@ -22,8 +22,18 @@ const accountNavigation: Navigation = [
     icon: <EditCalendarIcon />,
     children: [
       {
+        title: "Permissions",
+        segment: "dashboard/user/permissions",
+        icon: <>{DotIcon}</>,
+      },
+      {
+        title: "Roles",
+        segment: "dashboard/user/roles",
+        icon: <>{DotIcon}</>,
+      },
+      {
         title: "Users",
-        segment: "dashboard/users",
+        segment: "dashboard/user/users",
         icon: <>{DotIcon}</>,
       },
     ],

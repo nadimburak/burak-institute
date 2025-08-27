@@ -11,11 +11,11 @@ const theme = createTheme({
       palette: {
         mode: "light",
         primary: {
-          main: "#4B7BE5", // Indigo
+          main: "#7C3AED", // Purple
           contrastText: "#ffffff",
         },
         secondary: {
-          main: "#E11D48", // Rose Red
+          main: "#E11D48",
           contrastText: "#ffffff",
         },
         background: {
@@ -23,7 +23,7 @@ const theme = createTheme({
           paper: "#FFFFFF",
         },
         error: {
-          main: "#DC2626", // Strong red for error
+          main: "#DC2626",
         },
         text: {
           primary: "#111827",
@@ -36,7 +36,7 @@ const theme = createTheme({
       palette: {
         mode: "dark",
         primary: {
-          main: "#4B7BE5",
+          main: "#7C3AED", // Purple
           contrastText: "#ffffff",
         },
         secondary: {
@@ -58,9 +58,7 @@ const theme = createTheme({
       },
     },
   },
-  shape: {
-    borderRadius: 12,
-  },
+  shape: { borderRadius: 12 },
   spacing: 8,
   typography: {
     fontFamily: `"Geist", "Inter", "Segoe UI", "Roboto", "Arial", sans-serif`,
@@ -83,35 +81,17 @@ const theme = createTheme({
             transform: "translateY(-2px)",
             boxShadow: "0 6px 12px rgba(0,0,0,0.1)",
           },
-          "&:active": {
-            transform: "scale(0.98)",
-          },
+          "&:active": { transform: "scale(0.98)" },
         },
       },
     },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 16,
-          boxShadow: "0px 6px 18px rgba(0,0,0,0.04)",
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
+    MuiCard: { styleOverrides: { root: { borderRadius: 16, boxShadow: "0px 6px 18px rgba(0,0,0,0.04)" } } },
+    MuiPaper: { styleOverrides: { root: { borderRadius: 12 } } },
     MuiDialog: {
       styleOverrides: {
         paper: {
           animation: "fadeIn 0.6s ease",
-          "@keyframes fadeIn": {
-            from: { opacity: 0, transform: "scale(0.95)" },
-            to: { opacity: 1, transform: "scale(1)" },
-          },
+          "@keyframes fadeIn": { from: { opacity: 0, transform: "scale(0.95)" }, to: { opacity: 1, transform: "scale(1)" } },
         },
       },
     },
@@ -119,3 +99,4 @@ const theme = createTheme({
 });
 
 export default theme;
+

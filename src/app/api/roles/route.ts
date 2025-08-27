@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User, { IUser } from '@/models/User';
+import { QueryParams } from '@/types/query.params';
+import Role, { IRole } from '@/models/Role';
 
 export async function GET(request: NextRequest) {
     try {
@@ -37,14 +38,12 @@ export async function GET(request: NextRequest) {
 
         // Execute queries in parallel for better performance
         const [data, totalData] = await Promise.all([
-            User.find(query)
-                .populate("role", "name")
-                .select("-password")
+            Role.find(query)
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
                 .lean(), // Use lean() for better performance
-            User.countDocuments(query)
+            Role.countDocuments(query)
         ]);
 
         return NextResponse.json({
@@ -58,7 +57,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('GET Role Error:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch users' },
+            { error: 'Failed to fetch roles' },
             { status: 500 }
         );
     }
@@ -69,12 +68,59 @@ export async function POST(request: NextRequest) {
         await connectDB();
         const body = await request.json();
 
-        const user: IUser = await User.create(body);
-        return NextResponse.json({ success: true, data: user }, { status: 201 });
-    } catch (error: any) {
-        if (error.code === 11000) {
-            return NextResponse.json({ success: false, error: 'Email already exists' }, { status: 400 });
+        // Basic validation
+        if (!body.name || typeof body.name !== 'string') {
+            return NextResponse.json(
+                { error: 'Name is required and must be a string' },
+                { status: 400 }
+            );
         }
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+
+        // Check if role already exists
+        const existingRole = await Role.findOne({
+            name: body.name,
+            roles: body.roles,
+        });
+
+        if (existingRole) {
+            return NextResponse.json(
+                { error: 'role already exists' },
+                { status: 409 }
+            );
+        }
+
+        const role: IRole = await Role.create(body);
+
+        return NextResponse.json(
+            {
+                data: role,
+                message: 'role created successfully'
+            },
+            { status: 201 }
+        );
+    } catch (error: any) {
+        console.error('POST role Error:', error);
+
+        // Handle MongoDB validation errors
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map((err: any) => err.message);
+            return NextResponse.json(
+                { error: 'Validation failed', details: errors },
+                { status: 400 }
+            );
+        }
+
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            return NextResponse.json(
+                { error: 'role already exists' },
+                { status: 409 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'Failed to create role' },
+            { status: 500 }
+        );
     }
 }
