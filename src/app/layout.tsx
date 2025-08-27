@@ -1,5 +1,10 @@
+"use client";
+import React from "react";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "./providers";
+import { SessionProvider } from "next-auth/react";
+import ThemeRegistry from "@/theme/account/ThemeRegistry";
+import { NextAppProvider } from "@toolpad/core/nextjs";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,7 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// ⚠️ Notice: Yahaan "use client" nahi lagana hai
+
 export default function RootLayout({
   children,
 }: {
@@ -26,9 +31,13 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Providers>
-          {children}
-        </Providers>
+        <SessionProvider>
+          <ThemeRegistry>
+            <NextAppProvider>
+              {children}
+            </NextAppProvider>
+          </ThemeRegistry>
+        </SessionProvider>
       </body>
     </html>
   );
