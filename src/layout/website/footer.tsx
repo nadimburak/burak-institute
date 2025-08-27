@@ -5,6 +5,9 @@
 // import theme from "@/theme/account/theme";
 import { Box, Container, Grid, Link, Typography } from "@mui/material";
 import React from "react";
+import InstagramIcon from '@mui/icons-material/Instagram';
+import XIcon from '@mui/icons-material/X';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 const WebsiteFooter: React.FC = () => {
   return (
@@ -13,7 +16,7 @@ const WebsiteFooter: React.FC = () => {
       sx={{
         mt: 6,
         // backgroundColor: theme.palette.primary.main,
-        color: "#fff",
+        color: "#7C3AED",
         py: 6,
       }}
     >
@@ -88,9 +91,43 @@ const WebsiteFooter: React.FC = () => {
           </Grid>
 
           {/* Column 4: Address Card */}
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            {/* <AddressCard /> */}
-          </Grid>
+          <Grid size={{xs:12 ,sm:6 ,md:4}} >
+  <Typography variant="h6" fontWeight="bold" gutterBottom>
+    Get in touch
+  </Typography>
+
+  <Box display="flex" gap={3}>
+    {[
+      { icon: <InstagramIcon />, color: "#E4405F", href: "https://instagram.com" },
+      { icon: <XIcon />, color: "#000000", href: "https://x.com" },
+      { icon: <LinkedInIcon />, color: "#0A66C2", href: "https://linkedin.com" },
+    ].map((item, index) => (
+      <Link
+        key={index}
+        href={item.href}
+        target="_blank"
+        rel="noopener"
+        color="inherit"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "2rem", // icons thode bade dikhne ke liye
+          opacity: 0.9,
+          transition: "all 0.3s ease",
+          "&:hover": {
+            opacity: 1,
+            color: item.color,
+            transform: "scale(1.2)", // thoda zoom effect
+          },
+        }}
+      >
+        {item.icon}
+      </Link>
+    ))}
+  </Box>
+</Grid>
+
         </Grid>
       </Container>
     </Box>
