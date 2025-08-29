@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AppBar,
   Avatar,
@@ -33,6 +33,7 @@ import { websiteNavigation } from "./navigation";
 
 // ✅ NextAuth
 import { useSession, signOut } from "next-auth/react";
+import { useThemeContext } from "@/theme/ThemeRegistry";
 
 // 🔽 scroll direction hook
 const useScrollDirection = () => {
@@ -62,7 +63,9 @@ const WebsiteHeader = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-  // const { mode, toggleMode } = useThemeMode();
+  const { mode, toggleMode } = useThemeContext();
+ 
+  
 
   const scrollDir = useScrollDirection();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -157,10 +160,11 @@ const WebsiteHeader = () => {
 
           {/* 🔹 Right Actions */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            {/* 🌙 Theme Toggle */}
-            {/* <IconButton onClick={toggleMode} color="inherit">
-              {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
-            </IconButton> */}
+           
+            
+            <IconButton onClick={toggleMode} sx={{ color: "text.primary" }}>
+  {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+</IconButton>
 
             {isAuthenticated ? (
               <>

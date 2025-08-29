@@ -1,6 +1,6 @@
 "use client";
 
-import theme from "@/theme/account/theme";
+import theme from "@/theme/theme";
 import { PageContainer } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { NextAppProvider } from "@toolpad/core/nextjs";

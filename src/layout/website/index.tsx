@@ -1,9 +1,10 @@
-import websiteTheme from "@/theme/website/webTheme";
-import WebsiteThemeRegistry from "@/theme/website/webThemeRegistry";
+
+import ThemeRegistry from "@/theme/ThemeRegistry";
 import { NextAppProvider } from "@toolpad/core/nextjs";
 import React from "react";
 import WebsiteFooter from "./footer";
 import WebsiteHeader from "./header";
+import getTheme from "@/theme/theme";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,11 +14,12 @@ export default function WebsiteLayout(props: LayoutProps) {
   const { children } = props;
 
   return (
-    <WebsiteThemeRegistry>
-      <NextAppProvider theme={websiteTheme} >
+    <ThemeRegistry>
+      <NextAppProvider theme={getTheme} >
         <WebsiteHeader />
         {children}
         <WebsiteFooter />
-      </NextAppProvider></WebsiteThemeRegistry>
+      </NextAppProvider>
+      </ThemeRegistry>
   );
 }

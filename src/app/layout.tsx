@@ -2,8 +2,9 @@
 import React from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
-import ThemeRegistry from "@/theme/account/ThemeRegistry";
+// import WebsiteThemeRegistry from "@/theme/website/WebsiteThemeRegistry";
 import { NextAppProvider } from "@toolpad/core/nextjs";
+import ThemeRegistry from "@/theme/ThemeRegistry";
 
 
 const geistSans = Geist({
