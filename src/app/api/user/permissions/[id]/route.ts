@@ -12,13 +12,13 @@ export async function GET(request: NextRequest, { params }: Params) {
         const permission: IPermission | null = await Permission.findById(params.id);
 
         if (!permission) {
-            return NextResponse.json({ success: false, error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json(permission);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }
 
@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
         });
 
         if (!permission) {
-            return NextResponse.json({ success: false, error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: permission });
@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }
 
@@ -81,12 +81,12 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         const deletedPermission: IPermission | null = await Permission.findByIdAndDelete(params.id);
 
         if (!deletedPermission) {
-            return NextResponse.json({ success: false, error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }

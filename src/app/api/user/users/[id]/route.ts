@@ -12,13 +12,13 @@ export async function GET(request: NextRequest, { params }: Params) {
         const user: IUser | null = await User.findById(params.id);
 
         if (!user) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+            return NextResponse.json({  error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json(user);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }
 
@@ -33,7 +33,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
         });
 
         if (!user) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+            return NextResponse.json({  error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: user });
@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }
 
@@ -81,12 +81,12 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         const deletedUser: IUser | null = await User.findByIdAndDelete(params.id);
 
         if (!deletedUser) {
-            return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
+            return NextResponse.json({  error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }

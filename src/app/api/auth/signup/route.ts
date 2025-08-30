@@ -88,6 +88,6 @@ export async function POST(request: NextRequest) {
     }
 
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+    return NextResponse.json({  message: errorMessage }, { status: 400 });
   }
 }

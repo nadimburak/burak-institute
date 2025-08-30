@@ -11,6 +11,6 @@ export async function GET() {
         return NextResponse.json(data);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
+        return NextResponse.json({  message: errorMessage }, { status: 400 });
     }
 }
