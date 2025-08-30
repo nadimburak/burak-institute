@@ -189,7 +189,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
               sx={{ width: 48, height: 48, bgcolor: "primary.main" }}
               src={
                 usersData?.image
-                  ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${usersData.image}`
+                  ? `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${usersData.image}`
                   : "/avatar.jpg"
               }
             >

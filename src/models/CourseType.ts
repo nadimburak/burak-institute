@@ -25,7 +25,7 @@ const CourseTypeSchema: Schema<ICourseType> = new Schema(
             type: String,
             enum: ['active', 'inactive'],
             default: 'active',
-            required:false
+            required: false
         },
     },
     {
