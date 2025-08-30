@@ -49,7 +49,7 @@ const ImageFileUpload = ({
   allowedFileTypes = ["image/jpeg", "image/png", "image/svg+xml"],
 }: ImageFileUploadProps) => {
   const token = "11";
-  const uploadUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/upload`;
+  const uploadUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`;
   const [files, setFiles] = useState<
     (string | FilePondInitialFile | Blob | File)[]
   >([]);
