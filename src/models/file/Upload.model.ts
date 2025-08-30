@@ -34,9 +34,7 @@ const UploadSchema: Schema<IUpload> = new Schema(
     }
 );
 
-const Upload: Model<IUpload> = mongoose.model<IUpload>(
-    "Upload",
-    UploadSchema
-);
+
+const Upload: Model<IUpload> = mongoose.models.Upload || mongoose.model<IUpload>("Upload", UploadSchema);
 
 export default Upload;
