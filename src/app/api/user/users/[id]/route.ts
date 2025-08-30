@@ -38,6 +38,38 @@ export async function PUT(request: NextRequest, { params }: Params) {
 
         return NextResponse.json({ success: true, data: user });
     } catch (error: unknown) {
+        console.log(error);
+
+        // Handle MongoDB validation errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
+            return NextResponse.json(
+                { error: 'Validation failed', details: errors },
+                { status: 400 }
+            );
+        }
+
+        // Handle duplicate key errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
+            return NextResponse.json(
+                { error: 'Data already exists' },
+                { status: 409 }
+            );
+        }
+
         const errorMessage = error instanceof Error ? error.message : String(error);
         return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }

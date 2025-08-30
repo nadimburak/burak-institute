@@ -41,19 +41,40 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
         return NextResponse.json({ data: updated, message: 'Course type updated successfully' });
     } catch (error: unknown) {
-        console.error('PUT Error:', error);
+        console.log(error);
 
-        if (typeof error === 'object' && error !== null && 'name' in error && (error as { name: string }).name === 'ValidationError') {
-            const errors = Object.values((error as Record<string, { message?: string }>).errors)
-                .map((err) => typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err));
-            return NextResponse.json({ error: 'Validation failed', details: errors }, { status: 400 });
+        // Handle MongoDB validation errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
+            return NextResponse.json(
+                { error: 'Validation failed', details: errors },
+                { status: 400 }
+            );
         }
 
-        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: number }).code === 11000) {
-            return NextResponse.json({ error: 'Course type already exists' }, { status: 409 });
+        // Handle duplicate key errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
+            return NextResponse.json(
+                { error: 'Data already exists' },
+                { status: 409 }
+            );
         }
 
-        return NextResponse.json({ error: 'Failed to update course type' }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 

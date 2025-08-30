@@ -73,18 +73,6 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if permission already exists
-        const existingPermission = await Permission.findOne({
-            name: body.name
-        });
-
-        if (existingPermission) {
-            return NextResponse.json(
-                { error: 'Permission already exists' },
-                { status: 409 }
-            );
-        }
-
         const permission: IPermission = await Permission.create(body);
 
         return NextResponse.json(
@@ -95,7 +83,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error: unknown) {
-        console.error('POST Error:', error);
+        console.log(error);
 
         // Handle MongoDB validation errors
         if (
@@ -127,9 +115,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        return NextResponse.json(
-            { error: 'Failed to create data' },
-            { status: 500 }
-        );
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }

@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error: unknown) {
-        console.error('POST Error:', error);
+        console.log(error);
 
         // Handle MongoDB validation errors
         if (
@@ -116,9 +116,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        return NextResponse.json(
-            { error: 'Failed to create data' },
-            { status: 500 }
-        );
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
