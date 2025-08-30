@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
         });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
                     ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
                     : [];
             return NextResponse.json(
-                { error: 'Validation failed', details: errors },
+                { message: 'Validation failed', details: errors },
                 { status: 400 }
             );
         }
@@ -110,12 +110,12 @@ export async function POST(request: NextRequest) {
             (error as { code: number }).code === 11000
         ) {
             return NextResponse.json(
-                { error: 'Data already exists' },
+                { message: 'Data already exists' },
                 { status: 409 }
             );
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
