@@ -131,18 +131,19 @@ export default function CourseTypeList() {
         <Card>
             <CardContent>
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid size={{xs:12, sm:6}}>
                         <TextField
                             placeholder="Search Course Type"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            InputProps={{
+                            slotProps={{
+                                input: {
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <Icon>search</Icon>
                                     </InputAdornment>
                                 ),
-                            }}
+                            }}}
                             fullWidth
                         />
                     </Grid>
