@@ -6,34 +6,35 @@ interface Params {
     params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
-        const permission: IPermission | null = await Permission.findById(params.id);
+        const { id } = await context.params;
+        const permission: IPermission | null = await Permission.findById(id);
 
         if (!permission) {
-            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({ error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json(permission);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
         const body = await request.json();
-
-        const permission: IPermission | null = await Permission.findByIdAndUpdate(params.id, body, {
+        const { id } = await context.params;
+        const permission: IPermission | null = await Permission.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
         });
 
         if (!permission) {
-            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({ error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: permission });
@@ -71,22 +72,23 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
-        const deletedPermission: IPermission | null = await Permission.findByIdAndDelete(params.id);
+        const { id } = await context.params;
+        const deletedPermission: IPermission | null = await Permission.findByIdAndDelete(id);
 
         if (!deletedPermission) {
-            return NextResponse.json({  error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({ error: 'permission not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }

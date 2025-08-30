@@ -6,34 +6,37 @@ interface Params {
     params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
-        const user: IUser | null = await User.findById(params.id);
+        const { id } = await context.params;
+        const user: IUser | null = await User.findById(id);
 
         if (!user) {
-            return NextResponse.json({  error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json(user);
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }
+) {
     try {
         await connectDB();
         const body = await request.json();
+        const { id } = await context.params;
 
-        const user: IUser | null = await User.findByIdAndUpdate(params.id, body, {
+        const user: IUser | null = await User.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
         });
 
         if (!user) {
-            return NextResponse.json({  error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: user });
@@ -71,22 +74,23 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
-        const deletedUser: IUser | null = await User.findByIdAndDelete(params.id);
+        const { id } = await context.params;
+        const deletedUser: IUser | null = await User.findByIdAndDelete(id);
 
         if (!deletedUser) {
-            return NextResponse.json({  error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
