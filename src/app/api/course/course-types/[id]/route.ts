@@ -14,9 +14,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         }
 
         return NextResponse.json({ data: courseType });
-    } catch (error) {
-        console.error('GET CourseType by ID Error:', error);
-        return NextResponse.json({ error: 'Failed to fetch course type' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -40,15 +40,16 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         }
 
         return NextResponse.json({ data: updated, message: 'Course type updated successfully' });
-    } catch (error: any) {
-        console.error('PUT CourseType Error:', error);
+    } catch (error: unknown) {
+        console.error('PUT Error:', error);
 
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: any) => err.message);
+        if (typeof error === 'object' && error !== null && 'name' in error && (error as { name: string }).name === 'ValidationError') {
+            const errors = Object.values((error as Record<string, { message?: string }>).errors)
+                .map((err) => typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err));
             return NextResponse.json({ error: 'Validation failed', details: errors }, { status: 400 });
         }
 
-        if (error.code === 11000) {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: number }).code === 11000) {
             return NextResponse.json({ error: 'Course type already exists' }, { status: 409 });
         }
 
@@ -67,8 +68,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         }
 
         return NextResponse.json({ message: 'Course type deleted successfully' });
-    } catch (error) {
-        console.error('DELETE CourseType Error:', error);
-        return NextResponse.json({ error: 'Failed to delete course type' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }

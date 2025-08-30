@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
         // Build search query
-        const query: any = {};
+        const query: Record<string, unknown> = {};
         if (search.trim()) {
             query.$or = [
                 { name: { $regex: search.trim(), $options: "i" } },
@@ -54,12 +54,9 @@ export async function GET(request: NextRequest) {
             hasNextPage: parsedPage < Math.ceil(totalData / parsedLimit),
             hasPrevPage: parsedPage > 1,
         });
-    } catch (error) {
-        console.error('GET Permission Error:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch permissions' },
-            { status: 500 }
-        );
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -97,12 +94,20 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error: any) {
-        console.error('POST Permission Error:', error);
+    } catch (error: unknown) {
+        console.error('POST Error:', error);
 
         // Handle MongoDB validation errors
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: any) => err.message);
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
             return NextResponse.json(
                 { error: 'Validation failed', details: errors },
                 { status: 400 }
@@ -110,15 +115,20 @@ export async function POST(request: NextRequest) {
         }
 
         // Handle duplicate key errors
-        if (error.code === 11000) {
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
             return NextResponse.json(
-                { error: 'Permission already exists' },
+                { error: 'Data already exists' },
                 { status: 409 }
             );
         }
 
         return NextResponse.json(
-            { error: 'Failed to create permission' },
+            { error: 'Failed to create data' },
             { status: 500 }
         );
     }

@@ -9,11 +9,8 @@ export async function GET() {
         const data = await Permission.find({});
 
         return NextResponse.json(data);
-    } catch (error) {
-        console.error('GET Permission Error:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch permissions' },
-            { status: 500 }
-        );
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }

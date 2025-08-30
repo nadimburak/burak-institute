@@ -2,31 +2,37 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Role, { IRole } from '@/models/Role';
 
-interface Params {
-    params: { id: string };
-}
-
-export async function GET(request: NextRequest, { params }: Params) {
+export async function GET(
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
     try {
         await connectDB();
-        const role: IRole | null = await Role.findById(params.id).populate("permissions", "name");
+        const { id } = await context.params;
+
+        const role: IRole | null = await Role.findById(id).populate("permissions", "name");
 
         if (!role) {
             return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
         return NextResponse.json(role);
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
-export async function PUT(request: NextRequest, { params }: Params) {
+export async function PUT(
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
     try {
         await connectDB();
+        const { id } = await context.params;
         const body = await request.json();
 
-        const role: IRole | null = await Role.findByIdAndUpdate(params.id, body, {
+        const role: IRole | null = await Role.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
         });
@@ -36,22 +42,28 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: role });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
-export async function DELETE(request: NextRequest, { params }: Params) {
+export async function DELETE(
+    request: NextRequest,
+    context: { params: Promise<{ id: string }> }
+) {
     try {
         await connectDB();
-        const deletedRole: IRole | null = await Role.findByIdAndDelete(params.id);
+        const { id } = await context.params;
+        const deletedRole: IRole | null = await Role.findByIdAndDelete(id);
 
         if (!deletedRole) {
             return NextResponse.json({ success: false, error: 'Role not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }

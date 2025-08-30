@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User, { IUser } from '@/models/User';
+import { QueryParams } from '@/types/query.params';
 
 export async function GET(request: NextRequest) {
     try {
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
         // Build search query
-        const query: any = {};
+        const query: Record<string, unknown> = {};
         if (search.trim()) {
             query.$or = [
                 { name: { $regex: search.trim(), $options: "i" } },
@@ -55,12 +56,9 @@ export async function GET(request: NextRequest) {
             hasNextPage: parsedPage < Math.ceil(totalData / parsedLimit),
             hasPrevPage: parsedPage > 1,
         });
-    } catch (error) {
-        console.error('GET Role Error:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch users' },
-            { status: 500 }
-        );
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -71,10 +69,42 @@ export async function POST(request: NextRequest) {
 
         const user: IUser = await User.create(body);
         return NextResponse.json({ success: true, data: user }, { status: 201 });
-    } catch (error: any) {
-        if (error.code === 11000) {
-            return NextResponse.json({ success: false, error: 'Email already exists' }, { status: 400 });
+    } catch (error: unknown) {
+        console.error('POST Error:', error);
+
+        // Handle MongoDB validation errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
+            return NextResponse.json(
+                { error: 'Validation failed', details: errors },
+                { status: 400 }
+            );
         }
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+
+        // Handle duplicate key errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
+            return NextResponse.json(
+                { error: 'Data already exists' },
+                { status: 409 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: 'Failed to create data' },
+            { status: 500 }
+        );
     }
 }

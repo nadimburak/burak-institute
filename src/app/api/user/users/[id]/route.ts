@@ -16,8 +16,9 @@ export async function GET(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json(user);
-    } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to fetch user' }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -36,8 +37,9 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: user });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -51,7 +53,8 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: {} });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to delete user' }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }

@@ -16,8 +16,9 @@ export async function GET(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json(permission);
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
 
@@ -36,8 +37,20 @@ export async function PUT(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: permission });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error }, { status: 400 });
+    } catch (error: unknown) {
+        console.error('PUT Error:', error);
+
+        if (typeof error === 'object' && error !== null && 'name' in error && (error as { name: string }).name === 'ValidationError') {
+            const errors = Object.values((error as Record<string, { message?: string }>).errors)
+                .map((err) => typeof err === 'object' && err !== null && 'message' in err ? (err as { message: string }).message : String(err));
+            return NextResponse.json({ error: 'Validation failed', details: errors }, { status: 400 });
+        }
+
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: number }).code === 11000) {
+            return NextResponse.json({ error: 'Course type already exists' }, { status: 409 });
+        }
+
+        return NextResponse.json({ error: 'Failed to update course type' }, { status: 500 });
     }
 }
 
@@ -51,7 +64,8 @@ export async function DELETE(request: NextRequest, { params }: Params) {
         }
 
         return NextResponse.json({ success: true, data: {} });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error }, { status: 400 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 400 });
     }
 }
