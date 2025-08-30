@@ -1,4 +1,4 @@
-import { PermissionModel } from "@/models/Permission.model";
+import { IPermission } from "@/models/Permission";
 import axiosInstance from "@/utils/axiosInstance";
 import {
   Box,
@@ -25,7 +25,7 @@ const PermissionSelect: React.FC<FormSelectProps> = ({
   value = [],
   onChange,
 }) => {
-  const [permissions, setPermissions] = useState<PermissionModel[]>([]);
+  const [permissions, setPermissions] = useState<IPermission[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Pagination state
@@ -35,8 +35,8 @@ const PermissionSelect: React.FC<FormSelectProps> = ({
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const response = await axiosInstance.get("/all-permissions");
-        setPermissions(response.data as PermissionModel[]);
+        const response = await axiosInstance.get("/user/all-permissions");
+        setPermissions(response.data as IPermission[]);
       } catch (error) {
         console.error("Error fetching permissions:", error);
       } finally {

@@ -1,0 +1,9 @@
+POST {{baseUrl}}auth/sign-in/ HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "admin@burakit.com",
+    "password": "Abcd@1234",
+    "type": "user"  
+}
