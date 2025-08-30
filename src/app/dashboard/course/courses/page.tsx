@@ -1,4 +1,4 @@
-import CourseTypeList from '@/components/courses/course_types/list'
+import CourseTypeList from '@/components/course/courseTypes/list'
 import React from 'react'
 
 const page = () => {
