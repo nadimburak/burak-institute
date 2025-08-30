@@ -20,7 +20,12 @@ export const authOptions: NextAuthOptions = {
 
                 const user = await UserModel.findOne({ email: credentials.email.toLowerCase() })
                     .select('+password')
-                    .exec();
+                    .exec() as { _id: unknown; email: string; name: string; comparePassword: (password: string) => Promise<boolean> } | null;
+
+                // Ensure user is correctly typed
+                if (!user || typeof user.comparePassword !== 'function') {
+                    throw new Error('User model does not have comparePassword method');
+                }
 
                 if (!user) {
                     throw new Error('No user found with this email');
@@ -33,7 +38,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 return {
-                    id: user._id.toString(),
+                    id: (user._id as string).toString(),
                     email: user.email,
                     name: user.name,
                 };
@@ -46,7 +51,6 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: '/auth/signin',
-        signUp: '/auth/signup',
         error: '/auth/error',
     },
     callbacks: {
