@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User, { IUser } from '@/models/User';
 
-interface Params {
-    params: { id: string };
-}
-
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {
         await connectDB();
