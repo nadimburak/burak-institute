@@ -22,6 +22,9 @@ import * as yup from 'yup';
 import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
+// import { defaultValues } from "@/components/courses/course_types/constant"; 
+import { fetchUrl, defaultValues } from "@/components/courses/course_types/constant";
+
 
 import { ICourseType } from '@/models/CourseType';
 

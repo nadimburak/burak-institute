@@ -19,12 +19,13 @@ const CourseTypeSchema: Schema<ICourseType> = new Schema(
         },
         description: {
             type: String,
-            trim: true,
+            trim: false,
         },
         status: {
             type: String,
             enum: ['active', 'inactive'],
             default: 'active',
+            required:false
         },
     },
     {
