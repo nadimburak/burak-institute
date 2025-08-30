@@ -25,7 +25,7 @@ import { handleErrorMessage } from '@/utils/errorHandler';
 import { fetchUrl, defaultValues } from "@/components/course/courseTypes/constant";
 
 
-import { ICourseType } from '@/models/CourseType';
+import { ICourseType } from '@/models/course/CourseType.model';
 
 // Yup validation schema
 const validationSchema = yup.object().shape({

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Permission from '@/models/Permission';
+import Permission from '@/models/user/Permission.model';
 
 export async function GET() {
     try {

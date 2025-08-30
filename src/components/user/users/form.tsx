@@ -2,7 +2,7 @@
 
 import ImageFileUpload from "@/components/form/imageUpload";
 import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
-import { IUser } from "@/models/User";
+import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";

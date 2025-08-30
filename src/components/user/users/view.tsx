@@ -1,6 +1,6 @@
 "use client";
 
-import { UserModel } from "@/models/User.model";
+import { UserModel } from "@/models/user/User.model";
 import BadgeIcon from "@mui/icons-material/Badge";
 import CakeIcon from "@mui/icons-material/Cake";
 import ContactsIcon from "@mui/icons-material/Contacts";

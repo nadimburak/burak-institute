@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { QueryParams } from '@/types/query.params';
-import CourseType, { ICourseType } from '@/models/CourseType';
+import CourseType, { ICourseType } from '@/models/course/CourseType.model';
 
 export async function GET(request: NextRequest) {
     try {

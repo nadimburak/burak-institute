@@ -1,4 +1,4 @@
-import { IPermission } from "@/models/Permission";
+import { IPermission } from "@/models/user/Permission.model";
 import axiosInstance from "@/utils/axiosInstance";
 import {
   Box,

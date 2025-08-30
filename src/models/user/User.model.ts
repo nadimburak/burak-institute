@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import mongoose, { Document, Model, Schema } from "mongoose";
-import Role from "./Role";
-import { Gender } from "../enums/gender";
-import { MaritalStatus } from "../enums/maritalStatus";
+import Role from "./Role.model";
+import { Gender } from "../../enums/gender";
+import { MaritalStatus } from "../../enums/maritalStatus";
 
 export type UserType = "user" | "student" | "super_admin";
 

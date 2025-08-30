@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import UserModel from '@/models/User';
+import UserModel from '@/models/user/User.model';
 import connectDB from '@/lib/mongodb';
 
 export const authOptions: NextAuthOptions = {

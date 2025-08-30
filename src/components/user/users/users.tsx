@@ -1,5 +1,5 @@
 import { ErrorComponent } from "@/components/form/errorComponent";
-import { UserModel } from "@/models/User.model";
+import { UserModel } from "@/models/user/User.model";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User, { IUser } from '@/models/User';
+import User, { IUser } from '@/models/user/User.model';
 
 export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
     try {

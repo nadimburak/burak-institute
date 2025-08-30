@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User, { IUser } from '@/models/User';
+import User, { IUser } from '@/models/user/User.model';
 import { QueryParams } from '@/types/query.params';
 
 export async function GET(request: NextRequest) {

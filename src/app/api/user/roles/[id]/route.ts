@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Role, { IRole } from '@/models/Role';
+import Role, { IRole } from '@/models/user/Role.model';
 
 export async function GET(
     request: NextRequest,

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-import Permission from "./Permission";
+import Permission from "./Permission.model";
 
 // Interface for Designation Document
 export interface IRole extends Document {

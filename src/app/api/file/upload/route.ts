@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Upload from '@/models/Upload';
+import Upload from '@/models/file/Upload.model';
 import fs from 'fs';
 import path from 'path';
 
