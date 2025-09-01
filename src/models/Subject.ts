@@ -23,7 +23,7 @@ const SubjectSchema: Schema<ISubject> = new Schema(
         },
     },
     {
-        timestamps: true, // Automatically adds createdAt and updatedAt
+        timestamps: false, // Automatically adds createdAt and updatedAt
     }
 );
 

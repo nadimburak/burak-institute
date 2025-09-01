@@ -55,7 +55,7 @@ const accountNavigation: Navigation = [
     ],
   },
   {
-    segment: "subject",
+    segment: "dashboard/subject",
     title: "Subject",
     icon: <DashboardIcon />,
   },
