@@ -15,8 +15,6 @@ import {
   Icon,
   IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
   Stack,
   TextField,
   useTheme,
@@ -24,12 +22,11 @@ import {
 import {
   DataGrid,
   GridColDef,
-  GridMoreVertIcon,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useDialogs, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { JSX, useCallback, useEffect, useMemo, useState } from "react";
 import useSWR, { mutate } from "swr";
 import UserForm from "./form";
 import UpdateProfilePassword from "./update-password";
@@ -38,90 +35,7 @@ import { fetchUserUrl, updatePasswordUrl, viewUrl } from "./constant";
 import { getFetcher } from "@/utils/fetcher";
 import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
-
-interface ActionsCellProps {
-  row: unknown;
-  handleEdit: (id: string) => void;
-  handleView: (id: number) => void;
-  handlePassword: (id: unknown) => void;
-  handleDelete: (id: string) => void;
-}
-
-function ActionsCell({
-  row,
-  handleEdit,
-  handleView,
-  handlePassword,
-  handleDelete,
-}: ActionsCellProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <>
-      <IconButton
-        onClick={handleClick}
-        aria-label="more"
-        color="default"
-      >
-        <GridMoreVertIcon />
-      </IconButton>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem
-          onClick={() => {
-            handleEdit(row._id);
-            handleClose();
-          }}
-        >
-          <Icon sx={{ color: "primary.main", mr: 1 }}>edit</Icon> Edit
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            handleView(row._id);
-            handleClose();
-          }}
-        >
-          <Icon sx={{ color: "secondary.main", mr: 1 }}>
-            visibility
-          </Icon>
-          View
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handlePassword(row._id);
-            handleClose();
-          }}
-        >
-          <Icon sx={{ color: "success.main", mr: 1 }}>lock</Icon> Update
-          Password
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            handleDelete(row._id);
-            handleClose();
-          }}
-        >
-          <Icon sx={{ color: "error.main", mr: 1 }}>delete</Icon>
-          Delete
-        </MenuItem>
-      </Menu>
-    </>
-  );
-}
+import { ActionsCell } from "./actionRow";
 
 export default function UserList() {
   const router = useRouter();
@@ -151,7 +65,91 @@ export default function UserList() {
     return searchParams.toString();
   }, [paginationModel, sortModel, searchText]);
 
+  const { data, error, isLoading } = useSWR(
+    `${fetchUserUrl}?${params}`,
+    getFetcher
+  );
 
+  // Redirect on 403
+  useEffect(() => {
+    if (error?.status === 403) router.push("/forbidden");
+  }, [error, router]);
+
+  // Delete handler
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const ok = await dialogs.confirm(
+        "Are you sure you want to delete this?",
+        {
+          okText: "Yes",
+          cancelText: "No",
+        }
+      );
+      if (!ok) return;
+
+      try {
+        const res = await axiosInstance.delete(`${fetchUserUrl}/${id}`);
+        mutate(`${fetchUserUrl}?${params}`, { revalidate: true });
+        notifications.show(res.data.message, {
+          severity: "success",
+          autoHideDuration: 3000,
+        });
+      } catch (error: unknown) {
+        const errorMessage = handleErrorMessage(error);
+        notifications.show(errorMessage, {
+          severity: "error",
+          autoHideDuration: 3000,
+        });
+      }
+    },
+    [dialogs, notifications, params]
+  );
+
+  // Edit handler
+  const handleEdit = useCallback(
+    async (id: string) => {
+      const result = await dialogs.open((props) => (
+        <UserForm {...props} id={id} />
+      ));
+      if (result) mutate(`${fetchUserUrl}?${params}`, { revalidate: true });
+    },
+    [dialogs, params]
+  );
+
+  // Add handler
+  const handleAdd = useCallback(async () => {
+    const result = await dialogs.open((props) => (
+      <UserForm {...props} id="new" />
+    ));
+    if (result) mutate(`${fetchUserUrl}?${params}`, { revalidate: true });
+  }, [dialogs, params]);
+
+  const handleView = useCallback(
+    async (id: string) => {
+      const result = await dialogs.open((props) => (
+        <UserView {...props} id={id} />
+      ));
+      if (result) {
+        mutate(`${viewUrl}?${params.toString()}`);
+      }
+    },
+    [dialogs, params]
+  );
+
+  const handlePassword = useCallback(
+    async (id: string) => {
+      const result = await dialogs.open((props) => (
+        <UpdateProfilePassword {...props} id={id} />
+      ));
+      if (result) {
+        mutate(`${updatePasswordUrl}?${params.toString()}`);
+      }
+    },
+    [dialogs, params]
+  );
+
+
+  
   // Column definitions
   const columns: GridColDef[] = useMemo(
     () => [
@@ -160,15 +158,16 @@ export default function UserList() {
         headerName: "Actions",
         type: "actions",
         width: 120,
-        renderCell: (params) => (
-          <ActionsCell
-            row={params.row}
-            handleEdit={handleEdit}
-            handleView={handleView}
-            handlePassword={handlePassword}
-            handleDelete={handleDelete}
-          />
-        ),
+        renderCell: (params) => {
+          return (<ActionsCell
+              row={params.row}
+              handleEdit={handleEdit}
+              handleView={handleView}
+              handlePassword={handlePassword}
+              handleDelete={handleDelete}
+            />
+          );
+        },
       },
       {
         field: "role",
@@ -209,7 +208,7 @@ export default function UserList() {
         headerName: "Type",
         width: 170,
         renderCell: (params) => {
-          const typeMap = {
+          const typeMap: Record<string, { label: string; color: "primary" | "secondary" | "error" | "info" | "success" | "warning" | "default"; icon: JSX.Element }> = {
             user: {
               label: "User",
               color: "warning",
@@ -230,15 +229,15 @@ export default function UserList() {
           const typeValue = params?.row?.type as keyof typeof typeMap;
           const { label, color, icon } = typeMap[typeValue] || {
             label: "N / A",
-            color: "default",
-            icon: null,
+            color: "default" as const,
+            icon: <></>,
           };
 
           return (
             <Chip
               icon={icon}
               label={label}
-              color={color as unknown}
+              color={color}
               sx={{ textTransform: "capitalize", px: 1, fontWeight: "bold" }}
             />
           );
