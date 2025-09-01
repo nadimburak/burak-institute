@@ -1,4 +1,4 @@
-export const fetchUrl = "/roles";
+export const fetchUrl = "/user/roles";
 
 export const defaultValues = {
   name: "",

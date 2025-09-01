@@ -67,7 +67,7 @@ export default function AdminLayout({
             name: user.name || "",
             email: user.email || "",
             image: user.image
-              ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${user.image}`
+              ? `/uploads/${user.image}`
               : "",
           }
           : undefined,

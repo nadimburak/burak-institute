@@ -44,15 +44,20 @@ const accountNavigation: Navigation = [
     children: [
       {
         title: "Course Types",
-        segment: "dashboard/courses/course-types",
+        segment: "dashboard/course/course-types",
         icon: <>{DotIcon}</>,
       },
       {
         title: "Courses",
-        segment: "dashboard/user/roles",
+        segment: "dashboard/course/courses",
         icon: <>{DotIcon}</>,
       },
     ],
+  },
+  {
+    segment: "dashboard/subject",
+    title: "Subject",
+    icon: <DashboardIcon />,
   },
 ];
 

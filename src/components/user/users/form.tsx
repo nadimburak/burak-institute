@@ -2,7 +2,7 @@
 
 import ImageFileUpload from "@/components/form/imageUpload";
 import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
-import { IUser } from "@/models/User";
+import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -56,10 +56,6 @@ const validationSchema = yup.object().shape({
       "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
     ),
   status: yup.boolean().required("Status is required"),
-  type: yup
-    .string()
-    .oneOf(["user", "customer", "super_admin"])
-    .required("Type is required"),
 });
 
 interface FormProps extends DialogProps<undefined, string | null> {
@@ -80,7 +76,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
     setValue,
     watch,
     register,
-    trigger,
     formState: { errors },
   } = useForm<IUser>({
     resolver: yupResolver(validationSchema),

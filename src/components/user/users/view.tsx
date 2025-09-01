@@ -1,6 +1,6 @@
 "use client";
 
-import { UserModel } from "@/models/User.model";
+import { UserModel } from "@/models/user/User.model";
 import BadgeIcon from "@mui/icons-material/Badge";
 import CakeIcon from "@mui/icons-material/Cake";
 import ContactsIcon from "@mui/icons-material/Contacts";
@@ -39,7 +39,7 @@ import { fetchUserUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
 
 interface UserViewProps extends DialogProps<undefined, string | null> {
-  id: any;
+  id: unknown;
 }
 
 export default function UserView({ id, open, onClose }: UserViewProps) {
@@ -53,7 +53,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     }
   }, [id]);
 
-  const bindData = async (id: any) => {
+  const bindData = async (id: unknown) => {
     const response = await axiosInstance.get(`${fetchUserUrl}/${id}`);
     setData(response.data as UserModel);
   };
@@ -93,7 +93,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     },
     {
       label: "Languages",
-      value: usersData?.language?.map((l: any) => l.name).join(", "),
+      value: usersData?.language?.map((l: unknown) => l.name).join(", "),
     },
     { label: "Designation", value: usersData?.designation?.name },
     {
@@ -189,7 +189,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
               sx={{ width: 48, height: 48, bgcolor: "primary.main" }}
               src={
                 usersData?.image
-                  ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${usersData.image}`
+                  ? `/uploads/${usersData.image}`
                   : "/avatar.jpg"
               }
             >

@@ -49,7 +49,7 @@ export default function RoleAutocomplete({
                 const data: RoleOption[] = await res.json();
                 setOptions(data);
             } catch (e) {
-                if ((e as any).name !== "AbortError") {
+                if ((e as unknown).name !== "AbortError") {
                     console.error(e);
                     setOptions([]);
                 }
@@ -69,8 +69,8 @@ export default function RoleAutocomplete({
             multiple={multiple}
             disabled={disabled}
             options={options}
-            value={value as any}
-            onChange={(_, v) => onChange(v as any)}
+            value={value as unknown as RoleOption | RoleOption[] | null}
+            onChange={(_, v) => onChange(v as unknown)}
             onInputChange={(_, v) => setInputValue(v)}
             getOptionLabel={(o) => o?.name ?? ""}
             isOptionEqualToValue={(o, v) => o.id === v.id}

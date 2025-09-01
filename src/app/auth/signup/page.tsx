@@ -81,7 +81,7 @@ export default function SignUp() {
         router.push('/dashboard');
         router.refresh();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'An error occurred during registration');
     } finally {
       setIsLoading(false);
@@ -173,11 +173,14 @@ export default function SignUp() {
           </Box>
 
           <Box textAlign="center">
-            <NextLink href="/auth/signin" passHref>
+            {/* <NextLink href="/auth/signin" passHref>
               <Link variant="body2">
                 Already have an account? Sign In
               </Link>
-            </NextLink>
+            </NextLink> */}
+            <Link component={NextLink} href="/auth/signin" variant="body2">
+  Already have an account? Sign In
+          </Link>
           </Box>
         </Paper>
       </Box>

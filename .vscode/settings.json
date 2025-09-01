@@ -1,0 +1,16 @@
+{
+  "rest-client.environmentVariables": {
+    "sandbox": {
+      "baseUrl": "http://localhost:3000/api/",
+      "cookie": "next-auth.csrf-token=cbafbecca47ccc84798cb348770d6cc7aece6af828daaa07b5d215e54d8005fb%7Cda256a70c3dd85327bdc08fc39f890238535b68f4f99d0f056a01e278222e435; next-auth.callback-url=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fsignin; next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..Y-cBJqnRENP6lWzJ.V1A-UdE6Gy_4k7zXKDxT9m-uMyUg4v-N2hc5-fiVK5c2P_VQuIfYuGQcJ3xYAEKZnVSvpBY_F59YaRpPrvnc60VKF63kDV9yIM68nH3eMmCbP4p2Co0iefuOX7_foI5jRG_OVG9PS1wKejwzoGBVVcfuyz-ADK6Ps6ud-mnJpM7Xx_Dvt8hiJcfOe8jgQk2gCa-yqGgssdMydzbLij0cZb-pNys0DR5j8iLA-kKkM2A-_8GbfvMWEiZssq4jvLL-95Jvyg.3hL6QxiEZNFtOOTplBBRKA"
+    },
+    "production": {
+      "baseUrl": "http://localhost:3000/api/",
+      "cookie": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2Y3NmY0ZTg4OTNmMzhjYzZlOTVkYzEiLCJpYXQiOjE3NDYyNzYzMDUsImV4cCI6MTc0NjYzNjMwNX0.w1tBpo5_f8VHtNj9CMA3cKzwJ9IgwwK56RCY1pfmDlE"
+    },
+    "staging": {
+      "baseUrl": "https://burak-erp-user-api.vercel.app/",
+      "cookie": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2Y3NmY0ZTg4OTNmMzhjYzZlOTVkYzEiLCJpYXQiOjE3NDc0Nzk5MzQsImV4cCI6MTc0NzgzOTkzNH0.CiejYq_Ber5zLavQT0H36T0aOYj04Tz-u0NVVW_yND4"
+    }
+  }
+}

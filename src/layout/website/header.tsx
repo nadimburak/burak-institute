@@ -24,8 +24,6 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 import { useRouter } from "next/navigation";
 
@@ -69,7 +67,7 @@ const WebsiteHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // ✅ NextAuth session
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const isAuthenticated = !!session;
   const user = session?.user;
 
@@ -106,8 +104,8 @@ const WebsiteHeader = () => {
         >
           {/* 🔹 Logo */}
           <Typography
-            variant="h6"
-            sx={{ cursor: "pointer" }}
+            variant="h2"
+            sx={{ cursor: "pointer"}}
             onClick={() => router.push("/")}
             color="primary.main"
           >

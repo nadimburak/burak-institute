@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { GridRowSelectionModel } from "@mui/x-data-grid";
 import { DialogProps, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -24,7 +23,7 @@ import { defaultValues, fetchUrl } from "./constant";
 import PermissionSelect from "./permissions";
 import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
-import { IRole } from "@/models/Role";
+import { IRole } from "@/models/user/Role.model";
 
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({
@@ -85,7 +84,7 @@ export default function RoleForm({ id, open, onClose }: FormProps) {
       }
 
       onClose("true");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = handleErrorMessage(error);
       notifications.show(errorMessage, {
         severity: "error",
@@ -113,7 +112,7 @@ export default function RoleForm({ id, open, onClose }: FormProps) {
         }
       }
     },
-    [reset, router]
+    [reset, router, setValue]
   );
 
   const permissions = watch("permissions");

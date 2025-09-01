@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import User from '@/models/User';
+import User from '@/models/user/User.model';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,30 +30,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
+
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
+      type: "student",
     });
 
+
     await user.save();
+
+
 
     return NextResponse.json(
       {
         message: 'User created successfully',
         user: {
-          id: user._id.toString(),
+          id: user._id,
           name: user.name,
           email: user.email,
         }
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    console.error('Signup error:', error);
-    return NextResponse.json(
-      { message: 'Internal server error' },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    console.log(error);
+
+    // Handle MongoDB validation errors
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'name' in error &&
+      (error as { name: string }).name === 'ValidationError'
+    ) {
+      const errors =
+        'errors' in error
+          ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+          : [];
+      return NextResponse.json(
+        { message: 'Validation failed', details: errors },
+        { status: 400 }
+      );
+    }
+
+    // Handle duplicate key errors
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code: number }).code === 11000
+    ) {
+      return NextResponse.json(
+        { message: 'Data already exists' },
+        { status: 409 }
+      );
+    }
+
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({  message: errorMessage }, { status: 400 });
   }
 }

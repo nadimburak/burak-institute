@@ -96,10 +96,10 @@ const WebsiteFooter: React.FC = () => {
     Get in touch
   </Typography>
 
-  <Box display="flex" gap={3}>
+  <Box display="flex" gap={2}>
     {[
-      { icon: <InstagramIcon />, color: "#E4405F", href: "https://instagram.com" },
-      { icon: <XIcon />, color: "#000000", href: "https://x.com" },
+      { icon: <InstagramIcon />, color: "#a10e8eff", href: "https://instagram.com" },
+      { icon: <XIcon />, color: "#050000ff", href: "https://x.com" },
       { icon: <LinkedInIcon />, color: "#0A66C2", href: "https://linkedin.com" },
     ].map((item, index) => (
       <Link
@@ -109,7 +109,7 @@ const WebsiteFooter: React.FC = () => {
         rel="noopener"
         color="inherit"
         sx={{
-          display: "flex",
+          display: "flex",  
           alignItems: "center",
           justifyContent: "center",
           fontSize: "2rem", // icons thode bade dikhne ke liye
@@ -127,7 +127,6 @@ const WebsiteFooter: React.FC = () => {
     ))}
   </Box>
 </Grid>
-
         </Grid>
       </Container>
     </Box>
