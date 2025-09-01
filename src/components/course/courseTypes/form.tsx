@@ -7,15 +7,12 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     Icon,
     IconButton,
     Stack,
-    Switch,
     TextField,
     Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -29,11 +26,6 @@ import { ICourseType } from '@/models/course/CourseType.model';
 const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
-
-interface ICourseTypeForm {
-    name: string;
-}
-
 interface FormProps {
     id?: string | 'new';
     open: boolean;
@@ -41,15 +33,12 @@ interface FormProps {
 }
 
 export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
-        watch,
         formState: { errors },
     } = useForm<ICourseType>({
         resolver: yupResolver(validationSchema),
