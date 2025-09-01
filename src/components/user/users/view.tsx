@@ -39,7 +39,7 @@ import { fetchUserUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
 
 interface UserViewProps extends DialogProps<undefined, string | null> {
-  id: any;
+  id: unknown;
 }
 
 export default function UserView({ id, open, onClose }: UserViewProps) {

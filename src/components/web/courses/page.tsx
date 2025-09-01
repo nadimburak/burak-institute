@@ -15,15 +15,14 @@ import {
 import {
   CalendarMonth as CalendarIcon,
   Schedule as ScheduleIcon,
-  DataObject as DataObjectIcon,
   Psychology as PsychologyIcon,
   Storage as StorageIcon,
 } from "@mui/icons-material";
 
 // Define course data structure
 interface Course {
-  database?: any;
-  framework?: any;
+  database?: unknown;
+  framework?: unknown;
   id: number;
   title: string;
   category: string[];

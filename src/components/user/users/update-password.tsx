@@ -24,7 +24,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileFormProps extends DialogProps<undefined, string | null> {
-  id?: any;
+  id?: unknown;
 }
 
 const validationSchema = yup.object().shape({

@@ -8,12 +8,12 @@ import { fetchUrl } from "./constant";
 import { IRole } from "@/models/user/Role.model";
 
 interface RoleAutocompleteProps {
-  setValue: any;
+  setValue: unknown;
   value: any | null;
   helperText?: string | undefined;
   error?: boolean;
-  watch?: any;
-  trigger: any;
+  watch?: unknown;
+  trigger: unknown;
 }
 
 const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
