@@ -129,10 +129,10 @@ export async function PATCH(
 
         // Prepare headers object for validation
         const headersObj = {
-            'upload-offset': uploadOffset,
-            'upload-length': uploadLength,
-            'upload-name': uploadName,
-            'content-type': contentType
+            'upload-offset': uploadOffset ?? '',
+            'upload-length': uploadLength ?? '',
+            'upload-name': uploadName ?? '',
+            'content-type': contentType ?? ''
         };
 
         // Validate chunk headers
@@ -157,6 +157,14 @@ export async function PATCH(
         if (buffer.length === 0) {
             return NextResponse.json(
                 { success: false, message: "Chunk data cannot be empty" },
+                { status: 400 }
+            );
+        }
+
+        // Ensure patch is a string
+        if (!patch || typeof patch !== 'string') {
+            return NextResponse.json(
+                { success: false, message: "Invalid file ID" },
                 { status: 400 }
             );
         }
@@ -215,10 +223,10 @@ export async function HEAD(
 
         // Prepare headers object for validation
         const headersObj = {
-            'upload-offset': uploadOffset,
-            'upload-length': uploadLength,
-            'upload-name': uploadName,
-            'content-type': contentType
+            'upload-offset': uploadOffset ?? '',
+            'upload-length': uploadLength ?? '',
+            'upload-name': uploadName ?? '',
+            'content-type': contentType ?? ''
         };
 
         // Validate chunk headers
@@ -243,6 +251,14 @@ export async function HEAD(
         if (buffer.length === 0) {
             return NextResponse.json(
                 { success: false, message: "Chunk data cannot be empty" },
+                { status: 400 }
+            );
+        }
+
+        // Ensure patch is a string
+        if (!patch || typeof patch !== 'string') {
+            return NextResponse.json(
+                { success: false, message: "Invalid file ID" },
                 { status: 400 }
             );
         }
@@ -287,7 +303,6 @@ export async function DELETE(request: NextRequest) {
         await connectDB();
 
         const id = await request.text();
-        console.log('Received ID for deletion:', id);
         const deletedData: IUpload | null = await Upload.findOneAndDelete({ file_path: id });
 
         if (!deletedData) {
