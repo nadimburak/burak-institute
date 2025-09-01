@@ -32,12 +32,6 @@ const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
 
-interface ICourseTypeForm {
-    name: string;
-    description?: string;
-    status: boolean;
-}
-
 interface FormProps {
     id?: string | 'new';
     open: boolean;
@@ -45,7 +39,6 @@ interface FormProps {
 }
 
 export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
