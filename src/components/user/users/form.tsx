@@ -76,7 +76,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
     setValue,
     watch,
     register,
-    trigger,
     formState: { errors },
   } = useForm<IUser>({
     resolver: yupResolver(validationSchema),
