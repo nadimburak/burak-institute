@@ -1,9 +1,7 @@
-// models/CourseType.ts
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ICourseType extends Document {
     name: string;
-    description?: string;
     status?: 'active' | 'inactive';
     createdAt?: Date;
     updatedAt?: Date;
@@ -16,10 +14,6 @@ const CourseTypeSchema: Schema<ICourseType> = new Schema(
             required: [true, 'Course type name is required'],
             unique: true,
             trim: true,
-        },
-        description: {
-            type: String,
-            trim: false,
         },
         status: {
             type: String,
