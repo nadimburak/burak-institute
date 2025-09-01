@@ -322,7 +322,7 @@ export default function UserList() {
               component="img"
               src={
                 params?.row?.image
-                  ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${params?.row?.image}`
+                  ? `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${params?.row?.image}`
                   : "/avatar.jpg"
               }
               alt="Document"

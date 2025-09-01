@@ -1,5 +1,5 @@
-export const fetchUrl = "users";
-export const fetchUserUrl = "users";
+export const fetchUrl = "/user/users";
+export const fetchUserUrl = "/user/users";
 export const viewUrl = "/dashboard/user/users/view";
 export const updatePasswordUrl = "user/update-password";
 

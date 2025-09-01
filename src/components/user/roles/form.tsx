@@ -24,7 +24,7 @@ import { defaultValues, fetchUrl } from "./constant";
 import PermissionSelect from "./permissions";
 import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
-import { IRole } from "@/models/Role";
+import { IRole } from "@/models/user/Role.model";
 
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({

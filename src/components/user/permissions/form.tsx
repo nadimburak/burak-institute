@@ -22,7 +22,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
-import { IPermission } from "@/models/Permission";
+import { IPermission } from "@/models/user/Permission.model";
 import { handleErrorMessage } from "@/utils/errorHandler";
 
 // Define the validation schema using Yup

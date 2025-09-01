@@ -1,6 +1,6 @@
 "use client";
 
-import { UserModel } from "@/models/User.model";
+import { UserModel } from "@/models/user/User.model";
 import BadgeIcon from "@mui/icons-material/Badge";
 import CakeIcon from "@mui/icons-material/Cake";
 import ContactsIcon from "@mui/icons-material/Contacts";
@@ -189,7 +189,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
               sx={{ width: 48, height: 48, bgcolor: "primary.main" }}
               src={
                 usersData?.image
-                  ? `${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${usersData.image}`
+                  ? `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${usersData.image}`
                   : "/avatar.jpg"
               }
             >

@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 import { fetchUrl } from "./constant";
-import { IRole } from "@/models/Role";
+import { IRole } from "@/models/user/Role.model";
 
 interface RoleAutocompleteProps {
   setValue: any;
