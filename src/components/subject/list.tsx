@@ -91,7 +91,6 @@ export default function SubjectList() {
     const columns: GridColDef[] = useMemo(
         () => [
             { field: 'name', headerName: 'Name', width: 200 },
-            { field: 'status', headerName: 'Status', width: 120 },
             {
                 field: 'actions',
                 headerName: 'Actions',

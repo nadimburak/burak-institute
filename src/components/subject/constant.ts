@@ -1,5 +1,5 @@
 
-export const fetchUrl = '/course_types';
+export const fetchUrl = '/subject';
 
 export const defaultValues = {
     name: '',
