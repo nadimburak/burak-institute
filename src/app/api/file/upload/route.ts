@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
                 );
             }
 
-            return NextResponse.json({ success: true, data: upload }, { status: 200 });
+            return NextResponse.json(upload, { status: 200 });
         }
 
         // If no load parameter, get all uploads
