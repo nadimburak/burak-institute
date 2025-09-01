@@ -6,7 +6,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
     try {
         await connectDB();
         const { id } = await context.params;
-        const user: IUser | null = await User.findById(id);
+        const user: IUser | null = await User.findById(id).populate("role", "name");
 
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
