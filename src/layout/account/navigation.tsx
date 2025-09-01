@@ -54,6 +54,11 @@ const accountNavigation: Navigation = [
       },
     ],
   },
+  {
+    segment: "subject",
+    title: "Subject",
+    icon: <DashboardIcon />,
+  },
 ];
 
 export default accountNavigation;
