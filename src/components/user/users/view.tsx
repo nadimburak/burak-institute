@@ -53,7 +53,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     }
   }, [id]);
 
-  const bindData = async (id: any) => {
+  const bindData = async (id: unknown) => {
     const response = await axiosInstance.get(`${fetchUserUrl}/${id}`);
     setData(response.data as UserModel);
   };
@@ -93,7 +93,7 @@ export default function UserView({ id, open, onClose }: UserViewProps) {
     },
     {
       label: "Languages",
-      value: usersData?.language?.map((l: any) => l.name).join(", "),
+      value: usersData?.language?.map((l: unknown) => l.name).join(", "),
     },
     { label: "Designation", value: usersData?.designation?.name },
     {

@@ -81,7 +81,7 @@ export default function SignUp() {
         router.push('/dashboard');
         router.refresh();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err.message || 'An error occurred during registration');
     } finally {
       setIsLoading(false);

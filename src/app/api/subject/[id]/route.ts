@@ -40,11 +40,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         }
 
         return NextResponse.json({ data: updated, message: 'Subject updated successfully' });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('PUT Subject Error:', error);
 
         if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: any) => err.message);
+            const errors = Object.values(error.errors).map((err: unknown) => err.message);
             return NextResponse.json({ error: 'Validation failed', details: errors }, { status: 400 });
         }
 

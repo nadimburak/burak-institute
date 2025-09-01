@@ -191,7 +191,7 @@ function CourseCard({ course }: { course: Course }) {
 
      {sections.map(
   (section) => {
-    const items = (course as any)?.[section.key] as string[]; // 👈 cast to string[]
+    const items = (course as unknown)?.[section.key] as string[]; // 👈 cast to string[]
     return (
       Array.isArray(items) &&
       items.length > 0 && (

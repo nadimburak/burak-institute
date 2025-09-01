@@ -70,7 +70,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
                 description: data.description || '',
                 status: data.status === 'active',
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
@@ -95,7 +95,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
             }
             notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
             onClose(true);
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }

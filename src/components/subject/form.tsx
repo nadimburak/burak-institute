@@ -64,7 +64,7 @@ export default function SubjectForm({ id = 'new', open, onClose }: FormProps) {
             reset({
                 name: data.name,
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
@@ -89,7 +89,7 @@ export default function SubjectForm({ id = 'new', open, onClose }: FormProps) {
             }
             notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
             onClose(true);
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }

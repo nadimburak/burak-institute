@@ -136,7 +136,7 @@ export default function UserList() {
   };
 
   const handlePassword = useCallback(
-    async (id: any) => {
+    async (id: unknown) => {
       const result = await dialogs.open((props) => (
         <UpdateProfilePassword {...props} id={id} />
       ));
