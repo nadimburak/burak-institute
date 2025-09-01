@@ -101,7 +101,7 @@ export const combineChunks = async ({
         await fs.unlink(chunkPath);
     }
 
-    upload.file_url = `/public/uploads/${finalFileName}`;
+    upload.file_url = `/uploads/${finalFileName}`;
     await upload.save();
 
     try {

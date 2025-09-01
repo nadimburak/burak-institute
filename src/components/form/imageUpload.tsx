@@ -96,7 +96,7 @@ const ImageFileUpload = ({
         // Construct proper file URL
         const fileUrl = file.file_path.startsWith("http")
           ? file.file_path
-          : `/public/uploads/${file.file_path}`;
+          : `/uploads/${file.file_path}`;
 
         console.log("File URL:", fileUrl);
 
