@@ -23,8 +23,6 @@ import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { fetchUrl, defaultValues } from "@/components/course/courseTypes/constant";
-
-
 import { ICourseType } from '@/models/course/CourseType.model';
 
 // Yup validation schema
@@ -34,8 +32,6 @@ const validationSchema = yup.object().shape({
 
 interface ICourseTypeForm {
     name: string;
-    description?: string;
-    status: boolean;
 }
 
 interface FormProps {
@@ -67,8 +63,6 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
             const data = res.data.data;
             reset({
                 name: data.name,
-                description: data.description || '',
-                status: data.status === 'active',
             });
         } catch (error: any) {
             const errorMessage = handleErrorMessage(error);
@@ -86,7 +80,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
 
     const onSubmit = async (data: ICourseType) => {
         try {
-            const payload = { ...data, status: data.status ? 'active' : 'inactive' };
+            const payload = { ...data };
             let res;
             if (id !== 'new') {
                 res = await axiosInstance.put(`${fetchUrl}/${id}`, payload);
@@ -124,26 +118,6 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
                         error={!!errors.name}
                         helperText={errors.name?.message}
                         {...register('name')}
-                    />
-                    <TextField
-                        label="Description"
-                        fullWidth
-                        margin="normal"
-                        multiline
-                        rows={3}
-                        {...register('description')}
-                    />
-
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                {...register('status')}
-                                checked={watch('status')}
-                                onChange={(e) => setValue('status', e.target.checked)}
-                                color="primary"
-                            />
-                        }
-                        label={watch('status') ? 'Active' : 'Inactive'}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">
