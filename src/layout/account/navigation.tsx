@@ -4,6 +4,8 @@ import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { type Navigation } from "@toolpad/core/AppProvider";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import SubjectIcon from '@mui/icons-material/Subject';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const DotIcon = <FiberManualRecordIcon sx={{ fontSize: 8, ml: 1 }} />;
 
@@ -40,7 +42,7 @@ const accountNavigation: Navigation = [
   },
   {
     title: "Courses",
-    icon: <EditCalendarIcon />,
+    icon: <MenuBookIcon />,
     children: [
       {
         title: "Course Types",
@@ -57,7 +59,7 @@ const accountNavigation: Navigation = [
   {
     segment: "dashboard/subject",
     title: "Subject",
-    icon: <DashboardIcon />,
+    icon: <SubjectIcon />,
   },
 ];
 

@@ -22,12 +22,12 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-import CourseTypeForm from './form';
+import CourseForm from './form';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
 
-export default function CourseTypeList() {
+export default function CourseList() {
     const router = useRouter();
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
@@ -74,7 +74,7 @@ export default function CourseTypeList() {
     // Edit
     const handleEdit = useCallback(
         async (id: string) => {
-            const result = await dialogs.open((props) => <CourseTypeForm {...props} id={id} />);
+            const result = await dialogs.open((props) => <CourseForm {...props} id={id} />);
             if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
         },
         [dialogs, params]
@@ -82,7 +82,7 @@ export default function CourseTypeList() {
 
     // Add new
     const handleAdd = useCallback(async () => {
-        const result = await dialogs.open((props) => <CourseTypeForm {...props} id="new" />);
+        const result = await dialogs.open((props) => <CourseForm {...props} id="new" />);
         if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     }, [dialogs, params]);
 
@@ -90,8 +90,14 @@ export default function CourseTypeList() {
     const columns: GridColDef[] = useMemo(
         () => [
             { field: 'name', headerName: 'Name', width: 200 },
+            { field: 'duration', headerName: 'Duration', width: 120 },
+            {
+                field: 'subject',
+                headerName: 'Subject',
+                width: 200,
+                valueGetter: (params) => params.row.subject?.name || '-',
+            },
             { field: 'description', headerName: 'Description', width: 300 },
-            { field: 'status', headerName: 'Status', width: 120 },
             {
                 field: 'actions',
                 headerName: 'Actions',
@@ -131,19 +137,20 @@ export default function CourseTypeList() {
         <Card>
             <CardContent>
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid size={{xs:12, sm:6}}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
-                            placeholder="Search Course Type"
+                            placeholder="Search Course"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             slotProps={{
                                 input: {
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Icon>search</Icon>
-                                    </InputAdornment>
-                                ),
-                            }}}
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <Icon>search</Icon>
+                                        </InputAdornment>
+                                    ),
+                                },
+                            }}
                             fullWidth
                         />
                     </Grid>
@@ -159,7 +166,7 @@ export default function CourseTypeList() {
                                 <Icon>refresh</Icon>
                             </IconButton>
                             <Button variant="contained" color="primary" onClick={handleAdd} endIcon={<ChevronRightIcon />}>
-                                New Course Type
+                                New Course
                             </Button>
                         </Stack>
                     </Grid>

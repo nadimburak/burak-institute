@@ -87,11 +87,11 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error) {
+    } catch (error: any) {
         console.error('POST Subject Error:', error);
 
         if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: unknown) => err.message);
+            const errors = Object.values(error.errors).map((err: any) => err.message);
             return NextResponse.json(
                 { error: 'Validation failed', details: errors },
                 { status: 400 }
