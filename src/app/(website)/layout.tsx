@@ -2,7 +2,7 @@
 
 import WebsiteLayout from "@/layout/website";
 import { websiteNavigation } from "@/layout/website/navigation";
-import WebsiteThemeRegistry from "@/theme/account/ThemeRegistry";
+import ThemeRegistry from "@/theme/account/ThemeRegistry";
 
 import { AppProvider } from "@toolpad/core";
 import { SessionProvider } from "next-auth/react";
@@ -11,11 +11,11 @@ import { PropsWithChildren } from "react";
 export default function Layout({ children }: PropsWithChildren) {
   return (
     // <SessionProvider>
-    <WebsiteThemeRegistry>
+    <ThemeRegistry>
       <AppProvider navigation={websiteNavigation}>
         <WebsiteLayout>{children}</WebsiteLayout>
       </AppProvider>
-    </WebsiteThemeRegistry>
+    </ThemeRegistry>
     // </SessionProvider>
   );
 }

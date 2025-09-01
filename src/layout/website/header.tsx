@@ -129,7 +129,7 @@ const WebsiteHeader = () => {
                     cursor: "pointer",
                     fontWeight: 500,
                     px: 1,
-                    color: theme.palette.text.primary,
+                    color: theme.palette.text.secondary,
                     position: "relative",
                     "&::after": {
                       content: '""',
@@ -229,7 +229,7 @@ const WebsiteHeader = () => {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6">Menu</Typography>
+              <Typography variant="h1">Menu</Typography>
               <IconButton onClick={() => setDrawerOpen(false)}>
                 <CloseIcon />
               </IconButton>
