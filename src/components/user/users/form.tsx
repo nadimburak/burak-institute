@@ -56,10 +56,6 @@ const validationSchema = yup.object().shape({
       "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
     ),
   status: yup.boolean().required("Status is required"),
-  type: yup
-    .string()
-    .oneOf(["user", "customer", "super_admin"])
-    .required("Type is required"),
 });
 
 interface FormProps extends DialogProps<undefined, string | null> {
