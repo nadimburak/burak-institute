@@ -35,7 +35,6 @@ interface ProcessChunkUploadsParams {
     fileId: string;
     offset: number;
     length: number;
-    filename?: string;
     chunkData: Buffer;
 }
 
@@ -43,7 +42,6 @@ export const processChunkUploads = async ({
     fileId,
     offset,
     length,
-    filename,
     chunkData
 }: ProcessChunkUploadsParams): Promise<void> => {
     const upload = await Upload.findOne({ file_path: fileId });

@@ -174,7 +174,6 @@ export async function PATCH(
             fileId: patch,
             offset,
             length,
-            filename,
             chunkData: buffer
         });
 
@@ -268,7 +267,6 @@ export async function HEAD(
             fileId: patch,
             offset,
             length,
-            filename,
             chunkData: buffer
         });
 
