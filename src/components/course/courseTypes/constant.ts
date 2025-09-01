@@ -1,5 +1,5 @@
 
-export const fetchUrl = '/api/course/course-types';
+export const fetchUrl = '/course/course-types';
 
 export const defaultValues = {
     name: '',
