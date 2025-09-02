@@ -24,9 +24,9 @@ import useSWR, { mutate } from 'swr';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
-import ClassesForm from './form';
+import ClassSectionForm from './form';
 
-export default function ClassesList() {
+export default function ClassSectionList() {
     const router = useRouter();
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
@@ -51,16 +51,7 @@ export default function ClassesList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (
-        error &&
-        typeof error === 'object' &&
-        error !== null &&
-        'status' in error &&
-        typeof (error as { status?: unknown }).status === 'number' &&
-        (error as { status: number }).status === 403
-    ) {
-        router.push('/forbidden');
-    }
+    if (error && (error as any ).status === 403) router.push('/forbidden');
 
     // Delete
     const handleDelete = useCallback(
@@ -82,7 +73,7 @@ export default function ClassesList() {
     // Edit
     const handleEdit = useCallback(
         async (id: string) => {
-            const result = await dialogs.open((props) => <ClassesForm {...props} id={id} />);
+            const result = await dialogs.open((props) => <ClassSectionForm {...props} id={id} />);
             if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
         },
         [dialogs, params]
@@ -90,7 +81,7 @@ export default function ClassesList() {
 
     // Add new
     const handleAdd = useCallback(async () => {
-        const result = await dialogs.open((props) => <ClassesForm {...props} id="new" />);
+        const result = await dialogs.open((props) => <ClassSectionForm {...props} id="new" />);
         if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     }, [dialogs, params]);
 
@@ -139,7 +130,7 @@ export default function ClassesList() {
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
-                            placeholder="Search Class"
+                            placeholder="Search Class Section"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             InputProps={{

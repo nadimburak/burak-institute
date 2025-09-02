@@ -61,7 +61,7 @@ const accountNavigation: Navigation = [
   },
     {
     segment: "dashboard/classes",
-    title: "classes",
+    title: "Classes",
     icon: <DashboardIcon />,
   },
 ];
