@@ -7,15 +7,12 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     Icon,
     IconButton,
     Stack,
-    Switch,
     TextField,
     Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -41,15 +38,12 @@ interface FormProps {
 }
 
 export default function SubjectForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
-        watch,
         formState: { errors },
     } = useForm<ISubject>({
         resolver: yupResolver(validationSchema),

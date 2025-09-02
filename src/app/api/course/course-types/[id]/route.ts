@@ -1,7 +1,7 @@
 // app/api/course-types/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import CourseType, { ICourseType } from '@/models/course/CourseType.model';
+import CourseType from '@/models/course/CourseType.model';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {

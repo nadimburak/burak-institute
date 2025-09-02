@@ -69,7 +69,7 @@ export default function RoleAutocomplete({
             multiple={multiple}
             disabled={disabled}
             options={options}
-            value={value as any}
+            value={value as unknown as RoleOption | RoleOption[] | null}
             onChange={(_, v) => onChange(v as unknown)}
             onInputChange={(_, v) => setInputValue(v)}
             getOptionLabel={(o) => o?.name ?? ""}

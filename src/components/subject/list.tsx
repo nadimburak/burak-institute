@@ -22,7 +22,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-import CourseTypeForm from './form';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
