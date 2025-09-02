@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
         const parsedLimit = Math.max(parseInt(limit, 10), 1);
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
-        const query: any = {};
+        const query: Record<string, unknown> = {};
+
         if (search.trim()) {
             query.name = { $regex: search.trim(), $options: "i" };
         }

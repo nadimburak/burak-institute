@@ -7,11 +7,9 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     Icon,
     IconButton,
     Stack,
-    Switch,
     TextField,
     Typography
 } from '@mui/material';
@@ -23,7 +21,6 @@ import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import {defaultValues,fetchUrl} from "./constant";
-import Classes from '@/models/classes/classes';
 
 
 // Yup validation schema
@@ -42,15 +39,12 @@ interface FormProps {
 }
 
 export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
-        watch,
         formState: { errors },
     } = useForm<IClasses>({
         resolver: yupResolver(validationSchema),

@@ -24,7 +24,6 @@ import useSWR, { mutate } from 'swr';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
-import SubjectForm from './form';
 import ClassesForm from './form';
 
 export default function ClassesList() {
