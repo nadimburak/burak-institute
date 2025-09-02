@@ -2,8 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { QueryParams } from '@/types/query.params';
-import Subject, { ISubject } from '@/models/Subject';
-
+import Classes, { IClasses } from '@/models/classes/classes';
 
 export async function GET(request: NextRequest) {
     try {
@@ -33,12 +32,12 @@ export async function GET(request: NextRequest) {
         const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'name';
 
         const [data, totalData] = await Promise.all([
-            Subject.find(query)
+            Classes.find(query)
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
                 .lean(),
-            Subject.countDocuments(query)
+            Classes.countDocuments(query)
         ]);
 
         return NextResponse.json({
@@ -50,9 +49,9 @@ export async function GET(request: NextRequest) {
             hasPrevPage: parsedPage > 1,
         });
     } catch (error) {
-        console.error('GET Subject Error:', error);
+        console.error('GET Class Error:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch Subject ' },
+            { error: 'Failed to fetch Class ' },
             { status: 500 }
         );
     }
@@ -70,25 +69,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const existing = await Subject.findOne({ name: body.name });
+        const existing = await Classes.findOne({ name: body.name });
         if (existing) {
             return NextResponse.json(
-                { error: 'Subject already exists' },
+                { error: 'Classes already exists' },
                 { status: 409 }
             );
         }
 
-        const subject: ISubject = await Subject.create(body);
+        const classes: IClasses = await Classes.create(body);
 
         return NextResponse.json(
             {
-                data: subject,
-                message: 'Subject created successfully'
+                data: classes,
+                message: 'Classes created successfully'
             },
             { status: 201 }
         );
     } catch (error: any) {
-        console.error('POST Subject Error:', error);
+        console.error('POST Class Error:', error);
 
         if (error.name === 'ValidationError') {
             const errors = Object.values(error.errors).map((err: any) => err.message);
@@ -100,13 +99,13 @@ export async function POST(request: NextRequest) {
 
         if (error.code === 11000) {
             return NextResponse.json(
-                { error: 'Subject already exists' },
+                { error: 'Class already exists' },
                 { status: 409 }
             );
         }
 
         return NextResponse.json(
-            { error: 'Failed to create subject' },
+            { error: 'Failed to create Class' },
             { status: 500 }
         );
     }
