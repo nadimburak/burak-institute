@@ -23,7 +23,8 @@ import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import {defaultValues,fetchUrl} from "./constant";
-import Classes from '@/models/classes/classes';
+import ClassesAutocomplete from '../autocomplete/classes/ClassAutocomplete';
+
 
 
 // Yup validation schema
@@ -31,7 +32,7 @@ const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
 
-interface IClasses {
+interface IClassSection {
     name: string;
 }
 
@@ -41,7 +42,7 @@ interface FormProps {
     onClose: (success?: boolean) => void;
 }
 
-export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
+export default function ClassSectionForm({ id = 'new', open, onClose }: FormProps) {
     const router = useRouter();
     const notifications = useNotifications();
 
@@ -52,7 +53,7 @@ export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
         setValue,
         watch,
         formState: { errors },
-    } = useForm<IClasses>({
+    } = useForm<IClassSection>({
         resolver: yupResolver(validationSchema),
         defaultValues,
     });
@@ -79,7 +80,7 @@ export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
         }
     }, [id, bindData, reset]);
 
-    const onSubmit = async (data: IClasses) => {
+    const onSubmit = async (data: IClassSection) => {
         try {
             const payload = { ...data  };
             let res;
@@ -101,7 +102,7 @@ export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
             <DialogTitle>
                 <Stack direction="row" justifyContent="space-between" alignItems="center">
                     <Typography variant="h5">
-                        {id !== 'new' ? 'Update Class Type' : 'Create Class Type'}
+                        {id !== 'new' ? 'Update Class Section Type' : 'Create Class Section Type'}
                     </Typography>
                     <IconButton onClick={() => onClose()}>
                         <Icon>close</Icon>
@@ -111,6 +112,13 @@ export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
 
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
+                    <ClassesAutocomplete
+                    setValue={setValue}
+                    value={class}
+                    error={!!error.class}
+                    helperText={errors.class? "Class is required"}
+                    />
+                    
                     <TextField
                         label="Name"
                         fullWidth
