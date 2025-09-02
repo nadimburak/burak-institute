@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { GridRowSelectionModel } from "@mui/x-data-grid";
 import { DialogProps, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -85,7 +84,7 @@ export default function RoleForm({ id, open, onClose }: FormProps) {
       }
 
       onClose("true");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = handleErrorMessage(error);
       notifications.show(errorMessage, {
         severity: "error",
@@ -113,7 +112,7 @@ export default function RoleForm({ id, open, onClose }: FormProps) {
         }
       }
     },
-    [reset, router]
+    [reset, router, setValue]
   );
 
   const permissions = watch("permissions");

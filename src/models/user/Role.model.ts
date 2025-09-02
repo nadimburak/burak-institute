@@ -3,6 +3,7 @@ import Permission from "./Permission.model";
 
 // Interface for Designation Document
 export interface IRole extends Document {
+    _id: mongoose.Types.ObjectId;
     name: string;
     status: boolean;
     permissions: mongoose.Types.ObjectId[];

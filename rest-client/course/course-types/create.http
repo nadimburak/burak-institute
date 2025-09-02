@@ -1,0 +1,9 @@
+POST {{baseUrl}}course/course-types HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+# Authorization: Bearer {{accessToken}}
+
+{
+    "name": "Web Developmenst",
+    "description": "A course type focused on web development technologies and practices."
+}

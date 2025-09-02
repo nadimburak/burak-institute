@@ -84,7 +84,7 @@ export default function PermissionForm({ id, open, onClose }: FormProps) {
       }
 
       onClose("true");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = handleErrorMessage(error);
       notifications.show(errorMessage, {
         severity: "error",

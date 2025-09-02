@@ -52,7 +52,7 @@ export default function CourseTypeList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (error && (error as any).status === 403) router.push('/forbidden');
+    if (error && (error as unknown).status === 403) router.push('/forbidden');
 
     // Delete
     const handleDelete = useCallback(
@@ -64,7 +64,7 @@ export default function CourseTypeList() {
                 const res = await axiosInstance.delete(`${fetchUrl}/${id}`);
                 mutate(`${fetchUrl}?${params}`, { revalidate: true });
                 notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
-            } catch (err: any) {
+            } catch (err: unknown) {
                 notifications.show(handleErrorMessage(err), { severity: 'error', autoHideDuration: 3000 });
             }
         },
@@ -90,8 +90,6 @@ export default function CourseTypeList() {
     const columns: GridColDef[] = useMemo(
         () => [
             { field: 'name', headerName: 'Name', width: 200 },
-            { field: 'description', headerName: 'Description', width: 300 },
-            { field: 'status', headerName: 'Status', width: 120 },
             {
                 field: 'actions',
                 headerName: 'Actions',
@@ -131,19 +129,20 @@ export default function CourseTypeList() {
         <Card>
             <CardContent>
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid size={{xs:12, sm:6}}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                             placeholder="Search Course Type"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             slotProps={{
                                 input: {
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Icon>search</Icon>
-                                    </InputAdornment>
-                                ),
-                            }}}
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <Icon>search</Icon>
+                                        </InputAdornment>
+                                    ),
+                                }
+                            }}
                             fullWidth
                         />
                     </Grid>

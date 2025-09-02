@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 
-const Buttons = (props:any) => {
+const Buttons = (props:unknown) => {
     const style= {"backgroundColor":props.backgroundColor,
         "border":props.border,
         "border-radius":props.borderRadius,

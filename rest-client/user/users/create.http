@@ -1,11 +1,12 @@
 POST {{baseUrl}}user/users HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer {{accessToken}}
+# Authorization: Bearer {{cookie}}
 
 {
-    "name": "Nadim Sheikh",
-    "email": "nadim@gmail.com",
+    "name": "Rehan Sheikh",
+    "email": "rehan@gmail.com",
     "password": "Abcd@1234",
-    "role":"67a9d3c052e832244b42e4e9"
+    "role":"67a9d3c052e832244b42e4e9",
+    "type":"user"
 }

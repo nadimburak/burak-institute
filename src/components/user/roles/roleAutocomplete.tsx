@@ -1,3 +1,4 @@
+import { IRole } from "@/models/user/Role.model";
 import { getFetcher } from "@/utils/fetcher";
 import { Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -5,15 +6,13 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 import { fetchUrl } from "./constant";
-import { IRole } from "@/models/user/Role.model";
 
 interface RoleAutocompleteProps {
-  setValue: any;
-  value: any | null;
+  setValue: (field: string, value: unknown) => void;
+  value: unknown | null;
   helperText?: string | undefined;
   error?: boolean;
-  watch?: any;
-  trigger: any;
+  trigger: (field: string) => void;
 }
 
 const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
@@ -51,7 +50,7 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
         setValue("role", { _id: data?._id, name: data?.name });
         trigger("role");
       }}
-      value={value || null}
+      value={value as IRole | null | undefined}
       renderInput={(params) => (
         <TextField
           {...params}

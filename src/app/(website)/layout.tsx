@@ -5,18 +5,15 @@ import { websiteNavigation } from "@/layout/website/navigation";
 import ThemeRegistry from "@/theme/account/ThemeRegistry";
 
 import { AppProvider } from "@toolpad/core";
-import { SessionProvider } from "next-auth/react";
 import { PropsWithChildren } from "react";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    // <SessionProvider>
-    <ThemeRegistry>
+    <WebsiteThemeRegistry>
       <AppProvider navigation={websiteNavigation}>
         <WebsiteLayout>{children}</WebsiteLayout>
       </AppProvider>
-    </ThemeRegistry>
-    // </SessionProvider>
+    </WebsiteThemeRegistry>
   );
 }
 

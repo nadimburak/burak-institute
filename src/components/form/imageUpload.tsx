@@ -48,7 +48,6 @@ const ImageFileUpload = ({
   maxFiles = 1,
   allowedFileTypes = ["image/jpeg", "image/png", "image/svg+xml"],
 }: ImageFileUploadProps) => {
-  const token = "11";
   const uploadUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`;
   const [files, setFiles] = useState<
     (string | FilePondInitialFile | Blob | File)[]
@@ -82,8 +81,7 @@ const ImageFileUpload = ({
           params: { load: value },
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+            },
         });
 
         const file = response.data as FileUpload;
@@ -98,7 +96,7 @@ const ImageFileUpload = ({
         // Construct proper file URL
         const fileUrl = file.file_path.startsWith("http")
           ? file.file_path
-          : `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${file.file_path}`;
+          : `/uploads/${file.file_path}`;
 
         console.log("File URL:", fileUrl);
 
@@ -127,7 +125,7 @@ const ImageFileUpload = ({
     } finally {
       setIsLoading(false);
     }
-  }, [value, token, uploadUrl, showNotification]);
+  }, [value, uploadUrl, showNotification]);
 
   useEffect(() => {
     getFiles();
@@ -296,7 +294,6 @@ const ImageFileUpload = ({
             headers: {
               ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
               Accept: "application/json",
-              Authorization: `Bearer ${token}`,
             },
             ondata: handleServerProcess,
             onload: handleServerLoad,

@@ -24,7 +24,7 @@ import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
 
 interface ProfileFormProps extends DialogProps<undefined, string | null> {
-  id?: any;
+  id?: unknown;
 }
 
 const validationSchema = yup.object().shape({
@@ -61,8 +61,6 @@ export default function UpdateProfilePassword({
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<ProfilePasswordModel>({
     resolver: yupResolver(validationSchema),
@@ -86,7 +84,7 @@ export default function UpdateProfilePassword({
         });
         onClose("true");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = handleErrorMessage(error);
       notifications.show(errorMessage, {
         severity: "error",

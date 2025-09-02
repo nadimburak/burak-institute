@@ -64,7 +64,7 @@ export default function CourseTypeList() {
                 const res = await axiosInstance.delete(`${fetchUrl}/${id}`);
                 mutate(`${fetchUrl}?${params}`, { revalidate: true });
                 notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
-            } catch (err: any) {
+            } catch (err: unknown) {
                 notifications.show(handleErrorMessage(err), { severity: 'error', autoHideDuration: 3000 });
             }
         },

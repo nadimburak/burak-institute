@@ -41,6 +41,7 @@ export default function SignIn() {
         router.refresh();
       }
     } catch (err) {
+      console.error(err);
       setError('An error occurred during sign in');
     } finally {
       setIsLoading(false);
@@ -109,7 +110,7 @@ export default function SignIn() {
 
           <Box textAlign="center">
             <Link component={NextLink} href="/auth/signup" variant="body2">
-              Don't have an account? Sign Up
+              Don&apos;t have an account? Sign Up
             </Link>
           </Box>
         </Paper>

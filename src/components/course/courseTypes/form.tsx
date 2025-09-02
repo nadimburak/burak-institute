@@ -7,15 +7,12 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     Icon,
     IconButton,
     Stack,
-    Switch,
     TextField,
     Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -23,21 +20,12 @@ import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { fetchUrl, defaultValues } from "@/components/course/courseTypes/constant";
-
-
 import { ICourseType } from '@/models/course/CourseType.model';
 
 // Yup validation schema
 const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
-
-interface ICourseTypeForm {
-    name: string;
-    description?: string;
-    status: boolean;
-}
-
 interface FormProps {
     id?: string | 'new';
     open: boolean;
@@ -45,15 +33,12 @@ interface FormProps {
 }
 
 export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
         register,
         handleSubmit,
         reset,
-        setValue,
-        watch,
         formState: { errors },
     } = useForm<ICourseType>({
         resolver: yupResolver(validationSchema),
@@ -67,10 +52,8 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
             const data = res.data.data;
             reset({
                 name: data.name,
-                description: data.description || '',
-                status: data.status === 'active',
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
@@ -86,7 +69,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
 
     const onSubmit = async (data: ICourseType) => {
         try {
-            const payload = { ...data, status: data.status ? 'active' : 'inactive' };
+            const payload = { ...data };
             let res;
             if (id !== 'new') {
                 res = await axiosInstance.put(`${fetchUrl}/${id}`, payload);
@@ -95,7 +78,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
             }
             notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
             onClose(true);
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
@@ -124,26 +107,6 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
                         error={!!errors.name}
                         helperText={errors.name?.message}
                         {...register('name')}
-                    />
-                    <TextField
-                        label="Description"
-                        fullWidth
-                        margin="normal"
-                        multiline
-                        rows={3}
-                        {...register('description')}
-                    />
-
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                {...register('status')}
-                                checked={watch('status')}
-                                onChange={(e) => setValue('status', e.target.checked)}
-                                color="primary"
-                            />
-                        }
-                        label={watch('status') ? 'Active' : 'Inactive'}
                     />
 
                     <Box mt={2} display="flex" justifyContent="space-between">

@@ -15,8 +15,6 @@ import {
   Icon,
   IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
   Stack,
   TextField,
   useTheme,
@@ -24,12 +22,11 @@ import {
 import {
   DataGrid,
   GridColDef,
-  GridMoreVertIcon,
   GridSortModel,
 } from "@mui/x-data-grid";
 import { useDialogs, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { JSX, useCallback, useEffect, useMemo, useState } from "react";
 import useSWR, { mutate } from "swr";
 import UserForm from "./form";
 import UpdateProfilePassword from "./update-password";
@@ -38,6 +35,7 @@ import { fetchUserUrl, updatePasswordUrl, viewUrl } from "./constant";
 import { getFetcher } from "@/utils/fetcher";
 import axiosInstance from "@/utils/axiosInstance";
 import { handleErrorMessage } from "@/utils/errorHandler";
+import { ActionsCell } from "./actionRow";
 
 export default function UserList() {
   const router = useRouter();
@@ -126,17 +124,20 @@ export default function UserList() {
     if (result) mutate(`${fetchUserUrl}?${params}`, { revalidate: true });
   }, [dialogs, params]);
 
-  const handleView = async (id: number) => {
-    const result = await dialogs.open((props) => (
-      <UserView {...props} id={id} />
-    ));
-    if (result) {
-      mutate(`${viewUrl}?${params.toString()}`);
-    }
-  };
+  const handleView = useCallback(
+    async (id: string) => {
+      const result = await dialogs.open((props) => (
+        <UserView {...props} id={id} />
+      ));
+      if (result) {
+        mutate(`${viewUrl}?${params.toString()}`);
+      }
+    },
+    [dialogs, params]
+  );
 
   const handlePassword = useCallback(
-    async (id: any) => {
+    async (id: string) => {
       const result = await dialogs.open((props) => (
         <UpdateProfilePassword {...props} id={id} />
       ));
@@ -147,6 +148,8 @@ export default function UserList() {
     [dialogs, params]
   );
 
+
+  
   // Column definitions
   const columns: GridColDef[] = useMemo(
     () => [
@@ -156,77 +159,13 @@ export default function UserList() {
         type: "actions",
         width: 120,
         renderCell: (params) => {
-          const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-          const [selectedId, setSelectedId] = useState<number | null>(null);
-
-          const handleClick = (
-            event: React.MouseEvent<HTMLElement>,
-            id: number
-          ) => {
-            setAnchorEl(event.currentTarget);
-            setSelectedId(id);
-          };
-
-          const handleClose = () => {
-            setAnchorEl(null);
-          };
-
-          return (
-            <>
-              <IconButton
-                onClick={(e) => handleClick(e, params.row.id)}
-                aria-label="more"
-                color="default"
-              >
-                <GridMoreVertIcon />
-              </IconButton>
-
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleEdit(params.row._id);
-                    handleClose();
-                  }}
-                >
-                  <Icon sx={{ color: "primary.main", mr: 1 }}>edit</Icon> Edit
-                </MenuItem>
-
-                <MenuItem
-                  onClick={() => {
-                    handleView(params.row._id);
-                    handleClose();
-                  }}
-                >
-                  <Icon sx={{ color: "secondary.main", mr: 1 }}>
-                    visibility
-                  </Icon>
-                  View
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handlePassword(params.row._id);
-                    handleClose();
-                  }}
-                >
-                  <Icon sx={{ color: "success.main", mr: 1 }}>lock</Icon> Update
-                  Password
-                </MenuItem>
-
-                <MenuItem
-                  onClick={() => {
-                    handleDelete(params.row._id);
-                    handleClose();
-                  }}
-                >
-                  <Icon sx={{ color: "error.main", mr: 1 }}>delete</Icon>
-                  Delete
-                </MenuItem>
-              </Menu>
-            </>
+          return (<ActionsCell
+              row={params.row}
+              handleEdit={handleEdit}
+              handleView={handleView}
+              handlePassword={handlePassword}
+              handleDelete={handleDelete}
+            />
           );
         },
       },
@@ -269,7 +208,7 @@ export default function UserList() {
         headerName: "Type",
         width: 170,
         renderCell: (params) => {
-          const typeMap = {
+          const typeMap: Record<string, { label: string; color: "primary" | "secondary" | "error" | "info" | "success" | "warning" | "default"; icon: JSX.Element }> = {
             user: {
               label: "User",
               color: "warning",
@@ -290,15 +229,15 @@ export default function UserList() {
           const typeValue = params?.row?.type as keyof typeof typeMap;
           const { label, color, icon } = typeMap[typeValue] || {
             label: "N / A",
-            color: "default",
-            icon: null,
+            color: "default" as const,
+            icon: <></>,
           };
 
           return (
             <Chip
               icon={icon}
               label={label}
-              color={color as any}
+              color={color}
               sx={{ textTransform: "capitalize", px: 1, fontWeight: "bold" }}
             />
           );
@@ -322,7 +261,7 @@ export default function UserList() {
               component="img"
               src={
                 params?.row?.image
-                  ? `${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${params?.row?.image}`
+                  ? `/uploads/${params?.row?.image}`
                   : "/avatar.jpg"
               }
               alt="Document"
@@ -340,7 +279,7 @@ export default function UserList() {
       { field: "name", headerName: "Name", width: 200 },
       { field: "email", headerName: "Email", width: 250 },
     ],
-    [handleEdit, handleDelete]
+    [handleEdit, handleView, handlePassword, handleDelete]
   );
 
   if (isLoading) {

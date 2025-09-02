@@ -15,7 +15,6 @@ import {
     TextField,
     Typography
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -32,12 +31,6 @@ const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
 
-interface ICourseTypeForm {
-    name: string;
-    description?: string;
-    status: boolean;
-}
-
 interface FormProps {
     id?: string | 'new';
     open: boolean;
@@ -45,7 +38,6 @@ interface FormProps {
 }
 
 export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps) {
-    const router = useRouter();
     const notifications = useNotifications();
 
     const {
@@ -70,7 +62,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
                 description: data.description || '',
                 status: data.status === 'active',
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
@@ -95,7 +87,7 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
             }
             notifications.show(res.data.message, { severity: 'success', autoHideDuration: 3000 });
             onClose(true);
-        } catch (error: any) {
+        } catch (error: unknown) {
             const errorMessage = handleErrorMessage(error);
             notifications.show(errorMessage, { severity: 'error', autoHideDuration: 3000 });
         }
