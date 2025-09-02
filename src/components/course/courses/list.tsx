@@ -52,8 +52,17 @@ export default function CourseTypeList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (error && (error as any).status === 403) router.push('/forbidden');
-
+    if (
+        error &&
+        typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        typeof (error as { status?: unknown }).status === 'number' &&
+        (error as { status: number }).status === 403
+    ) {
+        router.push('/forbidden');
+    }
+    
     // Delete
     const handleDelete = useCallback(
         async (id: string) => {
@@ -131,19 +140,20 @@ export default function CourseTypeList() {
         <Card>
             <CardContent>
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid size={{xs:12, sm:6}}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                             placeholder="Search Course Type"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             slotProps={{
                                 input: {
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Icon>search</Icon>
-                                    </InputAdornment>
-                                ),
-                            }}}
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <Icon>search</Icon>
+                                        </InputAdornment>
+                                    ),
+                                }
+                            }}
                             fullWidth
                         />
                     </Grid>
