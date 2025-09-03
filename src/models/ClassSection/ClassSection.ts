@@ -6,16 +6,12 @@ export interface IClassSection extends Document {
     status?: 'active' | 'inactive';
     createdAt?: Date;
     updatedAt?: Date;
-    // classes: mongoose.Types.ObjectId[]
+    class: mongoose.Types.ObjectId[]
 }
 
 const ClassesSchema: Schema<IClassSection> = new Schema(
     {
-        //  classes: [{ type: Schema.Types.ObjectId, ref: Classes, required: false }],
-        // created_at: {
-        //     type: Date,
-        //     default: Date.now,
-        // },
+        class: [{ type: Schema.Types.ObjectId, ref: "Classes", required: false }],
         name: {
             type: String,
             required: [true, 'Name is required'],
