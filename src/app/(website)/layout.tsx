@@ -2,7 +2,7 @@
 
 import WebsiteLayout from "@/layout/website";
 import { websiteNavigation } from "@/layout/website/navigation";
-import ThemeRegistry from "@/theme/account/ThemeRegistry";
+import WebsiteThemeRegistry from "@/theme/account/ThemeRegistry";
 
 import { AppProvider } from "@toolpad/core";
 import { PropsWithChildren } from "react";
