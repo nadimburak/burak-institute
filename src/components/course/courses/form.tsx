@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { ICourse } from "@/models/course/Course.model";
 
 // ✅ Validation Schema
 const schema = yup.object({
@@ -23,7 +24,7 @@ const schema = yup.object({
     description: yup.string().optional(),
 });
 
-type CourseFormData = yup.InferType<typeof schema>;
+// type CourseFormData = yup.InferType<typeof schema>;
 
 export default function CourseForm() {
     const {
@@ -31,7 +32,7 @@ export default function CourseForm() {
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<CourseFormData>({
+    } = useForm<ICourse>({
         resolver: yupResolver(schema),
     });
 
@@ -51,9 +52,9 @@ export default function CourseForm() {
     }, []);
 
     // ✅ Submit Handler
-    const onSubmit = async (data: CourseFormData) => {
+    const onSubmit = async (data: ICourse) => {
         try {
-            const res = await axios.post("/api/course", data);
+            const res = await axios.post(fetch, data);
             console.log("Course created:", res.data);
             reset();
         } catch (err) {
@@ -70,7 +71,7 @@ export default function CourseForm() {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
                     {/* Course Name */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Controller
                             name="name"
                             control={control}
@@ -87,7 +88,7 @@ export default function CourseForm() {
                     </Grid>
 
                     {/* Subject Dropdown */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Controller
                             name="subject"
                             control={control}
@@ -111,7 +112,7 @@ export default function CourseForm() {
                     </Grid>
 
                     {/* Duration Dropdown */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Controller
                             name="duration"
                             control={control}
@@ -133,7 +134,7 @@ export default function CourseForm() {
                     </Grid>
 
                     {/* Image URL */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Controller
                             name="image"
                             control={control}
@@ -150,7 +151,7 @@ export default function CourseForm() {
                     </Grid>
 
                     {/* Description */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Controller
                             name="description"
                             control={control}
@@ -167,7 +168,7 @@ export default function CourseForm() {
                     </Grid>
 
                     {/* Submit */}
-                    <Grid item xs={12}>
+                    <Grid size={{ xs: 12 }}>
                         <Button type="submit" variant="contained" fullWidth>
                             Create Course
                         </Button>
