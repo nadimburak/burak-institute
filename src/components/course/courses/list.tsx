@@ -52,7 +52,16 @@ export default function CourseList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (error && (error as unknown).status === 403) router.push('/forbidden');
+    if (
+        error &&
+        typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        typeof (error as { status?: unknown }).status === 'number' &&
+        (error as { status: number }).status === 403
+    ) {
+        router.push('/forbidden');
+    }
 
     // Delete
     const handleDelete = useCallback(
@@ -149,7 +158,7 @@ export default function CourseList() {
                                             <Icon>search</Icon>
                                         </InputAdornment>
                                     ),
-                                },
+                                }
                             }}
                             fullWidth
                         />
