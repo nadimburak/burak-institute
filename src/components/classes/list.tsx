@@ -24,7 +24,6 @@ import useSWR, { mutate } from 'swr';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
-import SubjectForm from './form';
 import ClassesForm from './form';
 
 export default function ClassesList() {
@@ -52,7 +51,16 @@ export default function ClassesList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (error && (error as any ).status === 403) router.push('/forbidden');
+    if (
+        error &&
+        typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        typeof (error as { status?: unknown }).status === 'number' &&
+        (error as { status: number }).status === 403
+    ) {
+        router.push('/forbidden');
+    }
 
     // Delete
     const handleDelete = useCallback(
@@ -131,7 +139,7 @@ export default function ClassesList() {
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
-                            placeholder="Search Subject"
+                            placeholder="Search Class"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             InputProps={{
@@ -156,7 +164,7 @@ export default function ClassesList() {
                                 <Icon>refresh</Icon>
                             </IconButton>
                             <Button variant="contained" color="primary" onClick={handleAdd} endIcon={<ChevronRightIcon />}>
-                                New Subject
+                                New Class
                             </Button>
                         </Stack>
                     </Grid>

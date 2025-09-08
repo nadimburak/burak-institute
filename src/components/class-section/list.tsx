@@ -21,13 +21,12 @@ import { useDialogs, useNotifications } from '@toolpad/core';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-
 import { handleErrorMessage } from '@/utils/errorHandler';
 import { getFetcher } from '@/utils/fetcher';
 import { fetchUrl } from './constant';
-import SubjectForm from './form';
+import ClassSectionForm from './form';
 
-export default function SubjectList() {
+export default function ClassSectionList() {
     const router = useRouter();
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 });
@@ -83,7 +82,7 @@ export default function SubjectList() {
     // Edit
     const handleEdit = useCallback(
         async (id: string) => {
-            const result = await dialogs.open((props) => <SubjectForm {...props} id={id} />);
+            const result = await dialogs.open((props) => <ClassSectionForm {...props} id={id} />);
             if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
         },
         [dialogs, params]
@@ -91,7 +90,7 @@ export default function SubjectList() {
 
     // Add new
     const handleAdd = useCallback(async () => {
-        const result = await dialogs.open((props) => <SubjectForm {...props} id="new" />);
+        const result = await dialogs.open((props) => <ClassSectionForm {...props} id="new" />);
         if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     }, [dialogs, params]);
 
@@ -140,7 +139,7 @@ export default function SubjectList() {
                 <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
-                            placeholder="Search Subject"
+                            placeholder="Search Class Section"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
                             InputProps={{
@@ -165,7 +164,7 @@ export default function SubjectList() {
                                 <Icon>refresh</Icon>
                             </IconButton>
                             <Button variant="contained" color="primary" onClick={handleAdd} endIcon={<ChevronRightIcon />}>
-                                New Subject
+                                New Class
                             </Button>
                         </Stack>
                     </Grid>

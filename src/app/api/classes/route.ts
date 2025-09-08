@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
         const parsedLimit = Math.max(parseInt(limit, 10), 1);
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
-        const query: any = {};
+        const query: Record<string, unknown> = {};
+
         if (search.trim()) {
             query.name = { $regex: search.trim(), $options: "i" };
         }
@@ -86,27 +87,40 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error: any) {
-        console.error('POST Class Error:', error);
+    } catch (error: unknown) {
+        console.log(error);
 
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: any) => err.message);
+        // Handle MongoDB validation errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
             return NextResponse.json(
-                { error: 'Validation failed', details: errors },
+                { message: 'Validation failed', details: errors },
                 { status: 400 }
             );
         }
 
-        if (error.code === 11000) {
+        // Handle duplicate key errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
             return NextResponse.json(
-                { error: 'Class already exists' },
+                { message: 'Data already exists' },
                 { status: 409 }
             );
         }
 
-        return NextResponse.json(
-            { error: 'Failed to create Class' },
-            { status: 500 }
-        );
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }

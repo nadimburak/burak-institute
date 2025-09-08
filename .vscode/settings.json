@@ -12,5 +12,8 @@
       "baseUrl": "https://burak-erp-user-api.vercel.app/",
       "cookie": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2Y3NmY0ZTg4OTNmMzhjYzZlOTVkYzEiLCJpYXQiOjE3NDc0Nzk5MzQsImV4cCI6MTc0NzgzOTkzNH0.CiejYq_Ber5zLavQT0H36T0aOYj04Tz-u0NVVW_yND4"
     }
-  }
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "typescript.tsserver.log": "verbose",
+  "typescript.tsserver.trace": "messages"
 }
