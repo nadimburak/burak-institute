@@ -73,7 +73,7 @@ const ContactForm = () => {
             .then((res) => res.json())
             .then((data) => console.log("Server Response:", data));
 
-         alert("Form Submit sucessfully!!")
+       
 
     }
 
