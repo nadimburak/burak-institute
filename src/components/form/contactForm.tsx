@@ -34,9 +34,9 @@ const ContactForm = () => {
     let [formdata, setFormdata] = useState<FormData>({
         name: "",
         email: "",
-        phone: 0,
         subject: "",
         message: "",
+        phone:0
     })
     let [errors,setErrors] = useState<Partial<FormData>>({})
 
@@ -73,7 +73,7 @@ const ContactForm = () => {
             .then((res) => res.json())
             .then((data) => console.log("Server Response:", data));
 
-         alert("Form Submit sucessfully!!")
+       
 
     }
 
