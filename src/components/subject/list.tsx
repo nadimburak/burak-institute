@@ -186,5 +186,6 @@ export default function SubjectList() {
                 </Box>
             </CardContent>
         </Card>
+        
     );
 }
