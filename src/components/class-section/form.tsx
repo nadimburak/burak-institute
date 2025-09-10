@@ -24,6 +24,7 @@ import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
 import {defaultValues,fetchUrl} from "./constant";
 import ClassesAutocomplete from '../autocomplete/classes/ClassAutocomplete';
+import { IClassSection } from '@/models/ClassSection';
 
 
 
@@ -32,9 +33,9 @@ const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
 
-interface IClassSection {
-    name: string;
-}
+// interface IClassSection {
+//     name: string;
+// }
 
 interface FormProps {
     id?: string | 'new';
@@ -109,7 +110,7 @@ export default function ClassSectionForm({ id = 'new', open, onClose }: FormProp
                     </IconButton>
                 </Stack>
             </DialogTitle>
-
+          
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <ClassesAutocomplete
@@ -118,7 +119,7 @@ export default function ClassSectionForm({ id = 'new', open, onClose }: FormProp
                     error={!!error.class}
                     helperText={errors.class? "Class is required"}
                     />
-                    
+               
                     <TextField
                         label="Name"
                         fullWidth
