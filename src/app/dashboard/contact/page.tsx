@@ -1,10 +1,10 @@
-import {Box} from '@mui/material'
+import ContactList from "@/components/contact/list"
 
 const page = () => {
 
 
   return (
-    <Box>hello</Box>
+   <ContactList/>
   )
 }
 

@@ -143,12 +143,13 @@ export default function SubjectList() {
                             placeholder="Search Subject"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            InputProps={{
+                            slotProps={{
+                                input:{
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <Icon>search</Icon>
                                     </InputAdornment>
-                                ),
+                                ),}
                             }}
                             fullWidth
                         />

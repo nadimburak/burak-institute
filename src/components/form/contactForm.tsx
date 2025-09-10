@@ -7,7 +7,7 @@ import { useState } from "react";
 export type FormData={
         name:string,
         email:string,
-        phone?:number,
+        phone:number,
         subject:string,
         message:string,
     }
@@ -36,7 +36,7 @@ const ContactForm = () => {
         email: "",
         subject: "",
         message: "",
-        
+        phone:0
     })
     let [errors,setErrors] = useState<Partial<FormData>>({})
 
