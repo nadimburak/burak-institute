@@ -31,4 +31,4 @@ const ClassesSchema: Schema<IClasses> = new Schema(
 const Classes: Model<IClasses> =
     mongoose.models.Classes || mongoose.model<IClasses>('Classes', ClassesSchema);
 
-export default Classes;
+export default Class;

@@ -116,7 +116,7 @@ export default function ClassSectionForm({ id = 'new', open, onClose }: FormProp
                     <ClassesAutocomplete
                     setValue={setValue}
                     value={class}
-                    error={!!error.class}
+                    error={!!errors.class}
                     helperText={errors.class? "Class is required"}
                     />
                
