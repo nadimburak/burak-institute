@@ -1,5 +1,5 @@
 
-export const fetchUrl = '/ClassSection';
+export const fetchUrl = '/class-section';
 
 export const defaultValues = {
     name: "",
