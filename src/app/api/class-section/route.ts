@@ -2,7 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { QueryParams } from '@/types/query.params';
-import Classes, { IClassSection } from '@/models/classes/classes';
+import ClassSection, { IClassSection } from '@/models/ClassSection';
+
+
 
 export async function GET(request: NextRequest) {
     try {
@@ -33,12 +35,12 @@ export async function GET(request: NextRequest) {
         const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'name';
 
         const [data, totalData] = await Promise.all([
-            Classes.find(query)
+            ClassSection.find(query)
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
                 .lean(),
-            Classes.countDocuments(query)
+            ClassSection.countDocuments(query)
         ]);
 
         return NextResponse.json({
@@ -70,7 +72,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const existing = await Classes.findOne({ name: body.name });
+        const existing = await ClassSection.findOne({ name: body.name });
         if (existing) {
             return NextResponse.json(
                 { error: 'Classes already exists' },
@@ -78,11 +80,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const classes: IClasses = await Classes.create(body);
+        const classSection: IClassSection = await ClassSection.create(body);
 
         return NextResponse.json(
             {
-                data: classes,
+                data: ClassSection,
                 message: 'Class-Section created successfully'
             },
             { status: 201 }

@@ -110,12 +110,12 @@ export default function ClassSectionForm({ id = 'new', open, onClose }: FormProp
           
             <DialogContent>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <ClassesAutocomplete
+                    {/* <ClassesAutocomplete
                     setValue={setValue}
                     value={class}
                     error={!!error.class}
                     helperText={errors.class? "Class is required"}
-                    />
+                    /> */}
                
                     <TextField
                         label="Name"
