@@ -41,6 +41,10 @@
   ],
   "exclude": [
     "node_modules",
+    "rest-client",
+    "public",
+    "temp",
+    ".vscode",
     ".next",
     "dist",
     "out",
