@@ -5,7 +5,7 @@ import { useState } from "react";
 import * as z from "zod";
 import { useNotifications } from '@toolpad/core';
 
-const notifications = useNotifications()
+
 export const formDataSchema = z.object({
     name: z.string().min(1, "Name is required!!!"),
     email: z.string().email("Email is invalid").min(1, "Email is required!!!"),
@@ -25,7 +25,7 @@ export type FormData = {
 }
 
 const ContactForm = () => {
-
+const notifications = useNotifications()
 
     const styles = {
         width: 500,

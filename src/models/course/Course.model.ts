@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ICourse extends Document {
+    _id:string,
     subject: mongoose.Types.ObjectId;
     duration: "3 months" | "6 months" | "12 months";
     name: string;

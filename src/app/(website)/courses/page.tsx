@@ -1,10 +1,10 @@
-import CourseCatalog from '@/components/web/courses/page'
+import CourseCard from '@/components/course/courseCard'
 import React from 'react'
 
 const CoursePage = () => {
     return (
         <>
-            <CourseCatalog />
+            <CourseCard />
         </>
     )
 }
