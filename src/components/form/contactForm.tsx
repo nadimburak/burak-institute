@@ -2,15 +2,27 @@
 
 import { Box, TextField, Button, colors } from "@mui/material";
 import { useState } from "react";
+import * as z from "zod";
+import { useNotifications } from '@toolpad/core';
 
+const notifications = useNotifications()
+export const formDataSchema = z.object({
+    name: z.string().min(1, "Name is required!!!"),
+    email: z.string().email("Email is invalid").min(1, "Email is required!!!"),
+    message: z.string().min(1, "Message is required!!!"),
+    phone: z.string()
+        .regex(/^\d+$/, "Phone must be numeric")
+        .min(10, "Phone must be at least 10 digits"),
+    subject: z.string().min(1, "Subject is required!!!"),
+});
 
-export type FormData={
-        name:string,
-        email:string,
-        phone:number,
-        subject:string,
-        message:string,
-    }
+export type FormData = {
+    name: string,
+    email: string,
+    phone: string,
+    subject: string,
+    message: string,
+}
 
 const ContactForm = () => {
 
@@ -34,11 +46,11 @@ const ContactForm = () => {
     let [formdata, setFormdata] = useState<FormData>({
         name: "",
         email: "",
-        phone: 0,
         subject: "",
         message: "",
+        phone: ""
     })
-    let [errors,setErrors] = useState<Partial<FormData>>({})
+    let [errors, setErrors] = useState<Partial<FormData>>({})
 
     const handelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormdata({
@@ -47,35 +59,49 @@ const ContactForm = () => {
         })
     }
 
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const result = formDataSchema.safeParse(formdata);
 
-    const handleSubmit = (e:any) => {
+  if (!result.success) {
+    const newError: Partial<FormData> = {};
+    result.error.issues.forEach((issue) => {
+      const field = issue.path[0] as keyof FormData;
+      newError[field] = issue.message as any; // because FormData fields are string, this is fine
+    });
+    setErrors(newError);
+    return;
+  }
 
-        e.preventDefault();
-        let newError : Partial<FormData> = {}
+  setErrors({});
 
-        if(!formdata.name) newError.name = "Name is required!!!"
-        if(!formdata.email) newError.email ="email is required!!!"
-        if(!formdata.message) newError.message = "Message is required!!!"
-        if(!formdata.phone) newError.phone = NaN
-        if(!formdata.subject) newError.subject = "subject is required!!!"
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result.data),
+    });
 
-        setErrors(newError);
+    const data = await res.json();
+    console.log("Server Response:", data);
 
-         if (Object.keys(newError).length > 0) return;
+    // ✅ Reset form
+    setFormdata({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    });
 
-        console.log("From Data:", formdata);
-
-        fetch("/api/contact", {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formdata),
-        })
-            .then((res) => res.json())
-            .then((data) => console.log("Server Response:", data));
-
-         alert("Form Submit sucessfully!!")
-
-    }
+     notifications.show(data.message || "Form submitted successfully!", {
+        severity: 'success',
+        autoHideDuration: 3000,
+      });
+  } catch (error) {
+    console.error("Submission error:", error);
+  }
+};
 
     return (
 
@@ -93,22 +119,22 @@ const ContactForm = () => {
             }}>
             <TextField id="outlined-basic" required label="Name" type="text" variant="outlined" size="medium" fullWidth={false} name="name"
                 value={formdata.name} onChange={handelChange} sx={styles} placeholder="Your Name" error={Boolean(errors.name)}
-  helperText={errors.name} />
+                helperText={errors.name} />
 
             <TextField id="outlined-basic" label="Email" type="email" variant="outlined" size="medium" fullWidth={false}
                 sx={styles} name="email" value={formdata.email} onChange={handelChange} placeholder="xyz@example.com" error={Boolean(errors.email)}
-  helperText={errors.email}/>
+                helperText={errors.email} />
 
-            <TextField id="outlined-basic" label="Phone" variant="outlined" type="number" size="medium" fullWidth={false}
+            <TextField id="outlined-basic" label="Phone" variant="outlined" size="medium" fullWidth={false}
                 sx={styles} name="phone" value={formdata.phone} onChange={handelChange} placeholder="xxxxxxxxxx" error={Boolean(errors.phone)}
-  helperText={errors.phone}/>
+                helperText={errors.phone} />
 
             <TextField id="outlined-basic" label="subject" variant="outlined" size="medium" fullWidth={false}
                 sx={styles} name="subject" value={formdata.subject} onChange={handelChange} type="text" placeholder="Subject" error={Boolean(errors.subject)} helperText={errors.subject} />
 
             <TextField id="outlined-basic" label="Message" variant="outlined" multiline={true} size="medium" fullWidth={false} rows={5} maxRows={20}
                 sx={styles} name="message" value={formdata.message} onChange={handelChange} type="text" placeholder="Message" error={Boolean(errors.message)}
-  helperText={errors.message}/>
+                helperText={errors.message} />
 
             <Button variant="outlined" onClick={handleSubmit} sx={{ padding: "10px", paddingLeft: '50px', paddingRight: '50px', color: 'white', fontWeight: '400', fontSize: '1.2rem', border: '1px solid  #7C3AED', }}>submit</Button>
         </Box>

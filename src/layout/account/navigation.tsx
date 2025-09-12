@@ -66,6 +66,17 @@ const accountNavigation: Navigation = [
     title: "Classes",
     icon: <DashboardIcon />,
   },
+    {
+    segment: "dashboard/class-section",
+    title: "ClassSection",
+    icon: <DashboardIcon />,
+  },
+  
+  {
+    segment:"dashboard/contact",
+    title:"Contact",
+    
+  }
 ];
 
 export default accountNavigation;
