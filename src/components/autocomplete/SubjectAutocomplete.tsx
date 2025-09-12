@@ -5,32 +5,32 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 
-type RoleOption = { id: string; name: string; };
+type SubjectOption = { id: string; name: string };
 
 type Props = {
-    value: RoleOption | RoleOption[] | null;
-    onChange: (value: RoleOption | RoleOption[] | null) => void;
+    value: SubjectOption | SubjectOption[] | null;
+    onChange: (value: SubjectOption | SubjectOption[] | null) => void;
     label?: string;
     placeholder?: string;
     multiple?: boolean;
     disabled?: boolean;
-    limit?: number;
+    limit?: number; // server-side limit
 };
 
-export default function RoleAutocomplete({
+export default function SubjectAutocomplete({
     value,
     onChange,
-    label = "Role",
-    placeholder = "Search roles…",
+    label = "Subject",
+    placeholder = "Search subjects…",
     multiple = false,
     disabled,
     limit = 10,
 }: Props) {
     const [inputValue, setInputValue] = React.useState("");
-    const [options, setOptions] = React.useState<RoleOption[]>([]);
+    const [options, setOptions] = React.useState<SubjectOption[]>([]);
     const [loading, setLoading] = React.useState(false);
 
-    // debounced search
+    // debounced server search
     React.useEffect(() => {
         const controller = new AbortController();
         const t = setTimeout(async () => {
@@ -40,15 +40,15 @@ export default function RoleAutocomplete({
                     q: inputValue,
                     limit: String(limit),
                 });
-                const res = await fetch(`/api/roles?${params}`, {
+                const res = await fetch(`/api/subject?${params}`, {
                     signal: controller.signal,
                     cache: "no-store",
                 });
-                if (!res.ok) throw new Error("Failed to load roles");
-                const data: RoleOption[] = await res.json();
+                if (!res.ok) throw new Error("Failed to load subjects");
+                const data: SubjectOption[] = await res.json();
                 setOptions(data);
             } catch (e) {
-                if ((e).name !== "AbortError") {
+                if ((e as unknown as { name?: string }).name !== "AbortError") {
                     console.error(e);
                     setOptions([]);
                 }
@@ -64,17 +64,17 @@ export default function RoleAutocomplete({
     }, [inputValue, limit]);
 
     return (
-        <Autocomplete<RoleOption, boolean, false, false>
+        <Autocomplete<SubjectOption, boolean, false, false>
             multiple={multiple}
             disabled={disabled}
             options={options}
-            value={value as unknown as RoleOption | RoleOption[] | null}
+            value={value as unknown as SubjectOption | SubjectOption[] | null}
             onChange={(_, v) => onChange(v)}
             onInputChange={(_, v) => setInputValue(v)}
             getOptionLabel={(o) => o?.name ?? ""}
             isOptionEqualToValue={(o, v) => o.id === v.id}
             loading={loading}
-            filterOptions={(x) => x} // use server filtering, not client
+            filterOptions={(x) => x} // disable client filter, only server
             renderInput={(params) => (
                 <TextField
                     {...params}
