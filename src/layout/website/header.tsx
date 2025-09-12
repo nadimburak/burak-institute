@@ -105,7 +105,7 @@ const WebsiteHeader = () => {
           {/* 🔹 Logo */}
           <Typography
             variant="h2"
-            sx={{ cursor: "pointer"}}
+            sx={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
             color="primary.main"
           >
@@ -127,7 +127,7 @@ const WebsiteHeader = () => {
                     cursor: "pointer",
                     fontWeight: 500,
                     px: 1,
-                    color: theme.palette.text.secondary,
+                    color: theme.palette.text.primary,
                     position: "relative",
                     "&::after": {
                       content: '""',

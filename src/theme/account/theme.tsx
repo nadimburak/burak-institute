@@ -28,6 +28,7 @@ const theme = createTheme({
         text: {
           primary: "#111827",
           secondary: "#ffffffff",
+          dark: "#000000"
         },
         divider: "#E5E7EB",
       },

@@ -19,10 +19,9 @@ import * as yup from 'yup';
 import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
-import {defaultValues,fetchUrl} from "./constant";
+import { defaultValues, fetchUrl } from "./constant";
 
 
-// Yup validation schema
 const validationSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
 });
@@ -74,7 +73,7 @@ export default function ClassesForm({ id = 'new', open, onClose }: FormProps) {
 
     const onSubmit = async (data: IClasses) => {
         try {
-            const payload = { ...data  };
+            const payload = { ...data };
             let res;
             if (id !== 'new') {
                 res = await axiosInstance.put(`${fetchUrl}/${id}`, payload);

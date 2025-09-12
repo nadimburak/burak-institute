@@ -1,4 +1,3 @@
-// app/api/course-types/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Classes from '@/models/classes/classes';
