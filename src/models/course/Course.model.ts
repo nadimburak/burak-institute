@@ -7,11 +7,11 @@ export interface ICourse extends Document {
     name: string;
     image: string;
     description?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const CourseSchema: Schema<ICourse> = new Schema(
+const CourseSchema = new Schema<ICourse>(
     {
         subject: {
             type: Schema.Types.ObjectId,
@@ -34,7 +34,6 @@ const CourseSchema: Schema<ICourse> = new Schema(
         },
         description: {
             type: String,
-            required: false,
             trim: true,
         },
     },

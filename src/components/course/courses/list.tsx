@@ -53,10 +53,7 @@ export default function CourseTypeList() {
     }, [paginationModel, searchText, sortModel]);
 
     // Fetch data
-    const { data, error, isLoading } = useSWR(
-        `${fetchUrl}?${params}`,
-        getFetcher
-    );
+    const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
     if (
         error &&
@@ -98,8 +95,8 @@ export default function CourseTypeList() {
     // Edit
     const handleEdit = useCallback(
         async (id: string) => {
-            const result = await dialogs.open((props) => (
-                <CourseTypeForm {...props} id={id} />
+            const result = await dialogs.open((dialogProps) => (
+                <CourseTypeForm {...dialogProps} id={id} />
             ));
             if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
         },
@@ -108,8 +105,8 @@ export default function CourseTypeList() {
 
     // Add new
     const handleAdd = useCallback(async () => {
-        const result = await dialogs.open((props) => (
-            <CourseTypeForm {...props} id="new" />
+        const result = await dialogs.open((dialogProps) => (
+            <CourseTypeForm {...dialogProps} id="new" />
         ));
         if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     }, [dialogs, params]);
@@ -147,12 +144,7 @@ export default function CourseTypeList() {
 
     if (isLoading) {
         return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="100vh"
-            >
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <CircularProgress />
             </Box>
         );
@@ -160,12 +152,7 @@ export default function CourseTypeList() {
 
     if (error) {
         return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                height="100vh"
-            >
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <p>Error loading data!</p>
             </Box>
         );
@@ -180,14 +167,12 @@ export default function CourseTypeList() {
                             placeholder="Search Course Type"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            slotProps={{
-                                input: {
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Icon>search</Icon>
-                                        </InputAdornment>
-                                    ),
-                                },
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <Icon>search</Icon>
+                                    </InputAdornment>
+                                ),
                             }}
                             fullWidth
                         />
@@ -199,9 +184,7 @@ export default function CourseTypeList() {
                                     backgroundColor: theme.palette.action.hover,
                                     "&:hover": { backgroundColor: theme.palette.action.selected },
                                 }}
-                                onClick={() =>
-                                    mutate(`${fetchUrl}?${params}`, { revalidate: true })
-                                }
+                                onClick={() => mutate(`${fetchUrl}?${params}`, { revalidate: true })}
                             >
                                 <Icon>refresh</Icon>
                             </IconButton>

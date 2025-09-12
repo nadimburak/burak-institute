@@ -6,14 +6,24 @@ import * as yup from "yup";
 import {
     TextField,
     Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
     MenuItem,
     Grid,
     Box,
-    Typography,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
+
+interface CourseTypeFormProps {
+    id?: string;
+    open: boolean;
+    onClose: (result?: unknown) => void;
+    payload?: any;
+}
 
 // ✅ Validation Schema
 const schema = yup.object({
@@ -24,9 +34,12 @@ const schema = yup.object({
     description: yup.string().optional(),
 });
 
-// type CourseFormData = yup.InferType<typeof schema>;
-
-export default function CourseForm() {
+export default function CourseTypeForm({
+    id,
+    open,
+    onClose,
+    payload,
+}: CourseTypeFormProps) {
     const {
         control,
         handleSubmit,
@@ -34,6 +47,7 @@ export default function CourseForm() {
         formState: { errors },
     } = useForm<ICourse>({
         resolver: yupResolver(schema),
+        defaultValues: payload || {}, // preload when editing
     });
 
     const [subjects, setSubjects] = useState<{ _id: string; name: string }[]>([]);
@@ -54,127 +68,116 @@ export default function CourseForm() {
     // ✅ Submit Handler
     const onSubmit = async (data: ICourse) => {
         try {
-            const res = await axios.post(fetch, data);
-            console.log("Course created:", res.data);
+            if (id && id !== "new") {
+                // update existing
+                const res = await axios.put(`/api/course/${id}`, data);
+                console.log("Course updated:", res.data);
+            } else {
+                // create new
+                const res = await axios.post(`/api/course`, data);
+                console.log("Course created:", res.data);
+            }
             reset();
+            onClose(true); // close dialog after success
         } catch (err) {
-            console.error("Error creating course:", err);
+            console.error("Error saving course:", err);
         }
     };
 
     return (
-        <Box sx={{ p: 3, maxWidth: 600, mx: "auto" }}>
-            <Typography variant="h5" gutterBottom>
-                Create Course
-            </Typography>
-
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={2}>
-                    {/* Course Name */}
-                    <Grid size={{ xs: 12 }}>
-                        <Controller
-                            name="name"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Course Name"
-                                    fullWidth
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
+        <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
+            <DialogTitle>{id === "new" ? "Create Course" : "Edit Course"}</DialogTitle>
+            <DialogContent>
+                <Box sx={{ mt: 2 }}>
+                    <form id="course-form" onSubmit={handleSubmit(onSubmit)}>
+                        <Grid container spacing={2}>
+                            {/* Course Name */}
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Course Name"
+                                            fullWidth
+                                            error={!!errors.name}
+                                            helperText={errors.name?.message}
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </Grid>
+                            </Grid>
 
-                    {/* Subject Dropdown */}
-                    <Grid size={{ xs: 12 }}>
-                        <Controller
-                            name="subject"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    select
-                                    label="Select Subject"
-                                    fullWidth
-                                    error={!!errors.subject}
-                                    helperText={errors.subject?.message}
-                                >
-                                    {subjects.map((sub) => (
-                                        <MenuItem key={sub._id} value={sub._id}>
-                                            {sub.name}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            )}
-                        />
-                    </Grid>
+                            {/* Subject Dropdown */}
+                            <Grid size={{ xs: 12 }}>
+                                <SubjectAutocomplete />
+                            </Grid>
 
-                    {/* Duration Dropdown */}
-                    <Grid size={{ xs: 12 }}>
-                        <Controller
-                            name="duration"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    select
-                                    label="Duration"
-                                    fullWidth
-                                    error={!!errors.duration}
-                                    helperText={errors.duration?.message}
-                                >
-                                    <MenuItem value="3 months">3 Months</MenuItem>
-                                    <MenuItem value="6 months">6 Months</MenuItem>
-                                    <MenuItem value="12 months">12 Months</MenuItem>
-                                </TextField>
-                            )}
-                        />
-                    </Grid>
-
-                    {/* Image URL */}
-                    <Grid size={{ xs: 12 }}>
-                        <Controller
-                            name="image"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Image URL"
-                                    fullWidth
-                                    error={!!errors.image}
-                                    helperText={errors.image?.message}
+                            {/* Duration Dropdown */}
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="duration"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            select
+                                            label="Duration"
+                                            fullWidth
+                                            error={!!errors.duration}
+                                            helperText={errors.duration?.message}
+                                        >
+                                            <MenuItem value="3 months">3 Months</MenuItem>
+                                            <MenuItem value="6 months">6 Months</MenuItem>
+                                            <MenuItem value="12 months">12 Months</MenuItem>
+                                        </TextField>
+                                    )}
                                 />
-                            )}
-                        />
-                    </Grid>
+                            </Grid>
 
-                    {/* Description */}
-                    <Grid size={{ xs: 12 }}>
-                        <Controller
-                            name="description"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Description (Optional)"
-                                    fullWidth
-                                    multiline
-                                    rows={3}
+                            {/* Image URL */}
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="image"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Image URL"
+                                            fullWidth
+                                            error={!!errors.image}
+                                            helperText={errors.image?.message}
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
-                    </Grid>
+                            </Grid>
 
-                    {/* Submit */}
-                    <Grid size={{ xs: 12 }}>
-                        <Button type="submit" variant="contained" fullWidth>
-                            Create Course
-                        </Button>
-                    </Grid>
-                </Grid>
-            </form>
-        </Box>
+                            {/* Description */}
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="description"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Description (Optional)"
+                                            fullWidth
+                                            multiline
+                                            rows={3}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => onClose(false)}>Cancel</Button>
+                <Button type="submit" form="course-form" variant="contained">
+                    {id === "new" ? "Create" : "Update"}
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }

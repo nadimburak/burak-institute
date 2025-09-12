@@ -1,14 +1,13 @@
-// models/CourseType.ts
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ISubject extends Document {
     name: string;
-    status?: 'active' | 'inactive';
-    createdAt?: Date;
-    updatedAt?: Date;
+    status: 'active' | 'inactive';
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const SubjectSchema: Schema<ISubject> = new Schema(
+const SubjectSchema = new Schema<ISubject>(
     {
         name: {
             type: String,
@@ -23,11 +22,10 @@ const SubjectSchema: Schema<ISubject> = new Schema(
         },
     },
     {
-        timestamps: false, // Automatically adds createdAt and updatedAt
+        timestamps: true,
     }
 );
 
-// Check if model already exists to avoid overwrite errors in Next.js hot reload
 const Subject: Model<ISubject> =
     mongoose.models.Subject || mongoose.model<ISubject>('Subject', SubjectSchema);
 
