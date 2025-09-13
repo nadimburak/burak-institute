@@ -105,7 +105,7 @@ const WebsiteHeader = () => {
           {/* 🔹 Logo */}
           <Typography
             variant="h2"
-            sx={{ cursor: "pointer"}}
+            sx={{ cursor: "pointer" }}
             onClick={() => router.push("/")}
             color="primary.main"
           >
@@ -227,7 +227,7 @@ const WebsiteHeader = () => {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6">Menu</Typography>
+              <Typography variant="h1">Menu</Typography>
               <IconButton onClick={() => setDrawerOpen(false)}>
                 <CloseIcon />
               </IconButton>

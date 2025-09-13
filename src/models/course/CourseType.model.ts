@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface ICourseType extends Document {
     name: string;
     status?: 'active' | 'inactive';
+   
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -21,6 +22,7 @@ const CourseTypeSchema: Schema<ICourseType> = new Schema(
             default: 'active',
             required: false
         },
+        
     },
     {
         timestamps: true, // Automatically adds createdAt and updatedAt
