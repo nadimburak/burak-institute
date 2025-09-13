@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 
-interface ClassesItem {
+interface ClassItem {
   _id: string;
   name: string;
 }
@@ -18,8 +18,8 @@ interface ClassesAutocompleteProps {
   error?: boolean;
 }
 
-const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
-  const fetchUrl = "/classes";
+const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (props) => {
+  const fetchUrl = "/class-section";
   const [searchText, setSearchText] = useState("");
   const { setValue, value, helperText = "", error = false } = props;
 
@@ -51,14 +51,14 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
   return (
     <Autocomplete
       options={data?.data || []}
-      getOptionLabel={(option: ClassesItem) => option.name || ""}
-      isOptionEqualToValue={(option: ClassesItem, value: ClassesItem) =>
+      getOptionLabel={(option: ClassItem) => option.name || ""}
+      isOptionEqualToValue={(option: ClassItem, value: ClassItem) =>
         option._id === value._id
       }
       loading={isLoading}
       onChange={(_, data) => {
         setValue(
-          "classes",
+          "class",
           { _id: data?._id, name: data?.name },
           {
             shouldValidate: true,

@@ -68,7 +68,7 @@ const accountNavigation: Navigation = [
   },
     {
     segment: "dashboard/class-section",
-    title: "ClassSection",
+    title: "Class Section",
     icon: <DashboardIcon />,
   },
   
