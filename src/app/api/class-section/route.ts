@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 
         const [data, totalData] = await Promise.all([
             ClassSection.find(query)
-            .populate("classes", "name")
+            // .populate("class", "name")
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
@@ -73,13 +73,13 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const existing = await ClassSection.findOne({ name: body.name });
-        if (existing) {
-            return NextResponse.json(
-                { error: 'Classes already exists' },
-                { status: 409 }
-            );
-        }
+        // const existing = await ClassSection.findOne({ name: body.name });
+        // if (existing) {
+        //     return NextResponse.json(
+        //         { error: 'Classes already exists' },
+        //         { status: 409 }
+        //     );
+        // }
 
         const classSection: IClassSection = await ClassSection.create(body);
 
