@@ -1,8 +1,10 @@
 // models/CourseType.ts
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import Classes from './classes/classes';
 
 export interface IClassSection extends Document {
     name: string;
+    classes: mongoose.Types.ObjectId;
     status?: 'active' | 'inactive';
     createdAt?: Date;
     updatedAt?: Date;
@@ -10,6 +12,7 @@ export interface IClassSection extends Document {
 
 const ClassSectionSchema: Schema<IClassSection> = new Schema(
     {
+        classes: { type: Schema.Types.ObjectId, ref: Classes, required: false },
         name: {
             type: String,
             required: [true, 'Name is required'],

@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
 
         const [data, totalData] = await Promise.all([
             ClassSection.find(query)
+            .populate("classes", "name")
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
