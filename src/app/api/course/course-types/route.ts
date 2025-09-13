@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { QueryParams } from '@/types/query.params';
 import CourseType, { ICourseType } from '@/models/course/CourseType.model';
+import { HydratedDocument } from "mongoose";
+
 
 export async function GET(request: NextRequest) {
     try {
@@ -58,14 +60,16 @@ export async function POST(request: NextRequest) {
     try {
         await connectDB();
         const body = await request.json();
-
+        
+       
         if (!body.name || typeof body.name !== 'string') {
             return NextResponse.json(
                 { error: 'Name is required and must be a string' },
                 { status: 400 }
             );
         }
-
+        body.status = 'active'
+        
         const existing = await CourseType.findOne({ name: body.name });
         if (existing) {
             return NextResponse.json(
@@ -73,9 +77,14 @@ export async function POST(request: NextRequest) {
                 { status: 409 }
             );
         }
-
-        const courseType: ICourseType = await CourseType.create(body);
-
+         
+        console.log(body);
+        
+        
+        
+        const courseType:ICourseType =await CourseType.create(body);
+        
+            console.log(courseType);
         return NextResponse.json(
             {
                 data: courseType,
@@ -84,7 +93,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error: unknown) {
-        console.log(error);
+        // console.log(error);
 
         // Handle MongoDB validation errors
         if (

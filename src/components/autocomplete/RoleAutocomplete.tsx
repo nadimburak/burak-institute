@@ -1,4 +1,3 @@
-// src/components/RoleAutocomplete.tsx
 "use client";
 
 import * as React from "react";
@@ -15,7 +14,7 @@ type Props = {
     placeholder?: string;
     multiple?: boolean;
     disabled?: boolean;
-    limit?: number; // server-side limit
+    limit?: number;
 };
 
 export default function RoleAutocomplete({
@@ -49,7 +48,7 @@ export default function RoleAutocomplete({
                 const data: RoleOption[] = await res.json();
                 setOptions(data);
             } catch (e) {
-                if ((e as unknown).name !== "AbortError") {
+                if ((e).name !== "AbortError") {
                     console.error(e);
                     setOptions([]);
                 }
@@ -70,7 +69,7 @@ export default function RoleAutocomplete({
             disabled={disabled}
             options={options}
             value={value as unknown as RoleOption | RoleOption[] | null}
-            onChange={(_, v) => onChange(v as unknown)}
+            onChange={(_, v) => onChange(v)}
             onInputChange={(_, v) => setInputValue(v)}
             getOptionLabel={(o) => o?.name ?? ""}
             isOptionEqualToValue={(o, v) => o.id === v.id}

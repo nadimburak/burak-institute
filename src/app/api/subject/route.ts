@@ -87,27 +87,40 @@ export async function POST(request: NextRequest) {
             },
             { status: 201 }
         );
-    } catch (error) {
-        console.error('POST Subject Error:', error);
+    } catch (error: unknown) {
+        console.log(error);
 
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map((err: unknown) => err.message);
+        // Handle MongoDB validation errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'name' in error &&
+            (error as { name: string }).name === 'ValidationError'
+        ) {
+            const errors =
+                'errors' in error
+                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
+                    : [];
             return NextResponse.json(
-                { error: 'Validation failed', details: errors },
+                { message: 'Validation failed', details: errors },
                 { status: 400 }
             );
         }
 
-        if (error.code === 11000) {
+        // Handle duplicate key errors
+        if (
+            typeof error === 'object' &&
+            error !== null &&
+            'code' in error &&
+            (error as { code: number }).code === 11000
+        ) {
             return NextResponse.json(
-                { error: 'Subject already exists' },
+                { message: 'Data already exists' },
                 { status: 409 }
             );
         }
 
-        return NextResponse.json(
-            { error: 'Failed to create subject' },
-            { status: 500 }
-        );
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }

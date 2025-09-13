@@ -52,7 +52,16 @@ export default function SubjectList() {
     // Fetch data
     const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
-    if (error && (error as unknown).status === 403) router.push('/forbidden');
+    if (
+        error &&
+        typeof error === 'object' &&
+        error !== null &&
+        'status' in error &&
+        typeof (error as { status?: unknown }).status === 'number' &&
+        (error as { status: number }).status === 403
+    ) {
+        router.push('/forbidden');
+    }
 
     // Delete
     const handleDelete = useCallback(
@@ -134,12 +143,13 @@ export default function SubjectList() {
                             placeholder="Search Subject"
                             value={searchText}
                             onChange={(e) => setSearchText(e.target.value)}
-                            InputProps={{
+                            slotProps={{
+                                input:{
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         <Icon>search</Icon>
                                     </InputAdornment>
-                                ),
+                                ),}
                             }}
                             fullWidth
                         />
@@ -177,5 +187,6 @@ export default function SubjectList() {
                 </Box>
             </CardContent>
         </Card>
+        
     );
 }
