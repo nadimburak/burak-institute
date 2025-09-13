@@ -10,6 +10,8 @@ export const CourseContant = async ()=>{
 
 const {data, error, isLoading }=useSWR<ICourse[]>("/api/course/courses", getFetcher);
 
+
+
 if (isLoading) return <Typography>Loading...</Typography>;
 if (error) return <Typography>Error loading courses</Typography>;
 
