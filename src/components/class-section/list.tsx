@@ -16,7 +16,12 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridSortModel,
+} from "@mui/x-data-grid";
 import { useDialogs, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
@@ -116,7 +121,6 @@ export default function ClassSectionList() {
   // Columns
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: "Name", width: 200 },
       {
         field: "actions",
         headerName: "Actions",
@@ -137,6 +141,15 @@ export default function ClassSectionList() {
             </IconButton>
           </>
         ),
+      },
+      { field: "name", headerName: "Name", width: 200 },
+      {
+        field: "class",
+        headerName: "Class",
+        width: 200,
+        renderCell: (params: GridRenderCellParams) => {
+          return params?.row?.class?.name || "not available";
+        },
       },
     ],
     [handleDelete, handleEdit]

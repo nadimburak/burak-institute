@@ -33,7 +33,7 @@ const validationSchema = yup.object({
 
 interface IClassSection {
   name: string;
-  class: { _id: string; name: string };
+  class: any;
 }
 
 interface FormProps {
@@ -70,6 +70,10 @@ export default function ClassSectionForm({
         const data = res.data.data;
         reset({
           name: data.name,
+          class: {
+            _id: data.class?._id || data.class,
+            name: data.class?.name || "",
+          }
         });
       } catch (error: unknown) {
         const errorMessage = handleErrorMessage(error);
@@ -138,7 +142,7 @@ export default function ClassSectionForm({
             setValue={setValue}
             value={watch("class")}
             error={!!errors.class}
-            helperText={errors.class?.message}
+            helperText={errors.class?.message ? "Class is required" : ""}
           />
 
           <TextField
