@@ -1,32 +1,19 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, model, models } from "mongoose";
 
-export interface ISubject extends Document {
+export interface ISubject {
     name: string;
-    status: 'active' | 'inactive';
-    createdAt: Date;
-    updatedAt: Date;
+    description?: string;
 }
 
 const SubjectSchema = new Schema<ISubject>(
     {
-        name: {
-            type: String,
-            required: [true, 'Name is required'],
-            unique: true,
-            trim: true,
-        },
-        status: {
-            type: String,
-            enum: ['active', 'inactive'],
-            default: 'active',
-        },
+        name: { type: String, required: true },
+        description: { type: String },
     },
-    {
-        timestamps: true,
-    }
+    { timestamps: true }
 );
 
-const Subject: Model<ISubject> =
-    mongoose.models.Subject || mongoose.model<ISubject>('Subject', SubjectSchema);
+// Prevent re-compiling model on hot-reload
+const Subject = models.Subject || model<ISubject>("Subject", SubjectSchema);
 
 export default Subject;

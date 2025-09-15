@@ -27,7 +27,7 @@ import { getFetcher } from "@/utils/fetcher";
 import { fetchUrl } from "./constant";
 import CourseTypeForm from "./form";
 
-export default function CourseTypeList() {
+export default function CourseList() {
     const router = useRouter();
     const theme = useTheme();
     const [paginationModel, setPaginationModel] = useState({
