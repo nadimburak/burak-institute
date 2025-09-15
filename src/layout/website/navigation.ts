@@ -4,4 +4,5 @@ export const websiteNavigation = [
     { segment: 'users', title: 'Teachers' },
     { segment: 'contact', title: 'Contact' },
     { segment: 'menu', title: 'Menu' },
+    { segment: 'courses', title: 'Courses' },
 ]
