@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         const { id } = params;
 
         const section = await ClassSection.findById(id)
-            .populate('class', '_id name') // yaha class ko populate karo
+            .populate('class', 'name') // yaha class ko populate karo
             .lean();
 
         if (!section) {

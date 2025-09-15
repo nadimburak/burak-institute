@@ -16,13 +16,12 @@ interface ClassesAutocompleteProps {
   value: any;
   helperText?: string;
   error?: boolean;
-  watch:any
 }
 
 const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
   const fetchUrl = "/classes";
   const [searchText, setSearchText] = useState("");
-  const { setValue, value, helperText = "", error = false ,watch} = props;
+  const { setValue, value, helperText = "", error = false } = props;
 
   // Build query params
   const params = new URLSearchParams();
@@ -50,33 +49,33 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
   }
 
   return (
-   <Autocomplete
-  options={data?.data || []}
-  getOptionLabel={(option: ClassesItem) => option.name || ""}
-  isOptionEqualToValue={(option, val) => option._id === val._id}
-  loading={isLoading}
-  value={value ?? null}         // 👈 yeh ensure karega ki kabhi undefined nahi hoga
-  onChange={(_, selected) => {
-    setValue(
-      "class",
-      selected ? { _id: selected._id, name: selected.name } : null,
-      { shouldValidate: true }
-    );
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      label="Select Class"
-      variant="outlined"
-      margin="normal"
-      fullWidth
-      helperText={helperText}
-      error={error}
-      InputLabelProps={{ shrink: true }}
-      onChange={(e) => setSearchText(e.target.value)}
+    <Autocomplete
+      options={data?.data || []}
+      getOptionLabel={(option: ClassesItem) => option.name || ""}
+      isOptionEqualToValue={(option, val) => option._id === val._id}
+      loading={isLoading}
+      value={value ?? null}         // 👈 yeh ensure karega ki kabhi undefined nahi hoga
+      onChange={(_, selected) => {
+        setValue(
+          "class",
+          selected ? { _id: selected._id, name: selected.name } : null,
+          { shouldValidate: true }
+        );
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Select Class"
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          helperText={helperText}
+          error={error}
+          InputLabelProps={{ shrink: true }}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      )}
     />
-  )}
-/>
   );
 }
 export default ClassesAutocomplete;
