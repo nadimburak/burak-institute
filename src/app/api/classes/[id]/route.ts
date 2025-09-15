@@ -1,25 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Classes from '@/models/classes/classes';
+import ClassSection from '../../../../models/ClassSection'; // <-- apna ClassSection model import karo
 
-
+// ✅ GET single class-section by ID
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {
         await connectDB();
         const { id } = params;
 
-        const classes = await Classes.findById(id).lean();
-        if (!classes) {
-            return NextResponse.json({ error: 'class not found' }, { status: 404 });
+        const section = await ClassSection.findById(id)
+            .populate('class', '_id name') // yaha class ko populate karo
+            .lean();
+
+        if (!section) {
+            return NextResponse.json({ error: 'Class section not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ data: classes });
+        return NextResponse.json({ data: section });
     } catch (error) {
-        console.error('GET classes by ID Error:', error);
-        return NextResponse.json({ error: 'Failed to fetch class' }, { status: 500 });
+        console.error('GET class-section by ID Error:', error);
+        return NextResponse.json({ error: 'Failed to fetch class-section' }, { status: 500 });
     }
 }
 
+// ✅ UPDATE class-section
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     try {
         await connectDB();
@@ -30,67 +34,56 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
             return NextResponse.json({ error: 'Name must be a string' }, { status: 400 });
         }
 
-        const updated = await Classes.findByIdAndUpdate(id, body, {
+        const updated = await ClassSection.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
-        });
+        }).populate('class', '_id name'); // updated response me bhi populate
 
         if (!updated) {
-            return NextResponse.json({ error: 'class not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Class section not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ data: updated, message: 'class updated successfully' });
-    } catch (error: unknown) {
-        console.log(error);
+        return NextResponse.json({
+            data: updated,
+            message: 'Class section updated successfully',
+        });
+    } catch (error: any) {
+        console.error('PUT class-section Error:', error);
 
-        // Handle MongoDB validation errors
-        if (
-            typeof error === 'object' &&
-            error !== null &&
-            'name' in error &&
-            (error as { name: string }).name === 'ValidationError'
-        ) {
-            const errors =
-                'errors' in error
-                    ? Object.values((error as { errors: Record<string, { message: string }> }).errors).map((err) => err.message)
-                    : [];
+        if (error?.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map((err: any) => err.message);
             return NextResponse.json(
                 { message: 'Validation failed', details: errors },
                 { status: 400 }
             );
         }
 
-        // Handle duplicate key errors
-        if (
-            typeof error === 'object' &&
-            error !== null &&
-            'code' in error &&
-            (error as { code: number }).code === 11000
-        ) {
-            return NextResponse.json(
-                { message: 'Data already exists' },
-                { status: 409 }
-            );
+        if (error?.code === 11000) {
+            return NextResponse.json({ message: 'Data already exists' }, { status: 409 });
         }
 
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ message: errorMessage }, { status: 400 });
+        return NextResponse.json(
+            { message: error.message || 'Failed to update class-section' },
+            { status: 400 }
+        );
     }
 }
 
+// ✅ DELETE class-section
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
     try {
         await connectDB();
         const { id } = params;
 
-        const deleted = await Classes.findByIdAndDelete(id);
+        const deleted = await ClassSection.findByIdAndDelete(id);
+
         if (!deleted) {
-            return NextResponse.json({ error: 'class not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Class section not found' }, { status: 404 });
         }
 
-        return NextResponse.json({ message: 'class deleted successfully' });
+        return NextResponse.json({ message: 'Class section deleted successfully' });
     } catch (error) {
-        console.error('DELETE class Error:', error);
-        return NextResponse.json({ error: 'Failed to delete class' }, { status: 500 });
+        console.error('DELETE class-section Error:', error);
+        return NextResponse.json({ error: 'Failed to delete class-section' }, { status: 500 });
     }
 }

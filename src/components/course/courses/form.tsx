@@ -34,7 +34,7 @@ const schema = yup.object({
     description: yup.string().optional(),
 });
 
-export default function CourseTypeForm({
+export default function CourseForm({
     id,
     open,
     onClose,
