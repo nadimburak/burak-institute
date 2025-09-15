@@ -54,6 +54,11 @@ const accountNavigation: Navigation = [
         segment: "dashboard/course/courses",
         icon: <>{DotIcon}</>,
       },
+      {
+        title: "CoursesEnquiry",
+        segment: "dashboard/course/courseEnquiry",
+        icon: <>{DotIcon}</>,
+      },
     ],
   },
   {

@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
             typeof error === "object" &&
             error !== null &&
             "name" in error &&
-            (error as { name: string }).name === "ValidationError"
+            (error as { name: string }).name === "Validation Error"
         ) {
             const errors =
                 "errors" in error
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             (error as { code: number }).code === 11000
         ) {
             return NextResponse.json(
-                { message: "Course already exists" },
+                { message: "CourseEnquiry already exists" },
                 { status: 409 }
             );
         }
