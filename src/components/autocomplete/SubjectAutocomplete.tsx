@@ -66,7 +66,7 @@ export default function SubjectAutocomplete({
     return (
         <Autocomplete<SubjectOption, boolean, false, false>
             multiple={multiple}
-            disabled={disabled}
+            // disabled={disabled}
             options={options}
             value={value as unknown as SubjectOption | SubjectOption[] | null}
             onChange={(_, v) => onChange(v)}

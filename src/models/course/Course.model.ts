@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import Subject from "../Subject";
 
 export interface ICourse extends Document {
     _id: string,
@@ -13,7 +14,7 @@ export interface ICourse extends Document {
 const CourseSchema = new Schema<ICourse>(
     {
         subject: {
-            type: Schema.Types.ObjectId, ref: "Subject"
+            type: Schema.Types.ObjectId, ref: Subject
 
         },
         duration: {

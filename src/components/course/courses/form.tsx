@@ -17,6 +17,8 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
+import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
+// import ImageFileUpload from "@/components/form/file-upload/ImageFileUpload";
 
 interface CourseTypeFormProps {
     id?: string;
@@ -92,80 +94,52 @@ export default function CourseForm({
                     <form id="course-form" onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2}>
                             {/* Course Name */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="name"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Course Name"
-                                            fullWidth
-                                            error={!!errors.name}
-                                            helperText={errors.name?.message}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-
-                            {/* Subject Dropdown */}
                             <Grid size={{ xs: 12 }}>
-                                <SubjectAutocomplete />
-                            </Grid>
+                                <TextField
 
-                            {/* Duration Dropdown */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="duration"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            select
-                                            label="Duration"
-                                            fullWidth
-                                            error={!!errors.duration}
-                                            helperText={errors.duration?.message}
-                                        >
-                                            <MenuItem value="3 months">3 Months</MenuItem>
-                                            <MenuItem value="6 months">6 Months</MenuItem>
-                                            <MenuItem value="12 months">12 Months</MenuItem>
-                                        </TextField>
-                                    )}
+                                    label="Course Name"
+                                    fullWidth
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                                <SubjectAutocomplete
+                                    setValue={setValue}
+                                    value={watch("subject") ?? null}
+                                    error={errors.subject}
+                                    helperText={errors.subject?.message}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                                <TextField
+
+                                    select
+                                    label="Duration"
+                                    fullWidth
+                                    error={!!errors.duration}
+                                    helperText={errors.duration?.message}
+                                >
+                                    <MenuItem value="3 months">3 Months</MenuItem>
+                                    <MenuItem value="6 months">6 Months</MenuItem>
+                                    <MenuItem value="12 months">12 Months</MenuItem>
+                                </TextField>
+                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                                <ImageFileUpload
+                                    value={watch("document_url") ?? ""}
+                                    maxFileSize="10MB"
+                                    setValue={(e) => setValue("document_url", e)}
                                 />
                             </Grid>
 
-                            {/* Image URL */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="image"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Image URL"
-                                            fullWidth
-                                            error={!!errors.image}
-                                            helperText={errors.image?.message}
-                                        />
-                                    )}
-                                />
-                            </Grid>
+                            <Grid size={{ xs: 12 }}>
+                                <TextField
 
-                            {/* Description */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="description"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Description (Optional)"
-                                            fullWidth
-                                            multiline
-                                            rows={3}
-                                        />
-                                    )}
+                                    label="Description"
+                                    fullWidth
+                                    multiline
+                                    rows={3}
                                 />
                             </Grid>
                         </Grid>

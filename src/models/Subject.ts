@@ -13,7 +13,6 @@ const SubjectSchema = new Schema<ISubject>(
     { timestamps: true }
 );
 
-// Prevent re-compiling model on hot-reload
 const Subject = models.Subject || model<ISubject>("Subject", SubjectSchema);
 
 export default Subject;
