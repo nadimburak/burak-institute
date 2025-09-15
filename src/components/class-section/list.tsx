@@ -144,11 +144,11 @@ export default function ClassSectionList() {
       },
       { field: "name", headerName: "Name", width: 200 },
       {
-        field: "subject",
-        headerName: "Subject",
+        field: "class",
+        headerName: "Class",
         width: 200,
         renderCell: (params: GridRenderCellParams) => {
-          return params?.row?.subject?.name || "not available";
+          return params?.row?.class?.name || "not available";
         },
       },
     ],
