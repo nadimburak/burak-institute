@@ -11,7 +11,7 @@ interface ClassItem {
   name: string;
 }
 
-interface ClassesAutocompleteProps {
+interface ClassSectionAutocompleteProps {
   setValue: any;
   value: any;
   helperText?: string;
@@ -82,4 +82,4 @@ const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (props
   );
 };
 
-export default ClassesAutocomplete;
+export default ClassSectionAutocomplete;

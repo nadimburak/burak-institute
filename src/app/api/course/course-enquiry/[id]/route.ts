@@ -14,7 +14,7 @@ export async function GET(
             .lean()
 
         if (!courseenquiry) {
-            return NextResponse.json({ message: "CourseEnqiry not found" }, { status: 404 });
+            return NextResponse.json({ message: "Course Enquiry not found" }, { status: 404 });
         }
         return NextResponse.json({ success: true, data: courseenquiry });
 
@@ -39,7 +39,7 @@ export async function PUT(
         });
 
         if (!updatedCourseEnquiry) {
-            return NextResponse.json({ message: "CourseEnquiry not found" }, { status: 404 });
+            return NextResponse.json({ message: "Course Enquiry not found" }, { status: 404 });
         }
 
          return NextResponse.json({ success: true, data: updatedCourseEnquiry });
@@ -53,7 +53,7 @@ console.error(error);
             typeof error === "object" &&
             error !== null &&
             "name" in error &&
-            (error as { name: string }).name === "ValidationError"
+            (error as { name: string }).name === "Validation Error"
         ) {
             const errors =
                 "errors" in error
@@ -83,11 +83,11 @@ export async function DELETE(
         const deletedCourseEnquiry = await CourseEnquiry.findByIdAndDelete(params.id);
 
         if(!deletedCourseEnquiry){
-            return NextResponse.json({ message: "CourseEnquiry not found" }, { status: 404 })
+            return NextResponse.json({ message: "Course Enquiry not found" }, { status: 404 })
         }
         return NextResponse.json({
                     success: true,
-                    message: "CourseEnquiry deleted successfully",
+                    message: "Course Enquiry deleted successfully",
                 });
         
     } catch (error:unknown) {
