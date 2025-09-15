@@ -16,12 +16,13 @@ interface ClassesAutocompleteProps {
   value: any;
   helperText?: string;
   error?: boolean;
+  watch:any
 }
 
 const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
   const fetchUrl = "/classes";
   const [searchText, setSearchText] = useState("");
-  const { setValue, value, helperText = "", error = false } = props;
+  const { setValue, value, helperText = "", error = false ,watch} = props;
 
   // Build query params
   const params = new URLSearchParams();

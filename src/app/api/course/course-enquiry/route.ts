@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         const courseEnquiry: CourseEnquiryType = await CourseEnquiry.create(body)
 
         if (!courseEnquiry) {
-            return NextResponse.json({ success: false, message: "Something went worng while Creating entry in DB on Courseenquiry!!!" })
+            return NextResponse.json({ success: false, message: "Something went wrong while Creating entry in DB on Course Enquiry!!!" })
         }
 
         return NextResponse.json({ success: true, data: { courseEnquiry } }, { status: 200 })
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
             typeof error === "object" &&
             error !== null &&
             "name" in error &&
-            (error as { name: string }).name === "ValidationError"
+            (error as { name: string }).name === "Validation Error"
         ) {
             const errors =
                 "errors" in error
