@@ -46,6 +46,8 @@ export default function CourseForm({
         control,
         handleSubmit,
         reset,
+         setValue, 
+         watch,
         formState: { errors },
     } = useForm<ICourse>({
         resolver: yupResolver(schema),

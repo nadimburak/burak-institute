@@ -4,179 +4,192 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
-    TextField,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    MenuItem,
-    Grid,
-    Box,
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  Box,
+  FormHelperText,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import axios from "axios";
-import { CourseEnquiryType } from '@/models/course/CourseEnquriyModel'
+import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 
-interface CourseEnquiryFormProps {
-    id?: string;
-    open: boolean;
-    onClose: (result?: unknown) => void;
-    payload?: any;
-}
+type FormValues = {
+  name: string;
+  subject: { id: string; name: string } | null;
+  courses: string;
+  description?: string;
+};
 
-// ✅ Validation Schema
 const schema = yup.object({
-    name: yup.string().required(" name is required"),
-    subject: yup.string().required("Subject is required"),
-   courses: yup.string().required("Courses is required"),
-    description: yup.string().optional(),
+  name: yup.string().required("Name is required"),
+  subject: yup
+    .object()
+    .shape({
+      id: yup.string().required(),
+      name: yup.string(),
+    })
+    .nullable()
+    .required("Subject is required"),
+  courses: yup.string().required("Courses is required"),
+  description: yup.string().optional(),
 });
 
+interface CourseEnquiryFormProps {
+  id?: string;
+  open: boolean;
+  onClose: (result?: unknown) => void;
+  payload?: { [key: string]: any; subject: string };
+}
+
 export default function CourseEnquiryForm({
-    id,
-    open,
-    onClose,
-    payload,
+  id,
+  open,
+  onClose,
+  payload,
 }: CourseEnquiryFormProps) {
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<CourseEnquiryType>({
-        resolver: yupResolver(schema),
-        defaultValues: payload || {}, // preload when editing
-    });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      subject: null,
+      courses: "",
+      description: "",
+    },
+  });
 
-    const [subjects, setSubjects] = useState<{ _id: string; name: string }[]>([]);
-
-    // ✅ Fetch subjects for dropdown
-    useEffect(() => {
-        const fetchSubjects = async () => {
+  useEffect(() => {
+    const initializeForm = async () => {
+      if (open) {
+        if (payload) {
+          reset({
+            name: payload.name ?? "",
+            courses: payload.courses ?? "",
+            description: payload.description ?? "",
+            subject: null,
+          });
+          if (payload.subject) {
             try {
-                const res = await axios.get("/api/subject");
-                setSubjects(res.data.data || []);
-            } catch (err) {
-                console.error("Failed to fetch subjects", err);
-            }
-        };
-        fetchSubjects();
-    }, []);
-
-    // ✅ Submit Handler
-    const onSubmit = async (data: CourseEnquiryType) => {
-        try {
-            if (id && id !== "new") {
-                // update existing
-                const res = await axios.put(`/api/course/course-enquiry/${id}`, data);
-                console.log("CourseEnquiry updated:", res.data);
-            } else {
-                // create new
-                const res = await axios.post(`/api/course/course-enquiry`, data);
-                console.log("CourseEnquiry created:", res.data);
-            }
-            reset();
-            onClose(true); // close dialog after success
-        } catch (err) {
-            console.error("Error saving courseEnquiry:", err);
+              const res = await axios.get(`/api/subject/${payload.subject}`);
+              if (res.data) {
+                setValue("subject", res.data, { shouldValidate: true });
+              }
+            } catch (err) { console.error("Failed to fetch initial subject", err); }
+          }
+        } else {
+          reset();
         }
+      }
     };
+    initializeForm();
+  }, [open, payload?.subject, reset, setValue]);
 
-    return (
-        <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
-            <DialogTitle>{id === "new" ? "Create CourseEnquiry" : "Edit CourseEnquiry"}</DialogTitle>
-            <DialogContent>
-                <Box sx={{ mt: 2 }}>
-                    <form id="courseEnquiry-form" onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={2}>
-                            {/* Course Name */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="name"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="CourseEnquiry Name"
-                                            fullWidth
-                                            error={!!errors.name}
-                                            helperText={errors.name?.message}
-                                        />
-                                    )}
-                                />
-                            </Grid>
+  const onSubmit = async (data: FormValues) => {
+    if (!data.subject) {
+      console.error("Subject is null, submission stopped.");
+      return;
+    }
+    const transformedData = { ...data, subject: data.subject.id };
+    
+    
 
-                            {/* Subject Dropdown */}
-                            <Grid size={{ xs: 12 }}>
-                                <SubjectAutocomplete />
-                            </Grid>
+    try {
+      if (id && id !== "new") {
+        
+        await axios.put(`/api/course/course-enquiry/${id}`, transformedData);
+      } else {
+        await axios.post(`/api/course/course-enquiry`, transformedData);
+      }
+      reset();
+      onClose(true);
+    } catch (err) { console.error("Error saving course enquiry:", err); }
+  };
 
-                            {/* Duration Dropdown */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="duration"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            select
-                                            label="Duration"
-                                            fullWidth
-                                            error={!!errors.duration}
-                                            helperText={errors.duration?.message}
-                                        >
-                                            <MenuItem value="3 months">3 Months</MenuItem>
-                                            <MenuItem value="6 months">6 Months</MenuItem>
-                                            <MenuItem value="12 months">12 Months</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
+  const onInvalid = (errors: any) => { console.error("Form validation failed:", errors); };
 
-                            {/* Image URL */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="image"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Image URL"
-                                            fullWidth
-                                            error={!!errors.image}
-                                            helperText={errors.image?.message}
-                                        />
-                                    )}
-                                />
-                            </Grid>
+  return (
+    <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
+      <DialogTitle>
+        {id === "new" ? "Create Course Enquiry" : "Edit Course Enquiry"}
+      </DialogTitle>
+      
+      <form id="courseEnquiry-form" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Controller name="name" control={control} render={({ field }) => ( <TextField {...field} label="Enquiry Name" fullWidth error={!!errors.name} helperText={errors.name?.message}/> )}/>
+              </Grid>
 
-                            {/* Description */}
-                            <Grid item xs={12}>
-                                <Controller
-                                    name="description"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Description (Optional)"
-                                            fullWidth
-                                            multiline
-                                            rows={3}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                        </Grid>
-                    </form>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => onClose(false)}>Cancel</Button>
-                <Button type="submit" form="course-form" variant="contained">
-                    {id === "new" ? "Create" : "Update"}
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+              <Grid item xs={12}>
+                <Controller
+                  name="subject"
+                  control={control}
+                  render={({ field }) => {
+                    const memoizedAutocomplete = useMemo(() => {
+                      console.log(field);
+                      
+                      return (
+                        // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
+                        <SubjectAutocomplete
+                          value={field.value}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          onChange={ (newValue) => {
+                            // Agar value empty string hai, toh use null bana dein
+                            if (newValue === "") {
+                              field.onChange(null);
+                            } else {
+                              field.onChange(newValue);
+                            }
+                          }}
+                          label="Subject"
+                          placeholder="Search for a subject..."
+                        />
+                      );
+                    }, [field.value, errors.subject, field.ref, field.onBlur, field.onChange]);
+
+                    return (
+                      <>
+                        {memoizedAutocomplete}
+                        {errors.subject && (
+                          <FormHelperText error>
+                            {errors.subject.message}
+                          </FormHelperText>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </Grid>
+
+              <Grid  xs={12}>
+                <Controller name="courses" control={control} render={({ field }) => ( <TextField {...field} label="Courses" fullWidth error={!!errors.courses} helperText={errors.courses?.message}/> )}/>
+              </Grid>
+
+              <Grid xs={12}>
+                <Controller name="description" control={control} render={({ field }) => (<TextField {...field} label="Description (Optional)" fullWidth multiline rows={3}/>)}/>
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => onClose(false)}>Cancel</Button>
+          <Button type="submit" form="courseEnquiry-form" variant="contained">
+            {id === "new" ? "Create" : "Update"}
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
 }

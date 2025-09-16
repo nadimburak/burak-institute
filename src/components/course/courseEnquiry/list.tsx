@@ -25,120 +25,126 @@ import {
 import { fetchUrl } from "./constant";
 import CourseEnquiryForm from './form'
 
-
-
 const CourseEnquiryList = () => {
-
   const router = useRouter();
   const theme = useTheme();
+
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
   });
-  const [sortModel, setSortModel] = useState<GridSortModel>([])
-  const [searchText, setSearchText] = useState("")
+  const [sortModel, setSortModel] = useState<GridSortModel>([]);
+  const [searchText, setSearchText] = useState("");
   const notifications = useNotifications();
   const dialogs = useDialogs();
 
   const params = useMemo(() => {
     const searchParams = new URLSearchParams();
-    searchParams.append("page", (paginationModel.page + 1).toString())
-    searchParams.append("limit", paginationModel.pageSize.toString())
+    searchParams.append("page", (paginationModel.page + 1).toString());
+    searchParams.append("limit", paginationModel.pageSize.toString());
 
-    if (searchText) searchParams.append("search", searchText)
+    if (searchText) searchParams.append("search", searchText);
     if (sortModel?.[0]) {
-      searchParams.append('sortBy', sortModel[0].field)
-      searchParams.append('order', sortModel[0].sort ?? "")
+      searchParams.append('sortBy', sortModel[0].field);
+      searchParams.append('order', sortModel[0].sort ?? "");
     }
     return searchParams.toString();
   }, [paginationModel, searchText, sortModel]);
 
-  const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher)
+  const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
   if (
-    error && typeof error === "object" && error !== null && "status" in error && typeof (error as { status?: unknown }).status === "number" && (error as { status: number }).status === 403
+    error &&
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    typeof (error as { status?: unknown }).status === "number" &&
+    (error as { status: number }).status === 403
   ) {
-    router.push("/forbidden")
+    router.push("/forbidden");
   }
 
   const handleDelete = useCallback(
     async (id: string) => {
+      if (!id) {
+        console.warn("ID not provided for deletion");
+        return;
+        
+      }
+
       const confirmed = await dialogs.confirm("Are you sure to delete this?", {
         okText: "Yes",
-        cancelText: "No"
+        cancelText: "No",
       });
-
-      if (!confirmed) return
+      if (!confirmed) return;
 
       try {
         const res = await axiosInstance.delete(`${fetchUrl}/${id}`);
-        mutate(`${fetchUrl}?${params}`, { revalidate: true })
+        mutate(`${fetchUrl}?${params}`, { revalidate: true });
         notifications.show(res.data.message, {
           severity: "success",
           autoHideDuration: 3000,
-        })
-      } catch (error: unknown) {
-        notifications.show(handleErrorMessage(error), {
-          severity: 'error',
+        });
+        console.log("Delete clicked for ID:", id); 
+      } catch (err: unknown) {
+        notifications.show(handleErrorMessage(err), {
+          severity: "error",
           autoHideDuration: 3000,
-        })
+        });
       }
-    }, [dialogs, notifications, params]
-  )
+    },
+    [dialogs, notifications, params]
+  );
 
   const handleEdit = useCallback(
     async (id: string) => {
-      const result = await dialogs.open
-        ((dialogProps) => (
-          <CourseEnquiryForm {...dialogProps} id={id} />
-        ))
-      if (result) mutate(`${fetchUrl}?${params}`, {
-        revalidate: true
-      })
-    }, [dialogs, params]
-  )
+      const result = await dialogs.open((dialogProps) => (
+        <CourseEnquiryForm {...dialogProps} id={id} />
+      ));
+      if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
+    },
+    [dialogs, params]
+  );
 
   const handleAdd = useCallback(async () => {
     const result = await dialogs.open((dialogProps) => (
       <CourseEnquiryForm {...dialogProps} id="new" />
-    ))
+    ));
     if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
-  }, [dialogs, params])
+  }, [dialogs, params]);
 
   const columns: GridColDef[] = useMemo(
     () => [
       { field: "name", headerName: "Name", width: 200 },
       { field: "description", headerName: "Description", width: 300 },
-      { field: 'status', headerName: "Status", width: 120 },
       {
         field: 'actions',
-        headereName: "Actions",
+        headerName: "Actions",
         width: 120,
-        renderCell: (params) => (
-          <>
-            <IconButton
-              onClick={() => handleEdit(params.row.id)}
-              color='primary'>
-              <Icon>edit</Icon>
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.row.id)}
-              color='secondary'>
-              <Icon>delete</Icon>
-            </IconButton>
-          </>
-        )
+       renderCell: (params) => (
+  <>
+    <IconButton onClick={() => handleEdit(params.row._id)} color='primary'>
+      <Icon>edit</Icon>
+    </IconButton>
+    <IconButton onClick={() => handleDelete(params.row._id)} color='secondary'>
+      <Icon>delete</Icon>
+    </IconButton>
+  </>
+)
+
       }
-    ], [handleDelete, handleEdit]
-  )
+    ],
+    [handleDelete, handleEdit]
+  );
 
   if (isLoading) {
     return (
       <Box display='flex' justifyContent='center' alignItems='center' height='100vh'>
         <CircularProgress />
       </Box>
-    )
+    );
   }
+
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -146,50 +152,52 @@ const CourseEnquiryList = () => {
       </Box>
     );
   }
+
   return (
     <Card>
       <CardContent>
-        <Grid container spacing={2}
-          alignItems='center' sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField placeholder='Seach CourseEnquiry' value={searchText} onChange={(e) => setSearchText(e.target.value)}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment
-                      position='end'>
-                      <Icon>search</Icon>
-                    </InputAdornment>
-                  )
-                },
+        <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              placeholder='Search CourseEnquiry'
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <Icon>search</Icon>
+                  </InputAdornment>
+                )
               }}
               fullWidth
             />
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction='row' spacing={1}
-              justifyContent='flex-end'>
-              <IconButton sx={{
-                backgroundColor: theme.palette.action.hover,
-                "&:hover": {
-                  backgroundColor: theme.palette.action.selected
-                }
-              }}
-                onClick={() => mutate(`${fetchUrl}?${params}`, { revalidate: true })}>
+          <Grid item xs={12} sm={6}>
+            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+              <IconButton
+                sx={{
+                  backgroundColor: theme.palette.action.hover,
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.selected
+                  }
+                }}
+                onClick={() => mutate(`${fetchUrl}?${params}`, { revalidate: true })}
+              >
                 <Icon>refresh</Icon>
               </IconButton>
               <Button
                 variant='contained'
                 color="primary"
                 onClick={handleAdd}
-                endIcon={<ChevronRightIcon />}>
+                endIcon={<ChevronRightIcon />}
+              >
                 New CourseEnquiry
               </Button>
             </Stack>
-
           </Grid>
         </Grid>
+
         <Box height={400}>
           <DataGrid
             rows={data?.data || []}
@@ -203,12 +211,9 @@ const CourseEnquiryList = () => {
             getRowId={(row) => row._id}
           />
         </Box>
-
       </CardContent>
     </Card>
-  )
+  );
 }
 
-
-
-export default CourseEnquiryList
+export default CourseEnquiryList;
