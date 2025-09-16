@@ -9,7 +9,8 @@ type SubjectOption = { id: string; name: string };
 
 type Props = {
     value: SubjectOption | SubjectOption[] | null;
-    onChange: (value: SubjectOption | SubjectOption[] | null) => void;
+    setValue:any
+    onChange: any;
     label?: string;
     placeholder?: string;
     multiple?: boolean;
@@ -19,6 +20,7 @@ type Props = {
 
 export default function SubjectAutocomplete({
     value,
+    setValue,
     onChange,
     label = "Subject",
     placeholder = "Search subjects…",
