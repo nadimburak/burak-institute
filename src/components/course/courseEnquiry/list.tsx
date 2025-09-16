@@ -1,7 +1,13 @@
-"use client";
-
-import axiosInstance from "@/utils/axiosInstance";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+"use client"
+import { useRouter } from 'next/navigation'
+import { useState, useMemo, useCallback } from "react";
+import useSWR, { mutate } from 'swr'
+import { handleErrorMessage } from "@/utils/errorHandler"
+import { getFetcher } from '@/utils/fetcher'
+import { useDialogs, useNotifications } from "@toolpad/core"
+import axiosInstance from "@/utils/axiosInstance"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid"
 import {
   Box,
   Button,
@@ -14,26 +20,15 @@ import {
   InputAdornment,
   Stack,
   TextField,
-  useTheme,
-} from "@mui/material";
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-  GridSortModel,
-} from "@mui/x-data-grid";
-import { useDialogs, useNotifications } from "@toolpad/core";
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-import useSWR, { mutate } from "swr";
-import { handleErrorMessage } from "@/utils/errorHandler";
-import { getFetcher } from "@/utils/fetcher";
+  useTheme
+} from "@mui/material"
 import { fetchUrl } from "./constant";
-import ClassSectionForm from "./form";
+import CourseEnquiryForm from './form'
 
-export default function ClassSectionList() {
+const CourseEnquiryList = () => {
   const router = useRouter();
   const theme = useTheme();
+
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -43,24 +38,20 @@ export default function ClassSectionList() {
   const notifications = useNotifications();
   const dialogs = useDialogs();
 
-  // Build query params
   const params = useMemo(() => {
     const searchParams = new URLSearchParams();
     searchParams.append("page", (paginationModel.page + 1).toString());
     searchParams.append("limit", paginationModel.pageSize.toString());
+
     if (searchText) searchParams.append("search", searchText);
     if (sortModel?.[0]) {
-      searchParams.append("sortBy", sortModel[0].field);
-      searchParams.append("order", sortModel[0].sort ?? "");
+      searchParams.append('sortBy', sortModel[0].field);
+      searchParams.append('order', sortModel[0].sort ?? "");
     }
     return searchParams.toString();
   }, [paginationModel, searchText, sortModel]);
 
-  // Fetch data
-  const { data, error, isLoading } = useSWR(
-    `${fetchUrl}?${params}`,
-    getFetcher
-  );
+  const { data, error, isLoading } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
   if (
     error &&
@@ -73,9 +64,14 @@ export default function ClassSectionList() {
     router.push("/forbidden");
   }
 
-  // Delete
   const handleDelete = useCallback(
     async (id: string) => {
+      if (!id) {
+        console.warn("ID not provided for deletion");
+        return;
+        
+      }
+
       const confirmed = await dialogs.confirm("Are you sure to delete this?", {
         okText: "Yes",
         cancelText: "No",
@@ -89,6 +85,7 @@ export default function ClassSectionList() {
           severity: "success",
           autoHideDuration: 3000,
         });
+        console.log("Delete clicked for ID:", id); 
       } catch (err: unknown) {
         notifications.show(handleErrorMessage(err), {
           severity: "error",
@@ -99,70 +96,50 @@ export default function ClassSectionList() {
     [dialogs, notifications, params]
   );
 
-  // Edit
   const handleEdit = useCallback(
     async (id: string) => {
-      const result = await dialogs.open((props) => (
-        <ClassSectionForm {...props} id={id} />
+      const result = await dialogs.open((dialogProps) => (
+        <CourseEnquiryForm {...dialogProps} id={id} />
       ));
       if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     },
     [dialogs, params]
   );
 
-  // Add new
   const handleAdd = useCallback(async () => {
-    const result = await dialogs.open((props) => (
-      <ClassSectionForm {...props} id="new" />
+    const result = await dialogs.open((dialogProps) => (
+      <CourseEnquiryForm {...dialogProps} id="new" />
     ));
     if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
   }, [dialogs, params]);
 
-  // Columns
   const columns: GridColDef[] = useMemo(
     () => [
+      { field: "name", headerName: "Name", width: 200 },
+      { field: "description", headerName: "Description", width: 300 },
       {
-        field: "actions",
+        field: 'actions',
         headerName: "Actions",
         width: 120,
-        renderCell: (params) => (
-          <>
-            <IconButton
-              onClick={() => handleEdit(params.row._id)}
-              color="primary"
-            >
-              <Icon>edit</Icon>
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.row._id)}
-              color="secondary"
-            >
-              <Icon>delete</Icon>
-            </IconButton>
-          </>
-        ),
-      },
-      { field: "name", headerName: "Name", width: 200 },
-      {
-        field: "class",
-        headerName: "Class",
-        width: 200,
-        renderCell: (params: GridRenderCellParams) => {
-          return params?.row?.class?.name || "not available";
-        },
-      },
+       renderCell: (params) => (
+  <>
+    <IconButton onClick={() => handleEdit(params.row._id)} color='primary'>
+      <Icon>edit</Icon>
+    </IconButton>
+    <IconButton onClick={() => handleDelete(params.row._id)} color='secondary'>
+      <Icon>delete</Icon>
+    </IconButton>
+  </>
+)
+
+      }
     ],
     [handleDelete, handleEdit]
   );
 
   if (isLoading) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
+      <Box display='flex' justifyContent='center' alignItems='center' height='100vh'>
         <CircularProgress />
       </Box>
     );
@@ -170,12 +147,7 @@ export default function ClassSectionList() {
 
   if (error) {
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <p>Error loading data!</p>
       </Box>
     );
@@ -184,42 +156,43 @@ export default function ClassSectionList() {
   return (
     <Card>
       <CardContent>
-        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
+          <Grid item xs={12} sm={6}>
             <TextField
-              placeholder="Search Class Section"
+              placeholder='Search CourseEnquiry'
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <Icon>search</Icon>
                   </InputAdornment>
-                ),
+                )
               }}
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
+
+          <Grid item xs={12} sm={6}>
+            <Stack direction='row' spacing={1} justifyContent='flex-end'>
               <IconButton
                 sx={{
                   backgroundColor: theme.palette.action.hover,
-                  "&:hover": { backgroundColor: theme.palette.action.selected },
+                  "&:hover": {
+                    backgroundColor: theme.palette.action.selected
+                  }
                 }}
-                onClick={() =>
-                  mutate(`${fetchUrl}?${params}`, { revalidate: true })
-                }
+                onClick={() => mutate(`${fetchUrl}?${params}`, { revalidate: true })}
               >
                 <Icon>refresh</Icon>
               </IconButton>
               <Button
-                variant="contained"
+                variant='contained'
                 color="primary"
                 onClick={handleAdd}
                 endIcon={<ChevronRightIcon />}
               >
-                New Class Section
+                New CourseEnquiry
               </Button>
             </Stack>
           </Grid>
@@ -242,3 +215,5 @@ export default function ClassSectionList() {
     </Card>
   );
 }
+
+export default CourseEnquiryList;

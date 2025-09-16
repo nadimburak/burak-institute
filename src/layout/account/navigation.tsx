@@ -6,6 +6,7 @@ import { type Navigation } from "@toolpad/core/AppProvider";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SubjectIcon from '@mui/icons-material/Subject';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ClassIcon from '@mui/icons-material/Class';
 
 const DotIcon = <FiberManualRecordIcon sx={{ fontSize: 8, ml: 1 }} />;
 
@@ -54,6 +55,28 @@ const accountNavigation: Navigation = [
         segment: "dashboard/course/courses",
         icon: <>{DotIcon}</>,
       },
+      {
+        title: "CoursesEnquiry",
+        segment: "dashboard/course/courseEnquiry",
+        icon: <>{DotIcon}</>,
+      },
+    ],
+  },
+
+  {
+    title: "Class",
+    icon: <ClassIcon />,
+    children: [
+      {
+        segment: "dashboard/classes",
+        title: "Classes",
+        icon: <>{DotIcon}</>,
+      },
+      {
+        segment: "dashboard/class-section",
+        title: "Class Section",
+        icon: <>{DotIcon}</>,
+      },
     ],
   },
   {
@@ -61,22 +84,7 @@ const accountNavigation: Navigation = [
     title: "Subject",
     icon: <SubjectIcon />,
   },
-    {
-    segment: "dashboard/classes",
-    title: "Classes",
-    icon: <DashboardIcon />,
-  },
-    {
-    segment: "dashboard/class-section",
-    title: "Class Section",
-    icon: <DashboardIcon />,
-  },
-  
-  {
-    segment:"dashboard/contact",
-    title:"Contact",
-    
-  }
+
 ];
 
 export default accountNavigation;

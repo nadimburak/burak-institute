@@ -119,14 +119,14 @@ export default function ClassesForm({ id = "new", open, onClose }: FormProps) {
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            label="Class Name"
-            variant="outlined" // 👈 yeh add kar
+            label="Section Name"
+            variant="outlined" // ya "filled"/"standard" jo tum use karte ho
             fullWidth
             margin="normal"
-            InputLabelProps={{ shrink: true }}
+            size="medium" // chhota chahiye to
+            {...register("name")}
             error={!!errors.name}
             helperText={errors.name?.message}
-            {...register("name")}
           />
           <Box mt={2} display="flex" justifyContent="space-between">
             <Button

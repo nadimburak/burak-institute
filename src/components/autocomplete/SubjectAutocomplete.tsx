@@ -5,16 +5,31 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 
-type SubjectOption = { id: string; name: string };
+// API se aane wale data ka asli format
+type SubjectFromAPI = {
+  _id: string; // Underscore ke saath
+  name: string;
+};
+
+// Component mein use hone wala standard format
+type SubjectOption = {
+  id:string; // Bina underscore ke
+  name: string;
+};
+
+// API response ka poora format
+type ApiResponse = {
+  data: SubjectFromAPI[];
+};
 
 type Props = {
-    value: SubjectOption | SubjectOption[] | null;
-    onChange: (value: SubjectOption | SubjectOption[] | null) => void;
+    value: SubjectOption | null;
+    onChange: (value: SubjectOption | null) => void;
     label?: string;
     placeholder?: string;
-    multiple?: boolean;
+    multiple?: boolean; // multiple prop ko handle karne ke liye code rakha gaya hai
     disabled?: boolean;
-    limit?: number; // server-side limit
+    limit?: number;
 };
 
 export default function SubjectAutocomplete({
@@ -27,13 +42,27 @@ export default function SubjectAutocomplete({
     limit = 10,
 }: Props) {
     const [inputValue, setInputValue] = React.useState("");
-    const [options, setOptions] = React.useState<SubjectOption[]>([]);
+    const [options, setOptions] = React.useState<readonly SubjectOption[]>([]);
     const [loading, setLoading] = React.useState(false);
 
-    // debounced server search
+    // ✅ FIX 1: Edit mode mein value dikhane ke liye
+    const allOptions = React.useMemo(() => {
+        const selectedValues = Array.isArray(value) ? value : value ? [value] : [];
+        const uniqueOptions = new Map<string, SubjectOption>();
+        selectedValues.forEach(val => val && uniqueOptions.set(val.id, val));
+        options.forEach(opt => uniqueOptions.set(opt.id, opt));
+        return Array.from(uniqueOptions.values());
+    }, [options, value]);
+
+    // Aapka purana setTimeout wala structure
     React.useEffect(() => {
         const controller = new AbortController();
         const t = setTimeout(async () => {
+            // Jab tak user type na kare, API call na karein
+            if (inputValue === "") {
+              setOptions([]);
+              return;
+            }
             try {
                 setLoading(true);
                 const params = new URLSearchParams({
@@ -45,10 +74,20 @@ export default function SubjectAutocomplete({
                     cache: "no-store",
                 });
                 if (!res.ok) throw new Error("Failed to load subjects");
-                const data: SubjectOption[] = await res.json();
-                setOptions(data);
+
+                const json: ApiResponse = await res.json();
+
+                // ✅ FIX 2: API se aaye data ko sahi format mein laane ke liye
+                // Isse '.filter' aur 'id' validation, dono error theek honge
+                const transformedData = (json.data || []).map(item => ({
+                  id: item._id, // _id ko 'id' banaya
+                  name: item.name,
+                }));
+                
+                setOptions(transformedData);
+
             } catch (e) {
-                if ((e as unknown as { name?: string }).name !== "AbortError") {
+                if ((e as Error).name !== "AbortError") {
                     console.error(e);
                     setOptions([]);
                 }
@@ -64,17 +103,17 @@ export default function SubjectAutocomplete({
     }, [inputValue, limit]);
 
     return (
-        <Autocomplete<SubjectOption, boolean, false, false>
+        <Autocomplete
             multiple={multiple}
             disabled={disabled}
-            options={options}
-            value={value as unknown as SubjectOption | SubjectOption[] | null}
-            onChange={(_, v) => onChange(v)}
-            onInputChange={(_, v) => setInputValue(v)}
+            options={allOptions} // Yahan 'allOptions' ka istemal karein
+            value={value}
+            onChange={(_, v) => onChange(v as any)}
+            onInputChange={(_, v) => setInputValue(v)} // Aapka purana onInputChange
             getOptionLabel={(o) => o?.name ?? ""}
             isOptionEqualToValue={(o, v) => o.id === v.id}
             loading={loading}
-            filterOptions={(x) => x} // disable client filter, only server
+            filterOptions={(x) => x}
             renderInput={(params) => (
                 <TextField
                     {...params}
