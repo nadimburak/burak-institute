@@ -4,26 +4,27 @@ import mongoose,{Schema,Document,Model} from "mongoose"
 
 export interface CourseEnquiryType extends Document{
     subject:  mongoose.Types.ObjectId;
-    courses:  mongoose.Types.ObjectId;
-    user: mongoose.Types.ObjectId;
-    description:string
+    courses?: string
+    description?:string
+      name: string;
 }
 const CourseEnquirySchema = new Schema<CourseEnquiryType>({
 
+     name: {
+        type: String,
+        required: [true, "Name is required"],
+        trim: true,
+    },
     subject:{
         type:Schema.Types.ObjectId,
         ref:"Subject",
         required:[true,"Subject is required"]
     },
     courses:{
-        type:Schema.Types.ObjectId,
-        ref:"Course",
-        required:[true,"Course is required"]
+        type:String,
+        // required:[true,"Course is required"]
     },
-    user:{
-        type:Schema.Types.ObjectId,
-        ref:"User"
-    },
+   
     description:{
         type:String
     }
