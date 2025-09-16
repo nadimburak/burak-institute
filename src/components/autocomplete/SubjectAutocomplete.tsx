@@ -34,6 +34,7 @@ type Props = {
 
 export default function SubjectAutocomplete({
     value,
+    setValue,
     onChange,
     label = "Subject",
     placeholder = "Search subjects…",
