@@ -18,7 +18,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-// import ImageFileUpload from "@/components/form/file-upload/ImageFileUpload";
+import ImageFileUpload from "@/components/form/imageUpload";
 
 interface CourseTypeFormProps {
     id?: string;
