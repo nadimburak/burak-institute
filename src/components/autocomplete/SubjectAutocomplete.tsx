@@ -1,96 +1,81 @@
 "use client";
 
-import * as React from "react";
+import { getFetcher } from "@/utils/fetcher";
+import { Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import CircularProgress from "@mui/material/CircularProgress";
+import React, { useState } from "react";
+import useSWR from "swr";
 
-type SubjectOption = { id: string; name: string };
+interface SubjectOption {
+    _id: any;
+    name: string;
+}
 
-type Props = {
-    value: SubjectOption | SubjectOption[] | null;
-    onChange: (value: SubjectOption | SubjectOption[] | null) => void;
-    label?: string;
-    placeholder?: string;
-    multiple?: boolean;
-    disabled?: boolean;
-    limit?: number; // server-side limit
-};
+interface SubjectAutocompleteProps {
+    setValue: any;
+    value: SubjectOption | null;
+    helperText?: string;
+    error?: boolean;
+}
 
-export default function SubjectAutocomplete({
+const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
+    setValue,
     value,
-    onChange,
-    label = "Subject",
-    placeholder = "Search subjects…",
-    multiple = false,
-    disabled,
-    limit = 10,
-}: Props) {
-    const [inputValue, setInputValue] = React.useState("");
-    const [options, setOptions] = React.useState<SubjectOption[]>([]);
-    const [loading, setLoading] = React.useState(false);
+    helperText = "",
+    error = false,
+}) => {
+    const fetchUrl = "/subject";
 
-    // debounced server search
-    React.useEffect(() => {
-        const controller = new AbortController();
-        const t = setTimeout(async () => {
-            try {
-                setLoading(true);
-                const params = new URLSearchParams({
-                    q: inputValue,
-                    limit: String(limit),
-                });
-                const res = await fetch(`/api/subject?${params}`, {
-                    signal: controller.signal,
-                    cache: "no-store",
-                });
-                if (!res.ok) throw new Error("Failed to load subjects");
-                const data: SubjectOption[] = await res.json();
-                setOptions(data);
-            } catch (e) {
-                if ((e as unknown as { name?: string }).name !== "AbortError") {
-                    console.error(e);
-                    setOptions([]);
-                }
-            } finally {
-                setLoading(false);
-            }
-        }, 300);
+    const [searchText, setSearchText] = useState("");
 
-        return () => {
-            controller.abort();
-            clearTimeout(t);
-        };
-    }, [inputValue, limit]);
+    // Build the query string
+    const params = new URLSearchParams();
+    if (searchText) {
+        params.append("search", searchText);
+    }
+
+    // Fetch data with SWR
+    const {
+        data,
+        error: isError,
+        isLoading,
+    } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
+
+    if (isError) {
+        return (
+            <Box>
+                <Typography variant="h6" color="error">
+                    Error fetching subjects
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
-        <Autocomplete<SubjectOption, boolean, false, false>
-            multiple={multiple}
-            // disabled={disabled}
-            options={options}
-            value={value as unknown as SubjectOption | SubjectOption[] | null}
-            onChange={(_, v) => onChange(v)}
-            onInputChange={(_, v) => setInputValue(v)}
-            getOptionLabel={(o) => o?.name ?? ""}
-            isOptionEqualToValue={(o, v) => o.id === v.id}
-            loading={loading}
-            filterOptions={(x) => x} // disable client filter, only server
+        <Autocomplete
+            options={data?.data || []}
+            getOptionLabel={(option: SubjectOption) => option?.name || ""}
+            isOptionEqualToValue={(o, v) => o._id === v._id}
+            loading={isLoading}
+            onChange={(_, selected) => {
+                setValue("subject", selected, { shouldValidate: true });
+            }}
+            value={value ?? null} // ✅ always null instead of undefined
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label={label}
-                    placeholder={placeholder}
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <>
-                                {loading ? <CircularProgress size={20} /> : null}
-                                {params.InputProps.endAdornment}
-                            </>
-                        ),
-                    }}
+                    label="Select Subject"
+                    variant="outlined"
+                    fullWidth
+                    helperText={helperText}
+                    error={error}
+                    InputLabelProps={{ shrink: true }}
+                    onChange={(e) => setSearchText(e.target.value)}
                 />
             )}
         />
     );
-}
+};
+
+export default SubjectAutocomplete;

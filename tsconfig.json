@@ -9,7 +9,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true, // ✅ Added: ensures consistent file naming
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -18,36 +18,28 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/*"
       ]
     },
-    "baseUrl": ".", // ✅ Added: required for paths to work properly
-    "allowSyntheticDefaultImports": true // ✅ Added: better ES module compatibility
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "next-env.d.ts",
+    "src/**/*",
     "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/**/*" // ✅ More explicit inclusion
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "rest-client",
-    "public",
-    "temp",
-    ".vscode",
     ".next",
     "dist",
     "out",
-    "*.js" // ✅ Exclude JavaScript files if you're migrating to TypeScript
+    "public",
+    "temp",
+    ".vscode",
+    "*.js"
   ]
 }

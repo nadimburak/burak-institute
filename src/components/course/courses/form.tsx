@@ -1,24 +1,30 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import {
-    TextField,
+    Box,
     Button,
     Dialog,
-    DialogTitle,
     DialogContent,
-    DialogActions,
-    MenuItem,
+    DialogTitle,
     Grid,
-    Box,
+    Icon,
+    IconButton,
+    MenuItem,
+    Stack,
+    TextField,
+    Typography,
+    CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNotifications } from "@toolpad/core";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-// import ImageFileUpload from "@/components/form/file-upload/ImageFileUpload";
+import ImageUpload from "@/components/form/imageUpload";
+import { defaultValues, fetchUrl } from "./constant";
 
 interface CourseTypeFormProps {
     id?: string;
@@ -30,128 +36,197 @@ interface CourseTypeFormProps {
 // ✅ Validation Schema
 const schema = yup.object({
     name: yup.string().required("Course name is required"),
-    subject: yup.string().required("Subject is required"),
+    subject: yup
+        .object({
+            _id: yup.string().required("Subject is required"),
+        })
+        .nullable()
+        .required("Subject is required"),
     duration: yup.string().required("Duration is required"),
-    image: yup.string().url("Invalid URL").required("Image URL is required"),
+    image: yup.string().required("Image is required"),
     description: yup.string().optional(),
 });
 
-export default function CourseForm({
-    id,
-    open,
-    onClose,
-    payload,
-}: CourseTypeFormProps) {
+
+export default function CourseForm({ id, open, onClose, payload }: CourseTypeFormProps) {
+    const notifications = useNotifications();
     const {
-        control,
+        register,
         handleSubmit,
         reset,
-        formState: { errors },
+        watch,
+        setValue,
+        formState: { errors, isSubmitting },
     } = useForm<ICourse>({
         resolver: yupResolver(schema),
-        defaultValues: payload || {}, // preload when editing
+        defaultValues: payload || {
+            name: "",
+            subject: null,
+            duration: "",
+            image: "",
+            description: "",
+        },
     });
 
-    const [subjects, setSubjects] = useState<{ _id: string; name: string }[]>([]);
-
-    // ✅ Fetch subjects for dropdown
-    useEffect(() => {
-        const fetchSubjects = async () => {
-            try {
-                const res = await axios.get("/api/subject");
-                setSubjects(res.data.data || []);
-            } catch (err) {
-                console.error("Failed to fetch subjects", err);
-            }
-        };
-        fetchSubjects();
-    }, []);
+    const subject = watch("subject");
+    const [loading, setLoading] = useState(false);
 
     // ✅ Submit Handler
     const onSubmit = async (data: ICourse) => {
+        data["subject"] = subject?._id;
+
+        // Define the endpoint based on whether it's a create or update operation
+        let url = `${fetchUrl}`;
+        let method: "post" | "put" = "post";
+
+        if (id != "new") {
+            url = `${fetchUrl}/${id}`;
+            method = "put";
+        }
+
         try {
-            if (id && id !== "new") {
-                // update existing
-                const res = await axios.put(`/api/course/${id}`, data);
-                console.log("Course updated:", res.data);
-            } else {
-                // create new
-                const res = await axios.post(`/api/course`, data);
-                console.log("Course created:", res.data);
+            // Send form data to the server
+            const response = await axiosInstance.request({
+                url,
+                method,
+                data, // Form data
+            });
+
+            // Handle success
+            if (response.status == 200 || response.status == 201) {
+                notifications.show(response.data.message, { severity: "success" });
+                onClose("true");
             }
-            reset();
-            onClose(true); // close dialog after success
-        } catch (err) {
-            console.error("Error saving course:", err);
+        } catch (error: unknown) {
+            const err = error as AxiosErrorResponse;
+            if (err?.response?.data?.message) {
+                notifications.show(err.response.data.message, { severity: "error" });
+            } else {
+                notifications.show("An unexpected error occurred", {
+                    severity: "error",
+                });
+            }
+            onClose("true");
+        }
+    };
+
+    useEffect(() => {
+        if (id && id !== "new") {
+            bindData(id);
+        }
+    }, [id]);
+
+    const bindData = async (id: string | number) => {
+        try {
+            const response = await axios.get(`/api/course/${id}`);
+            reset(response.data.data);
+            setValue("subject", response.data.data.subject);
+        } catch (error) {
+            console.error("Error fetching course:", error);
         }
     };
 
     return (
-        <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
-            <DialogTitle>{id === "new" ? "Create Course" : "Edit Course"}</DialogTitle>
-            <DialogContent>
-                <Box sx={{ mt: 2 }}>
-                    <form id="course-form" onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={2}>
-                            {/* Course Name */}
-                            <Grid size={{ xs: 12 }}>
-                                <TextField
+        <Dialog fullWidth maxWidth="sm" open={open} onClose={() => onClose(null)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <DialogTitle>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <Typography variant="h6">
+                            {id === "new" ? "Create Course" : "Edit Course"}
+                        </Typography>
+                        <IconButton onClick={() => onClose(null)}>
+                            <Icon>close</Icon>
+                        </IconButton>
+                    </Stack>
+                </DialogTitle>
 
-                                    label="Course Name"
-                                    fullWidth
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12 }}>
-                                <SubjectAutocomplete
-                                    setValue={setValue}
-                                    value={watch("subject") ?? null}
-                                    error={errors.subject}
-                                    helperText={errors.subject?.message}
-                                />
-                            </Grid>
-                            <Grid size={{ xs: 12 }}>
-                                <TextField
-
-                                    select
-                                    label="Duration"
-                                    fullWidth
-                                    error={!!errors.duration}
-                                    helperText={errors.duration?.message}
-                                >
-                                    <MenuItem value="3 months">3 Months</MenuItem>
-                                    <MenuItem value="6 months">6 Months</MenuItem>
-                                    <MenuItem value="12 months">12 Months</MenuItem>
-                                </TextField>
-                            </Grid>
-                            <Grid size={{ xs: 12 }}>
-                                <ImageFileUpload
-                                    value={watch("document_url") ?? ""}
-                                    maxFileSize="10MB"
-                                    setValue={(e) => setValue("document_url", e)}
-                                />
-                            </Grid>
-
-                            <Grid size={{ xs: 12 }}>
-                                <TextField
-
-                                    label="Description"
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                />
-                            </Grid>
+                <DialogContent>
+                    <Grid container spacing={2} mt={1}>
+                        {/* Course Name */}
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                label="Course Name"
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                                error={!!errors.name}
+                                helperText={errors.name?.message}
+                                {...register("name")}
+                            />
                         </Grid>
-                    </form>
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => onClose(false)}>Cancel</Button>
-                <Button type="submit" form="course-form" variant="contained">
-                    {id === "new" ? "Create" : "Update"}
-                </Button>
-            </DialogActions>
+
+                        {/* Subject */}
+                        <Grid size={{ xs: 12 }}>
+                            <SubjectAutocomplete
+                                setValue={setValue}
+                                value={subject}
+                                error={!!errors.subject}
+                                helperText={errors.subject ? "Subject is required" : ""}
+                            />
+                        </Grid>
+                        {/* Duration */}
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                select
+                                label="Duration"
+                                fullWidth
+                                defaultValue=""
+                                InputLabelProps={{ shrink: true }}
+                                error={!!errors.duration}
+                                helperText={errors.duration?.message}
+                                {...register("duration")}
+                            >
+                                <MenuItem value="3 months">3 Months</MenuItem>
+                                <MenuItem value="6 months">6 Months</MenuItem>
+                                <MenuItem value="12 months">12 Months</MenuItem>
+                            </TextField>
+                        </Grid>
+
+                        {/* Image Upload */}
+                        <Grid size={{ xs: 12 }}>
+                            <ImageUpload
+                                value={watch("image")}
+                                maxFileSize="10MB"
+                                setValue={(val) => setValue("image", val, { shouldValidate: true })}
+                                error={!!errors.image}
+                                helperText={errors.image?.message}
+                            />
+                        </Grid>
+
+                        {/* Description */}
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                label="Description"
+                                fullWidth
+                                multiline
+                                rows={3}
+                                InputLabelProps={{ shrink: true }}
+                                error={!!errors.description}
+                                helperText={errors.description?.message}
+                                {...register("description")}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Box marginTop={2} display="flex" justifyContent="space-between">
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => reset()}
+                        >
+                            Reset
+                        </Button>
+                        <Button type="submit" variant="contained" color="primary">
+                            {id != "new" ? "Update" : "Create"}
+                        </Button>
+                    </Box>
+                </DialogContent>
+            </form>
         </Dialog>
     );
 }
