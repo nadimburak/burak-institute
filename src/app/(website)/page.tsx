@@ -10,7 +10,7 @@ import "swiper/css/navigation";
 // import './styles.css';
 
 // import required modules
-import { Navigation } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 
 export default function MainPage() {
   const theme = useTheme(); // 🎨 theme se colors lena
@@ -26,16 +26,25 @@ export default function MainPage() {
     {id:1, image:"/slider-image/education-1.jpg", alt:""},
 
     {id:2, image:"/slider-image/education-2.png", alt:"",},
-    {id:3, image:"/slider-image/education-1.png", alt:""},
+    {id:3, image:"", alt:""},
 
-    {id:4, image:"/slider-image/education-1.png", alt:""}
+    {id:4, image:"", alt:""}
   ]
 
   return (
     <>
       <Box>
-        <Swiper navigation={true} modules={[Navigation]} className="mySwiper"
-          style={{height:'500px'}}
+        <Swiper modules={[Autoplay]} 
+        autoplay={{
+          delay:2000,
+          disableOnInteraction: false
+        }}
+        loop={true}
+        spaceBetween={30}
+        slidesPerView={1}
+        className="mySwiper"
+        style={{height:'500px'}}
+        
         >
            {slides.map((slide) => (
       <SwiperSlide key={slide.id}>
