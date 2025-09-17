@@ -25,6 +25,7 @@ import { ICourse } from "@/models/course/Course.model";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import ImageUpload from "@/components/form/imageUpload";
 import { defaultValues, fetchUrl } from "./constant";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface CourseTypeFormProps {
     id?: string;
@@ -94,7 +95,7 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
 
             // Handle success
             if (response.status == 200 || response.status == 201) {
-                notifications.show(response.data.message, { severity: "success" });
+                notifications.show("Course created successfully", { severity: "success", autoHideDuration: 3000, });
                 onClose("true");
             }
         } catch (error: unknown) {
@@ -108,6 +109,7 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
             } else {
                 notifications.show("An unexpected error occurred", {
                     severity: "error",
+                    autoHideDuration: 3000,
                 });
             }
             onClose("true");
