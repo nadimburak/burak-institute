@@ -12,8 +12,8 @@ interface ClassesItem {
 }
 
 interface ClassesAutocompleteProps {
-  setValue: any;
-  value: any;
+  setValue: (field: string, value: ClassesItem | null, options: { shouldValidate: boolean }) => void;
+  value: ClassesItem | null;
   helperText?: string;
   error?: boolean;
 }

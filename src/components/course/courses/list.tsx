@@ -114,9 +114,6 @@ export default function CourseList() {
     // Columns
     const columns: GridColDef[] = useMemo(
         () => [
-            { field: "name", headerName: "Name", width: 200 },
-            { field: "description", headerName: "Description", width: 300 },
-            { field: "status", headerName: "Status", width: 120 },
             {
                 field: "actions",
                 headerName: "Actions",
@@ -138,6 +135,9 @@ export default function CourseList() {
                     </>
                 ),
             },
+            { field: "name", headerName: "Name", width: 200 },
+            { field: "description", headerName: "Description", width: 300 },
+            // { field: "status", headerName: "Status", width: 120 },
         ],
         [handleDelete, handleEdit]
     );

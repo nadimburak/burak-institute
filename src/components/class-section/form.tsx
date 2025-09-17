@@ -63,28 +63,16 @@ export default function ClassSectionForm({
   });
 
   // Fetch existing data for edit
-  const bindData = useCallback(
-    async (id: string) => {
-      try {
-        const res = await axiosInstance.get(`${fetchUrl}/${id}`);
-        const data = res.data.data;
-        reset({
-          name: data.name,
-          class: {
-            _id: data.class?._id || data.class,
-            name: data.class?.name || "",
-          }
-        });
-      } catch (error: unknown) {
-        const errorMessage = handleErrorMessage(error);
-        notifications.show(errorMessage, {
-          severity: "error",
-          autoHideDuration: 3000,
-        });
-      }
-    },
-    [notifications, reset]
-  );
+  const bindData = async (id: string | number) => {
+    try {
+      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+      console.log("API DATA:", response.data.data);
+      reset(response.data.data);
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     if (id && id !== "new") {
