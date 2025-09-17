@@ -31,10 +31,9 @@ interface CourseTypeFormProps {
     id?: string;
     open: boolean;
     onClose: (result?: unknown) => void;
-    payload?: any;
+    payload?: unknown;
 }
 
-// ✅ Validation Schema
 const schema = yup.object({
     name: yup.string().required("Course name is required"),
     subject: yup
@@ -60,13 +59,7 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
         formState: { errors, isSubmitting },
     } = useForm<ICourse>({
         resolver: yupResolver(schema),
-        defaultValues: payload || {
-            name: "",
-            subject: null,
-            duration: "",
-            image: "",
-            description: "",
-        },
+        defaultValues,
     });
 
     const subject = watch("subject");
@@ -76,7 +69,6 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
     const onSubmit = async (data: ICourse) => {
         data["subject"] = subject?._id;
 
-        // Define the endpoint based on whether it's a create or update operation
         let url = `${fetchUrl}`;
         let method: "post" | "put" = "post";
 
@@ -99,7 +91,7 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
                 onClose("true");
             }
         } catch (error: unknown) {
-            const err = error as AxiosErrorResponse;
+            const err = error;
             console.error("Axios Error:", err); // 👈 ye add karo
 
             if (err?.response?.data?.message) {
@@ -117,21 +109,24 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
 
     };
 
+
+
+    const bindData = async (id: string | number) => {
+        try {
+            const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+            console.log("API DATA:", response.data.data);
+            reset(response.data.data);
+
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
     useEffect(() => {
         if (id && id !== "new") {
             bindData(id);
         }
     }, [id]);
-
-    const bindData = async (id: string | number) => {
-        try {
-            const response = await axios.get(`/api/course/${id}`);
-            reset(response.data.data);
-            setValue("subject", response.data.data.subject);
-        } catch (error) {
-            console.error("Error fetching course:", error);
-        }
-    };
 
     return (
         <Dialog fullWidth maxWidth="sm" open={open} onClose={() => onClose(null)}>
@@ -176,22 +171,20 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
                             />
                         </Grid>
                         {/* Duration */}
-                        <Grid size={{ xs: 12 }}>
-                            <TextField
-                                select
-                                label="Duration"
-                                fullWidth
-                                defaultValue=""
-                                InputLabelProps={{ shrink: true }}
-                                error={!!errors.duration}
-                                helperText={errors.duration?.message}
-                                {...register("duration")}
-                            >
-                                <MenuItem value="3 months">3 Months</MenuItem>
-                                <MenuItem value="6 months">6 Months</MenuItem>
-                                <MenuItem value="12 months">12 Months</MenuItem>
-                            </TextField>
-                        </Grid>
+                        <TextField
+                            select
+                            label="Duration"
+                            fullWidth
+                            InputLabelProps={{ shrink: true }}
+                            error={!!errors.duration}
+                            helperText={errors.duration?.message}
+                            {...register("duration")}
+                        >
+                            <MenuItem value="3 months">3 Months</MenuItem>
+                            <MenuItem value="6 months">6 Months</MenuItem>
+                            <MenuItem value="12 months">12 Months</MenuItem>
+                        </TextField>
+
 
                         {/* Image Upload */}
                         <Grid size={{ xs: 12 }}>
