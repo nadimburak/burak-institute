@@ -1,1 +1,8 @@
-export const fetchUrl = '/course/courseEnquiry';
+export const fetchUrl = '/course/course-enquiry';
+
+export const defaultValues = {
+    name: '',
+    subject: '',
+   courses:'',
+    description: '',
+};

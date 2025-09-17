@@ -1,107 +1,109 @@
+// file: app/api/course/course-enquiry/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import CourseEnquiry, { CourseEnquiryType } from "@/models/course/CourseEnquriyModel"
-import { QueryParams } from "@/types/query.params";
-import { success } from "zod";
+import CourseEnquiry from "@/models/course/CourseEnquriyModel";
+import { Types } from "mongoose";
+import { z } from "zod"; // ✅ Zod ko import karein
 
+// ✅ FIX 1: Zod ka istemal karke ek validation schema banayein
+const courseEnquirySchema = z.object({
+    name: z.string().min(1, { message: "Name is required" }),
+    
+    // ✅ FIX: Ab 'mongoose.Types' ki jagah seedhe 'Types' ka istemal karein
+    subject: z.string().refine((val) => Types.ObjectId.isValid(val), {
+        message: "Invalid Subject ID format",
+    }),
+    courses: z.string(),
+    description: z.string().optional(),
+});
 
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
 
         const { searchParams } = new URL(request.url);
-        const queryParams: QueryParams = Object.fromEntries(searchParams.entries());
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = parseInt(searchParams.get("limit") || "10", 10);
+        const search = searchParams.get("search") || "";
+        const sortBy = searchParams.get("sortBy") || "name";
+        const order = searchParams.get("order") || "asc";
 
-        const { page = "1", limit = "10", order = "asc", search = '', sortBy = 'name' } = queryParams
-
-        const parsedPage = Math.max(parseInt(page, 10), 1);
-        const parsedLimit = Math.max(parseInt(limit, 10), 1);
+        const parsedPage = Math.max(page, 1);
+        const parsedLimit = Math.max(limit, 1);
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
-        const query: Record<string, unknown> = {}
+        const query: Record<string, any> = {};
 
-        if (search?.trim()) {
-            query.$of = [
+        // ✅ FIX 2: Search query ko theek kiya gaya hai
+        if (search.trim()) {
+            query.$or = [ // '$of' ko '$or' kiya
                 { name: { $regex: search.trim(), $options: 'i' } },
-                { description: { $regex: search.trim(), $option: 'i' } }
-            ]
+                { description: { $regex: search.trim(), $options: 'i' } } // '$option' ko '$options' kiya
+            ];
         }
 
-        const allowedSortFields = ["subject", "courses", "createdAt", "updatedAt"];
-        const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "courses";
+        const allowedSortFields = ["name", "subject", "courses", "createdAt", "updatedAt"];
+        const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "name";
 
         const [data, totalData] = await Promise.all([
             CourseEnquiry.find(query)
                 .populate('subject', 'name')
-                .populate('courses', 'name')
-                .populate('user', 'name')
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
                 .lean(),
             CourseEnquiry.countDocuments(query)
-        ])
+        ]);
+
         return NextResponse.json({
             data,
             total: totalData,
             currentPage: parsedPage,
             totalPages: Math.ceil(totalData / parsedLimit),
-            hasNextPage: parsedPage < Math.ceil(totalData / parsedLimit),
-            hasPrevPage: parsedPage > 1,
         });
+
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: "Error fetching course enquiries", error: errorMessage }, { status: 500 });
     }
 }
 
 
 export async function POST(request: NextRequest) {
     try {
-        await connectDB()
-
+        await connectDB();
         const body = await request.json();
+       
+        const validatedData = courseEnquirySchema.parse(body);
+     
+        console.log(validatedData);
+        
 
-        const courseEnquiry: CourseEnquiryType = await CourseEnquiry.create(body)
+        const courseEnquiry = await CourseEnquiry.create(validatedData);
 
-        if (!courseEnquiry) {
-            return NextResponse.json({ success: false, message: "Something went wrong while Creating entry in DB on Course Enquiry!!!" })
-        }
+       
 
-        return NextResponse.json({ success: true, data: { courseEnquiry } }, { status: 200 })
+        return NextResponse.json({ success: true, data: courseEnquiry }, { status: 201 });
+
     } catch (error: unknown) {
-        console.error("Create CourseEnquiry Error:", error);
+        console.error("💥 UNEXPECTED ERROR IN POST HANDLER:", error); // Debugging ke liye
 
-        if (
-            typeof error === "object" &&
-            error !== null &&
-            "name" in error &&
-            (error as { name: string }).name === "Validation Error"
-        ) {
-            const errors =
-                "errors" in error
-                    ? Object.values(
-                        (error as { errors: Record<string, { message: string }> }).errors
-                    ).map((err) => err.message)
-                    : [];
+        if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { message: "Validation failed", details: errors },
+                { message: "Invalid data provided", errors: error},
                 { status: 400 }
             );
         }
-        if (
-            typeof error === "object" &&
-            error !== null &&
-            "code" in error &&
-            (error as { code: number }).code === 11000
-        ) {
+
+        if (typeof error === "object" && error !== null && "code" in error && (error as { code: number }).code === 11000) {
             return NextResponse.json(
-                { message: "Course already exists" },
+                { message: "This course enquiry already exists." },
                 { status: 409 }
             );
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({ message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: "An unexpected error occurred.", error: errorMessage }, { status: 500 });
     }
 }
