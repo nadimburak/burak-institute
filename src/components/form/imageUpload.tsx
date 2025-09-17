@@ -48,7 +48,7 @@ const ImageFileUpload = ({
   maxFiles = 1,
   allowedFileTypes = ["image/jpeg", "image/png", "image/svg+xml"],
 }: ImageFileUploadProps) => {
-  const uploadUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`;
+  const uploadUrl = `/api/file/upload`;
   const [files, setFiles] = useState<
     (string | FilePondInitialFile | Blob | File)[]
   >([]);
