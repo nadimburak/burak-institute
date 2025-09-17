@@ -14,6 +14,7 @@ const CourseCard = (props:any) => {
         )
     }
     const router = useRouter()
+    
   return (
     <Card>
         <CardContent>
@@ -37,7 +38,7 @@ const CourseCard = (props:any) => {
             </Typography>
         </CardContent>
         <CardActions>
-            <button onClick={()=>{router.push("/");}}></button>
+            <button onClick={()=>{router.push(`/courseEnqury?name=${name}&subject${subject}&duration=${duration}&image${image}&description${description}&createdAt${createdAt}&updatedAt${updatedAt}`);}}>Explore</button>
         </CardActions>
     </Card>
   )

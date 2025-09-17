@@ -79,6 +79,8 @@ export async function DELETE(
 ){
     try {
         await connectDB()
+        console.log(params.id);
+        
 
         const deletedCourseEnquiry = await CourseEnquiry.findByIdAndDelete(params.id);
 

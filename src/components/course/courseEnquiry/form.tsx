@@ -127,11 +127,11 @@ export default function CourseEnquiryForm({
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 <Controller name="name" control={control} render={({ field }) => ( <TextField {...field} label="Enquiry Name" fullWidth error={!!errors.name} helperText={errors.name?.message}/> )}/>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{xs:12}} >
                 <Controller
                   name="subject"
                   control={control}
@@ -173,11 +173,11 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid  xs={12}>
+              <Grid  size={{xs:12}}>
                 <Controller name="courses" control={control} render={({ field }) => ( <TextField {...field} label="Courses" fullWidth error={!!errors.courses} helperText={errors.courses?.message}/> )}/>
               </Grid>
 
-              <Grid xs={12}>
+              <Grid size={{xs:12}}>
                 <Controller name="description" control={control} render={({ field }) => (<TextField {...field} label="Description (Optional)" fullWidth multiline rows={3}/>)}/>
               </Grid>
             </Grid>
