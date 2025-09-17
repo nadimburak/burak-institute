@@ -4,9 +4,9 @@ Accept: application/json
 # Authorization: Bearer {{accessToken}}
 
 {
-  "subject": "64fa12c6f1c2a5f9a8a3b2e1", 
+  "subject": "68c90f4ad64f7518f7030f9e", 
   "duration": "6 months",
-  "name": "Full Stack Web Development",
+  "name": "Web Development",
   "image": "https://example.com/images/fullstack.jpg",
-  "description": "Learn MERN stack with hands-on projects"
+  "description": "Ldsdsvdsdsvdvdvsddiudyidhdvssdvprojects"
 }

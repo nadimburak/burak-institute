@@ -99,8 +99,12 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
             }
         } catch (error: unknown) {
             const err = error as AxiosErrorResponse;
+            console.error("Axios Error:", err); // 👈 ye add karo
+
             if (err?.response?.data?.message) {
                 notifications.show(err.response.data.message, { severity: "error" });
+            } else if (err?.response?.data) {
+                notifications.show(JSON.stringify(err.response.data), { severity: "error" });
             } else {
                 notifications.show("An unexpected error occurred", {
                     severity: "error",
@@ -108,6 +112,7 @@ export default function CourseForm({ id, open, onClose, payload }: CourseTypeFor
             }
             onClose("true");
         }
+
     };
 
     useEffect(() => {
