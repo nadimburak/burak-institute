@@ -1,0 +1,12 @@
+POST {{baseUrl}}course/course-enquiry HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+# Authorization: Bearer {{accessToken}}
+
+{
+  "subject": "64fa12c6f1c2a5f9a8a3b2e1", 
+  "duration": "6 months",
+  "name": "Full Stack Web Development",
+  "courses":"xyz",
+  "description": "Learn MERN stack with hands-on projects"
+}
