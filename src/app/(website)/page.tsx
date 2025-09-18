@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
-import CoursePage from "./courses/page";
+import Page from "./courseEnqury/page";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -49,7 +49,7 @@ export default function MainPage() {
            {slides.map((slide) => (
       <SwiperSlide key={slide.id}>
         <img
-          src={slide.image}
+          src={slide.image || "/10.png"}
           alt={slide.alt}
           style={{
             width: "100%",
@@ -62,7 +62,7 @@ export default function MainPage() {
     ))}
         </Swiper>
       </Box>
-      <CoursePage />
+      <Page />
     </>
   );
 }

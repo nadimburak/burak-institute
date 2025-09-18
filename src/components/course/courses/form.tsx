@@ -20,7 +20,7 @@ import { useNotifications } from "@toolpad/core";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios,{axiosInstance} from "axios";
+import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import ImageUpload from "@/components/form/imageUpload";
