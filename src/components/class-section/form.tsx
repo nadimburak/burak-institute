@@ -33,7 +33,7 @@ const validationSchema = yup.object({
 
 interface IClassSection {
   name: string;
-  class: any;
+  class: { name: string; _id: string };
 }
 
 interface FormProps {
@@ -62,17 +62,33 @@ export default function ClassSectionForm({
     defaultValues,
   });
 
-  // Fetch existing data for edit
-  const bindData = async (id: string | number) => {
-    try {
-      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
-      console.log("API DATA:", response.data.data);
-      reset(response.data.data);
+  // Fetch existing data for edit - wrapped in useCallback
+  const bindData = useCallback(
+    async (id: string | number) => {
+      try {
+        const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+        console.log("API DATA:", response.data.data);
 
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+        // Check if data exists before resetting
+        if (response.data.data) {
+          reset(response.data.data);
+        } else {
+          console.error("No data received from API");
+          notifications.show("No data found for this class section", {
+            severity: "error",
+            autoHideDuration: 3000,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        notifications.show("Error loading class section data", {
+          severity: "error",
+          autoHideDuration: 3000,
+        });
+      }
+    },
+    [reset, notifications]
+  );
 
   useEffect(() => {
     if (id && id !== "new") {
@@ -135,10 +151,10 @@ export default function ClassSectionForm({
 
           <TextField
             label="Section Name"
-            variant="outlined" // ya "filled"/"standard" jo tum use karte ho
+            variant="outlined"
             fullWidth
             margin="normal"
-            size="medium" // chhota chahiye to
+            size="medium"
             {...register("name")}
             error={!!errors.name}
             helperText={errors.name?.message}

@@ -4,11 +4,12 @@ import theme from "@/theme/account/theme";
 import { PageContainer } from "@toolpad/core";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { NextAppProvider } from "@toolpad/core/nextjs";
-import { signOut, useSession } from 'next-auth/react';
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import accountNavigation from "./navigation";
+import Box from  "@mui/material";
 
 export default function AdminLayout({
   window,
@@ -19,35 +20,43 @@ export default function AdminLayout({
 }) {
   const { data: session, status } = useSession();
 
-  const user = session?.user
+  const user = session?.user;
 
   const router = useRouter();
   const pathname = usePathname();
   const demoWindow = window !== undefined ? window() : undefined;
 
   React.useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
+    if (status === "unauthenticated") {
+      router.push("/auth/signin");
     }
   }, [status, router]);
 
   const handleSignOut = async () => {
     await signOut({ redirect: false });
-    router.push('/auth/signin');
+    router.push("/auth/signin");
     router.refresh();
   };
 
   return (
-    <NextAppProvider theme={theme}
+    <NextAppProvider
+      theme={theme}
       navigation={accountNavigation}
       branding={{
         logo: (
-          <Image
-            src="/logo1.png"
-            alt="Account Logo"
-            width={70}
-            height={70}
-            style={{ borderRadius: "8px", objectFit: "cover" }}
+          <Box
+            component="img"
+            src={`${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${data?.image}`}
+            alt={data?.name}
+            sx={{
+              width: "100%",
+              height: 260,
+              objectFit: "cover",
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.03)",
+              },
+            }}
           />
         ),
         title: "Account Panel",
@@ -62,14 +71,12 @@ export default function AdminLayout({
       session={{
         user: user
           ? {
-            ...user,
-            id: user.id?.toString() || null,
-            name: user.name || "",
-            email: user.email || "",
-            image: user.image
-              ? `/uploads/${user.image}`
-              : "",
-          }
+              ...user,
+              id: user.id?.toString() || null,
+              name: user.name || "",
+              email: user.email || "",
+              image: user.image ? `/uploads/${user.image}` : "",
+            }
           : undefined,
       }}
       authentication={{
@@ -80,9 +87,7 @@ export default function AdminLayout({
       }}
     >
       <DashboardLayout>
-        <PageContainer>
-          {children}
-        </PageContainer>
+        <PageContainer>{children}</PageContainer>
       </DashboardLayout>
     </NextAppProvider>
   );
