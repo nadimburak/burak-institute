@@ -8,7 +8,7 @@ import { useState, useEffect } from "react"
 
 const CourseCard = () => {
 
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
