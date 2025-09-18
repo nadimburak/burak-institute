@@ -1,4 +1,4 @@
-// file: app/api/course/course-enquiry/route.ts
+
 
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
@@ -9,7 +9,7 @@ import { z } from "zod"; // ✅ Zod ko import karein
 // ✅ FIX 1: Zod ka istemal karke ek validation schema banayein
 const courseEnquirySchema = z.object({
     name: z.string().min(1, { message: "Name is required" }),
-    
+
     // ✅ FIX: Ab 'mongoose.Types' ki jagah seedhe 'Types' ka istemal karein
     subject: z.string().refine((val) => Types.ObjectId.isValid(val), {
         message: "Invalid Subject ID format",
@@ -74,16 +74,15 @@ export async function POST(request: NextRequest) {
     try {
         await connectDB();
         const body = await request.json();
-       console.log(body);
-       
+
         const validatedData = courseEnquirySchema.parse(body);
-     
+
         console.log(validatedData);
-        
+
 
         const courseEnquiry = await CourseEnquiry.create(validatedData);
 
-       
+
 
         return NextResponse.json({ success: true, data: courseEnquiry }, { status: 201 });
 
@@ -92,7 +91,7 @@ export async function POST(request: NextRequest) {
 
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { message: "Invalid data provided", errors: error},
+                { message: "Invalid data provided", errors: error },
                 { status: 400 }
             );
         }
