@@ -3,9 +3,9 @@
 import {   useSearchParams,useRouter} from "next/navigation"
 import Image from "next/image";
 import {Box,Card,CardContent,Typography,CardActions,Button} from "@mui/material"
-import CouserEnquiryForm from '@/components/form/courseEnquiryFrom'
+import CourseEnquiryForm from "@/components/course/courseEnquiry/form";
 
-const CourseEnquiryUserForm = () => {
+const CourseEnquiryForm = () => {
 
  const searchParams = useSearchParams()
  const router = useRouter()
@@ -65,4 +65,4 @@ const img = searchParams.get("image")
   )
 }
 
-export default CourseEnquiryUserForm
+export default CourseEnquiryForm
