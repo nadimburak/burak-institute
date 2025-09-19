@@ -9,7 +9,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import accountNavigation from "./navigation";
-import Box from  "@mui/material";
+import { Box } from "@mui/material";
+
 
 export default function AdminLayout({
   window,
@@ -46,8 +47,8 @@ export default function AdminLayout({
         logo: (
           <Box
             component="img"
-            src={`${process.env.NEXT_PUBLIC_UPLOAD_URL}/uploads/${data?.image}`}
-            alt={data?.name}
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${user?.image}`}
+            alt={user?.name || ""}
             sx={{
               width: "100%",
               height: 260,
