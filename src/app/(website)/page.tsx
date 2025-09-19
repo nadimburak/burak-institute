@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -10,11 +10,9 @@ import "swiper/css/navigation";
 // import './styles.css';
 
 // import required modules
-import { Autoplay, Navigation } from "swiper/modules";
-import CoursesCard from "@/components/web/courses/courseCard";
 import CoursesList from "@/components/web/courses/list";
 import Image from "next/image";
-
+import { Autoplay } from "swiper/modules";
 export default function MainPage() {
   const theme = useTheme(); // 🎨 theme se colors lena
   const features = [
