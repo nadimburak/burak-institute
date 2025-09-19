@@ -192,7 +192,7 @@ const CourseEnquiryList = () => {
                 onClick={handleAdd}
                 endIcon={<ChevronRightIcon />}
               >
-                New CourseEnquiry
+                New Course Enquiry
               </Button>
             </Stack>
           </Grid>

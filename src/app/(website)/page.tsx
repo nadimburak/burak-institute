@@ -26,11 +26,10 @@ export default function MainPage() {
   ];
 
   const slides =[
-    {id:1, image:"/slider-image/education-1.jpg", alt:"maths"},
-    // {id:2, image:"/slider-image/education-2.png", alt:"maths",},
-    // {id:3, image:"/slider-image/education-3.png", alt:"dddd"},
-
-    // {id:4, image:"", alt:""}
+    {id:1, image:"/slider-image/education-1.jpg", alt:""},
+    {id:2, image:"/slider-image/education-2.png", alt:"",},
+    {id:3, image:"/slider-image/education-3.jpg", alt:""},
+    {id:4, image:"/slider-image/education-4.jpg", alt:"", }
   ]
 
   return (
