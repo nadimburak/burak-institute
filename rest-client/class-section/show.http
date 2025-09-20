@@ -1,4 +1,4 @@
-GET {{baseUrl}}/classSection/6777cd9bafb618ca78c3b6f5 HTTP/1.1
+GET {{baseUrl}}class-section/68c7f33313f87b2334b969ad HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-# Authorization: Bearer {{accessToken}}
+
