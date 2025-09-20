@@ -1,8 +1,9 @@
-POST {{baseUrl}}classSection/course-types HTTP/1.1
+POST {{baseUrl}}class-section HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 # Authorization: Bearer {{accessToken}}
 
 {
-    "name": "Class Section",
+    "class": "64a7f1c313f87b2534b96991",
+    "name": "w"
 }

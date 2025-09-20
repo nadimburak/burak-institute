@@ -27,7 +27,7 @@ const theme = createTheme({
         },
         text: {
           primary: "#111827",
-          secondary: "#ffffffff"
+          secondary: "#ffffffff",
         },
         divider: "#E5E7EB",
       },
@@ -85,13 +85,20 @@ const theme = createTheme({
         },
       },
     },
-    MuiCard: { styleOverrides: { root: { borderRadius: 16, boxShadow: "0px 6px 18px rgba(0,0,0,0.04)" } } },
+    MuiCard: {
+      styleOverrides: {
+        root: { borderRadius: 16, boxShadow: "0px 6px 18px rgba(0,0,0,0.04)" },
+      },
+    },
     MuiPaper: { styleOverrides: { root: { borderRadius: 12 } } },
     MuiDialog: {
       styleOverrides: {
         paper: {
           animation: "fadeIn 0.6s ease",
-          "@keyframes fadeIn": { from: { opacity: 0, transform: "scale(0.95)" }, to: { opacity: 1, transform: "scale(1)" } },
+          "@keyframes fadeIn": {
+            from: { opacity: 0, transform: "scale(0.95)" },
+            to: { opacity: 1, transform: "scale(1)" },
+          },
         },
       },
     },
@@ -99,4 +106,3 @@ const theme = createTheme({
 });
 
 export default theme;
-

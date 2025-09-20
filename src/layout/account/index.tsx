@@ -11,7 +11,6 @@ import * as React from "react";
 import accountNavigation from "./navigation";
 import { Box } from "@mui/material";
 
-
 export default function AdminLayout({
   window,
   children,
@@ -44,22 +43,22 @@ export default function AdminLayout({
       theme={theme}
       navigation={accountNavigation}
       branding={{
-        logo: (
-          <Box
-            component="img"
-            src={`${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${user?.image}`}
-            alt={user?.name || ""}
-            sx={{
-              width: "100%",
-              height: 260,
-              objectFit: "cover",
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "scale(1.03)",
-              },
-            }}
-          />
-        ),
+        // logo: (
+        //   <Box
+        //     component="img"
+        //     src={`${process.env.NEXT_PUBLIC_BASE_URL}/uploads/${user?.image}`}
+        //     alt={user?.name || ""}
+        //     sx={{
+        //       width: "100%",
+        //       height: 260,
+        //       objectFit: "cover",
+        //       transition: "transform 0.3s ease",
+        //       "&:hover": {
+        //         transform: "scale(1.03)",
+        //       },
+        //     }}
+        //   />
+        // ),
         title: "Account Panel",
         homeUrl: "/",
       }}
