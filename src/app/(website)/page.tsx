@@ -1,7 +1,7 @@
 "use client";
 
-import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
-import Page from "./courseEnqury/page";
+import { Box, useTheme } from "@mui/material";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -10,25 +10,26 @@ import "swiper/css/navigation";
 // import './styles.css';
 
 // import required modules
-import { Autoplay, Navigation } from "swiper/modules";
-
+import CoursesList from "@/components/web/courses/list";
+import Image from "next/image";
+import { Autoplay } from "swiper/modules";
 export default function MainPage() {
   const theme = useTheme(); // 🎨 theme se colors lena
   const features = [
     "Peer learning",
     "Code reviews",
-    "Virtual hostel",
+    "Virtual hostel", 
+
     "Doubt sessions",
     "Bounties",
   ];
 
   const slides =[
-    {id:1, image:"/slider-image/education-1.jpg", alt:""},
-
+    {id:1, 
+      image:"/slider-image/education-1.jpg", alt:""},
     {id:2, image:"/slider-image/education-2.png", alt:"",},
-    {id:3, image:"", alt:""},
-
-    {id:4, image:"", alt:""}
+    {id:3, image:"/slider-image/education-3.jpg", alt:""},
+    {id:4, image:"/slider-image/education-4.jpg", alt:"", }
   ]
 
   return (
@@ -48,9 +49,11 @@ export default function MainPage() {
         >
            {slides.map((slide) => (
       <SwiperSlide key={slide.id}>
-        <img
+        <Image
           src={slide.image || "/10.png"}
           alt={slide.alt}
+          width={1200}
+          height={500}
           style={{
             width: "100%",
             height: "100%",
@@ -62,7 +65,8 @@ export default function MainPage() {
     ))}
         </Swiper>
       </Box>
-      <Page />
+      
+    <CoursesList /> 
     </>
   );
 }

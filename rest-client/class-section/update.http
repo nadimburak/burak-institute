@@ -1,9 +1,9 @@
-PUT {{baseUrl}}/classSection/67665fa7a3bafa82345102c9 HTTP/1.1
+PUT {{baseUrl}}class-section/68c7f33313f87b2334b969ad HTTP/1.1
 Content-Type: application/json
 Accept: application/json
-# Authorization: Bearer {{accessToken}}
+
 
 {
-    "name": "Super Admin"
-    //"status":true
+    "class": "64a7f1c313f87b2334b96991",
+    "name": "R"
 }
