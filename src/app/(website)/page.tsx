@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, useTheme } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -35,38 +35,38 @@ export default function MainPage() {
   return (
     <>
       <Box>
-        <Swiper modules={[Autoplay]} 
-        autoplay={{
-          delay:2000,
-          disableOnInteraction: false
-        }}
-        loop={true}
-        spaceBetween={30}
-        slidesPerView={1}
-        className="mySwiper"
-        style={{height:'500px'}}
-        
-        >
-           {slides.map((slide) => (
-      <SwiperSlide key={slide.id}>
-        <Image
-          src={slide.image || "/10.png"}
-          alt={slide.alt}
-          width={1200}
-          height={500}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            display: "block",
+        <Swiper modules={[Autoplay]}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false
           }}
-        />
-      </SwiperSlide>
-    ))}
+          loop={true}
+          spaceBetween={30}
+          slidesPerView={1}
+          className="mySwiper"
+          style={{ height: '500px' }}
+
+        >
+          {slides.map((slide) => (
+            <SwiperSlide key={slide.id}>
+              <Image
+                src={slide.image || "/10.png"}
+                alt={slide.alt}
+                width={1200}
+                height={500}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </Box>
-      
-    <CoursesList /> 
+
+      <CoursesList />
     </>
   );
 }

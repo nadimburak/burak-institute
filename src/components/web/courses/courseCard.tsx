@@ -4,12 +4,9 @@ import {
   CardContent,
   Typography,
   Box,
-  List,
-  ListItem,
   FormLabel,
 } from "@mui/material";
 import Link from "next/link";
-import CategoryIcon from "@mui/icons-material/Category";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 
