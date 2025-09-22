@@ -10,7 +10,6 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-// import CouserEnquiryForm from '@/components/form/courseEnquiryFrom'
 
 const CourseEnquiryUserForm = () => {
   const searchParams = useSearchParams();
