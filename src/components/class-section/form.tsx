@@ -122,7 +122,7 @@ export default function ClassSectionForm({
             error={!!errors.class}
             helperText={errors.class?.message ? "Class is required" : ""}
           />
-          <TextField
+          {/* <TextField
             label="Section Name"
             variant="outlined"
             fullWidth
@@ -137,7 +137,7 @@ export default function ClassSectionForm({
             }}
             error={!!errors.name}
             helperText={errors.name?.message}
-          />
+          /> */}
           <Box mt={2} display="flex" justifyContent="space-between">
             <Button
               variant="contained"
