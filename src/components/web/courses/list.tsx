@@ -19,7 +19,6 @@ import useSWR from "swr";
 
 import { fetchUrl } from "../../course/courses/constant"; // yaha apni API base URL dalna
 import CoursesCard, { CourseModel } from "./courseCard";
-import { ICourse } from "@/models/course/Course.model";
 import { useRouter } from "next/navigation";
 
 interface CoursesListProps {
