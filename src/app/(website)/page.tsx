@@ -29,7 +29,7 @@ export default function MainPage() {
       image:"/slider-image/education-1.jpg", alt:""},
     {id:2, image:"/slider-image/education-2.png", alt:"",},
     {id:3, image:"/slider-image/education-3.jpg", alt:""},
-    {id:4, image:"/slider-image/education-4.jpg", alt:"", }
+    {id:4, image:"", alt:"", }
   ]
 
   return (
