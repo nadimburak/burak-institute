@@ -14,16 +14,22 @@ import CoursesList from "@/components/web/courses/list";
 import Image from "next/image";
 import { Autoplay } from "swiper/modules";
 export default function MainPage() {
+  const theme = useTheme(); // 🎨 theme se colors lena
+  const features = [
+    "Peer learning",
+    "Code reviews",
+    "Virtual hostel", 
 
+    "Doubt sessions",
+    "Bounties",
+  ];
 
-  const slides = [
-    {
-      id: 1,
-      image: "/slider-image/education-1.jpg", alt: ""
-    },
-    { id: 2, image: "/slider-image/education-2.png", alt: "", },
-    { id: 3, image: "/slider-image/education-3.jpg", alt: "" },
-    { id: 4, image: "/slider-image/education-4.jpg", alt: "", }
+  const slides =[
+    {id:1, 
+      image:"/slider-image/education-1.jpg", alt:""},
+    {id:2, image:"/slider-image/education-2.png", alt:"",},
+    {id:3, image:"/slider-image/education-3.jpg", alt:""},
+    {id:4, image:"/slider-image/education-3.jpg", alt:"", }
   ]
 
   return (
