@@ -12,8 +12,8 @@ interface ClassItem {
 }
 
 interface ClassSectionAutocompleteProps {
-  setValue: any;
-  value: any;
+  setValue: unknown;
+  value: unknown;
   helperText?: string;
   error?: boolean;
 }
