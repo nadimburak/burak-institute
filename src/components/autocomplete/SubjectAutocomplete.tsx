@@ -8,74 +8,79 @@ import React, { useState } from "react";
 import useSWR from "swr";
 
 interface SubjectOption {
-    _id: any;
-    name: string;
+  _id: string;
+  name: string;
 }
 
 interface SubjectAutocompleteProps {
-    setValue: any;
-    value: SubjectOption | null;
-    helperText?: string;
-    error?: boolean;
+  setValue: any;
+  value: SubjectOption | null;
+  helperText?: string;
+  error?: boolean;
 }
 
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
-    setValue,
-    value,
-    helperText = "",
-    error = false,
+  setValue,
+  value,
+  helperText = "",
+  error = false,
 }) => {
-    const fetchUrl = "/subject";
+  const fetchUrl = "/subject";
 
-    const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
 
-    // Build the query string
-    const params = new URLSearchParams();
-    if (searchText) {
-        params.append("search", searchText);
-    }
+  // Build the query string
+  const params = new URLSearchParams();
+  if (searchText) {
+    params.append("search", searchText);
+  }
 
-    // Fetch data with SWR
-    const {
-        data,
-        error: isError,
-        isLoading,
-    } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
+  // Fetch data with SWR
+  const {
+    data,
+    error: isError,
+    isLoading,
+  } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
 
-    if (isError) {
-        return (
-            <Box>
-                <Typography variant="h6" color="error">
-                    Error fetching subjects
-                </Typography>
-            </Box>
-        );
-    }
-
+  if (isError) {
     return (
-        <Autocomplete
-            options={data?.data || []}
-            getOptionLabel={(option: SubjectOption) => option?.name || ""}
-            isOptionEqualToValue={(o, v) => o._id === v._id}
-            loading={isLoading}
-            onChange={(_, selected) => {
-                setValue("subject", selected, { shouldValidate: true });
-            }}
-            value={value ?? null} // ✅ always null instead of undefined
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Select Subject"
-                    variant="outlined"
-                    fullWidth
-                    helperText={helperText}
-                    error={error}
-                    InputLabelProps={{ shrink: true }}
-                    onChange={(e) => setSearchText(e.target.value)}
-                />
-            )}
-        />
+      <Box>
+        <Typography variant="h6" color="error">
+          Error fetching subjects
+        </Typography>
+      </Box>
     );
+  }
+
+  return (
+    <Autocomplete
+      options={data?.data || []}
+      getOptionLabel={(option: SubjectOption) => option?.name || ""}
+      isOptionEqualToValue={(o, v) => o._id === v._id}
+      loading={isLoading}
+      onChange={(_, selected) => {
+        setValue("subject", selected, { shouldValidate: true });
+      }}
+      value={value ?? null} // ✅ always null instead of undefined
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Select Subject"
+          variant="outlined"
+          fullWidth
+          helperText={helperText}
+          error={error}
+          InputLabelProps={{
+            shrink: true,
+            sx: {
+              color: "primary.main",
+            },
+          }}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      )}
+    />
+  );
 };
 
 export default SubjectAutocomplete;
