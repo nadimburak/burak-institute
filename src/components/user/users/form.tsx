@@ -184,7 +184,9 @@ export default function UserForm({ id, open, onClose }: FormProps) {
               <TextField
                 label="Name"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{ shrink: true,sx:{
+color:"primary.main"
+                        } }}
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 {...register("name")}
@@ -195,7 +197,9 @@ export default function UserForm({ id, open, onClose }: FormProps) {
               <TextField
                 label="Email"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{ shrink: true ,sx:{
+color:"primary.main"
+                        }}}
                 error={!!errors.email}
                 helperText={errors.email?.message}
                 {...register("email")}
@@ -209,7 +213,9 @@ export default function UserForm({ id, open, onClose }: FormProps) {
                 type={showPassword ? "text" : "password"}
                 {...register("password")}
                 error={!!errors.password}
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{ shrink: true,sx:{
+color:"primary.main"
+                        } }}
                 helperText={
                   errors.password?.type === "required"
                     ? errors.password.message

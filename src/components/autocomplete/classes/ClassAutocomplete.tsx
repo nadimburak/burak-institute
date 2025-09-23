@@ -75,7 +75,9 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
           fullWidth
           helperText={helperText}
           error={error}
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ shrink: true ,sx:{
+          color:"primary.main"
+                                  }}}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}
