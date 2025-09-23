@@ -115,7 +115,7 @@ export default function CourseEnquiryForm({
     }
   };
 
-  const onInvalid = (errors: any) => {
+  const onInvalid = (errors: unknown) => {
     console.error("Form validation failed:", errors);
   };
 
@@ -159,34 +159,7 @@ export default function CourseEnquiryForm({
                   name="subject"
                   control={control}
                   render={({ field }) => {
-                    const memoizedAutocomplete = useMemo(() => {
-                      console.log(field);
-
-                      return (
-                        // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
-                        <SubjectAutocomplete
-                          value={field.value}
-                          ref={field.ref}
-                          onBlur={field.onBlur}
-                          onChange={(newValue) => {
-                            // Agar value empty string hai, toh use null bana dein
-                            if (newValue === "") {
-                              field.onChange(null);
-                            } else {
-                              field.onChange(newValue);
-                            }
-                          }}
-                          label="Subject"
-                          placeholder="Search for a subject..."
-                        />
-                      );
-                    }, [
-                      field.value,
-                      errors.subject,
-                      field.ref,
-                      field.onBlur,
-                      field.onChange,
-                    ]);
+                    
 
                     return (
                       // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
