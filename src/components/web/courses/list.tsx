@@ -52,10 +52,7 @@ const CoursesList: React.FC<CoursesListProps> = () => {
   }, [sortOption, sortDirection, searchText]);
 
   // Fetch courses data
-  const { data, error } = useSWR(
-    `${fetchUrl}?${params}`,
-    getFetcher
-  );
+  const { data, error } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
   if (error) {
     return <div>Error loading Courses</div>;
@@ -114,7 +111,7 @@ const CoursesList: React.FC<CoursesListProps> = () => {
       {/* Course List */}
       {courses.length === 0 ? (
         <Box mt={4} textAlign="center" width="100%">
-          <Typography variant="h6" color="text.secondary">
+          <Typography variant="h6" color="text.primary">
             No Courses Found
           </Typography>
         </Box>

@@ -54,7 +54,11 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ shrink: true ,
+            sx:{
+            color:"primary.main"
+                                    }
+          }}
           label="Select Role"
           variant="outlined"
           helperText={helperText}

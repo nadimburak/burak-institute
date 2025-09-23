@@ -103,7 +103,9 @@ export default function CourseTypeForm({ id = 'new', open, onClose }: FormProps)
                         label="Name"
                         fullWidth
                         margin="normal"
-                        InputLabelProps={{ shrink: true }}
+                        InputLabelProps={{ shrink: true ,sx:{
+color:"primary.main"
+                        }}}
                         error={!!errors.name}
                         helperText={errors.name?.message}
                         {...register('name')}

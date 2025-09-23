@@ -159,7 +159,12 @@ export default function CourseForm({
               <TextField
                 label="Course Name"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 {...register("name")}
@@ -180,7 +185,12 @@ export default function CourseForm({
               select
               label="Duration"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{
+                shrink: true,
+                sx: {
+                  color: "primary.main",
+                },
+              }}
               error={!!errors.duration}
               helperText={errors.duration?.message}
               {...register("duration")}
@@ -210,7 +220,12 @@ export default function CourseForm({
                 fullWidth
                 multiline
                 rows={3}
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.description}
                 helperText={errors.description?.message}
                 {...register("description")}
