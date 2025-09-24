@@ -6,24 +6,26 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 
-interface ClassesItem {
+interface CourseTypeItem {
   _id: string;
   name: string;
 }
 
-interface ClassesAutocompleteProps {
+interface CourseTypeAutocompleteProps {
   setValue: (
-    name: "class",
+    name: "course_type",
     value: { _id: string; name: string } | null,
     config?: { shouldValidate: boolean }
   ) => void;
-  value: ClassesItem | null;
+  value: CourseTypeItem | null;
   helperText?: string;
   error?: boolean;
 }
 
-const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
-  const fetchUrl = "/classes";
+const CourseTypeAutocomplete: React.FC<CourseTypeAutocompleteProps> = (
+  props
+) => {
+  const fetchUrl = "course/course-types";
   const [searchText, setSearchText] = useState("");
   const { setValue, value, helperText = "", error = false } = props;
 
@@ -46,7 +48,7 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
     return (
       <Box>
         <Typography variant="h6" color="error">
-          Error fetching classes
+          Error fetching course types
         </Typography>
       </Box>
     );
@@ -55,13 +57,13 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
   return (
     <Autocomplete
       options={data?.data || []}
-      getOptionLabel={(option: ClassesItem) => option.name || ""}
+      getOptionLabel={(option: CourseTypeItem) => option.name || ""}
       isOptionEqualToValue={(option, val) => option._id === val._id}
       loading={isLoading}
-      value={value ?? null} // 👈 yeh ensure karega ki kabhi undefined nahi hoga
+      value={value ?? null}
       onChange={(_, selected) => {
         setValue(
-          "class",
+          "course_type",
           selected ? { _id: selected._id, name: selected.name } : null,
           { shouldValidate: true }
         );
@@ -69,19 +71,18 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Select Class"
+          label="Select Course Type"
           variant="outlined"
           margin="normal"
           fullWidth
           helperText={helperText}
           error={error}
-          InputLabelProps={{ shrink: true ,sx:{
-          color:"primary.main"
-                                  }}}
+          InputLabelProps={{ shrink: true }}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}
     />
   );
 };
-export default ClassesAutocomplete;
+
+export default CourseTypeAutocomplete;

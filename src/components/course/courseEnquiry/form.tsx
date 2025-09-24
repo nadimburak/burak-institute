@@ -12,9 +12,8 @@ import {
   DialogActions,
   Grid,
   Box,
-  FormHelperText,
 } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 
@@ -43,7 +42,7 @@ interface CourseEnquiryFormProps {
   id?: string;
   open: boolean;
   onClose: (result?: unknown) => void;
-  payload?: { [key: string]: any; subject: string };
+  payload?: { [key: string]: unknown; subject: string };
 }
 
 export default function CourseEnquiryForm({
@@ -84,7 +83,9 @@ export default function CourseEnquiryForm({
               if (res.data) {
                 setValue("subject", res.data, { shouldValidate: true });
               }
-            } catch (err) { console.error("Failed to fetch initial subject", err); }
+            } catch (err) {
+              console.error("Failed to fetch initial subject", err);
+            }
           }
         } else {
           reset();
@@ -92,7 +93,7 @@ export default function CourseEnquiryForm({
       }
     };
     initializeForm();
-  }, [open, payload?.subject, reset, setValue]);
+  }, [open, payload, payload.subject, reset, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     if (!data.subject) {
@@ -100,85 +101,131 @@ export default function CourseEnquiryForm({
       return;
     }
     const transformedData = { ...data, subject: data.subject.id };
-    
-    
 
     try {
       if (id && id !== "new") {
-        
         await axios.put(`/api/course/course-enquiry/${id}`, transformedData);
       } else {
         await axios.post(`/api/course/course-enquiry`, transformedData);
       }
       reset();
       onClose(true);
-    } catch (err) { console.error("Error saving course enquiry:", err); }
+    } catch (err) {
+      console.error("Error saving course enquiry:", err);
+    }
   };
 
-  const onInvalid = (errors: any) => { console.error("Form validation failed:", errors); };
+  const onInvalid = (errors: unknown) => {
+    console.error("Form validation failed:", errors);
+  };
 
   return (
     <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
       <DialogTitle>
         {id === "new" ? "Create Course Enquiry" : "Edit Course Enquiry"}
       </DialogTitle>
-      
-      <form id="courseEnquiry-form" onSubmit={handleSubmit(onSubmit, onInvalid)}>
+
+      <form
+        id="courseEnquiry-form"
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+      >
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={2}>
-              <Grid size={{xs:12}}>
-                <Controller name="name" control={control} render={({ field }) => ( <TextField {...field} label="Enquiry Name" fullWidth error={!!errors.name} helperText={errors.name?.message}/> )}/>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Enquiry Name"
+                      fullWidth
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
+                      InputLabelProps={{
+                        shrink: true,
+                        sx: {
+                          color: "primary.main",
+                        },
+                      }}
+                    />
+                  )}
+                />
               </Grid>
 
-              <Grid size={{xs:12}} >
+              <Grid size={{ xs: 12 }}>
                 <Controller
                   name="subject"
                   control={control}
                   render={({ field }) => {
-                    const memoizedAutocomplete = useMemo(() => {
-                      console.log(field);
-                      
-                      return (
-                        // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
-                        <SubjectAutocomplete
-                          value={field.value}
-                          ref={field.ref}
-                          onBlur={field.onBlur}
-                          onChange={ (newValue) => {
-                            // Agar value empty string hai, toh use null bana dein
-                            if (newValue === "") {
-                              field.onChange(null);
-                            } else {
-                              field.onChange(newValue);
-                            }
-                          }}
-                          label="Subject"
-                          placeholder="Search for a subject..."
-                        />
-                      );
-                    }, [field.value, errors.subject, field.ref, field.onBlur, field.onChange]);
+                    
 
                     return (
-                      <>
-                        {memoizedAutocomplete}
-                        {errors.subject && (
-                          <FormHelperText error>
-                            {errors.subject.message}
-                          </FormHelperText>
-                        )}
-                      </>
+                      // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
+                      <SubjectAutocomplete
+                        value={field.value}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        onChange={(newValue) => {
+                          // Agar value empty string hai, toh use null bana dein
+                          if (newValue === "") {
+                            field.onChange(null);
+                          } else {
+                            field.onChange(newValue);
+                          }
+                        }}
+                        label="Subject"
+                        placeholder="Search for a subject..."
+                      />
                     );
+
                   }}
                 />
               </Grid>
 
-              <Grid  size={{xs:12}}>
-                <Controller name="courses" control={control} render={({ field }) => ( <TextField {...field} label="Courses" fullWidth error={!!errors.courses} helperText={errors.courses?.message}/> )}/>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name="courses"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Courses"
+                      fullWidth
+                      error={!!errors.courses}
+                      helperText={errors.courses?.message}
+                      InputLabelProps={{
+                        shrink: true,
+                        sx: {
+                          color: "primary.main",
+                        },
+                      }}
+                    />
+                  )}
+                />
               </Grid>
 
-              <Grid size={{xs:12}}>
-                <Controller name="description" control={control} render={({ field }) => (<TextField {...field} label="Description (Optional)" fullWidth multiline rows={3}/>)}/>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Description (Optional)"
+                      fullWidth
+                      multiline
+                      rows={3}
+                      InputLabelProps={{
+                        shrink: true,
+                        sx: {
+                          color: "primary.main",
+                        },
+                      }}
+                    />
+                  )}
+                />
               </Grid>
             </Grid>
           </Box>

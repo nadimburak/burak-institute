@@ -127,6 +127,12 @@ export default function ClassesForm({ id = "new", open, onClose }: FormProps) {
             {...register("name")}
             error={!!errors.name}
             helperText={errors.name?.message}
+            InputLabelProps={{
+              shrink: true,
+              sx: {
+                color: "primary.main",
+              },
+            }}
           />
           <Box mt={2} display="flex" justifyContent="space-between">
             <Button

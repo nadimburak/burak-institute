@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
         const parsedLimit = Math.max(limit, 1);
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
-        const query: Record<string, any> = {};
+        const query: Record<string, unknown> = {};
 
         // ✅ FIX 2: Search query ko theek kiya gaya hai
         if (search.trim()) {

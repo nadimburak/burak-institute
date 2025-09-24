@@ -45,10 +45,14 @@
 // }
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2020", // thoda modern target
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true, // ✅ perf boost
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -59,16 +63,23 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "plugins": [{ "name": "next" }]
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
+    "**/*.ts",
+    "**/*.tsx",
     "next-env.d.ts",
-    "src/**/*.ts",     // <-- Sabse important change yahaan hai
-    "src/**/*.tsx",   // <-- Aur yahaan
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -12,13 +12,15 @@ interface ClassItem {
 }
 
 interface ClassSectionAutocompleteProps {
-  setValue: any;
-  value: any;
+  setValue: unknown;
+  value: unknown;
   helperText?: string;
   error?: boolean;
 }
 
-const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (props) => {
+const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (
+  props
+) => {
   const fetchUrl = "/class-section";
   const [searchText, setSearchText] = useState("");
   const { setValue, value, helperText = "", error = false } = props;
@@ -74,7 +76,12 @@ const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (props
           fullWidth
           helperText={helperText}
           error={error}
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{
+            shrink: true,
+            sx: {
+              color: "primary.main",
+            },
+          }}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}

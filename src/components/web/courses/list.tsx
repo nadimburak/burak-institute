@@ -19,17 +19,16 @@ import useSWR from "swr";
 
 import { fetchUrl } from "../../course/courses/constant"; // yaha apni API base URL dalna
 import CoursesCard, { CourseModel } from "./courseCard";
-import { ICourse } from "@/models/course/Course.model";
 import { useRouter } from "next/navigation";
 
 interface CoursesListProps {
   title?: string;
 }
 
-const CoursesList: React.FC<CoursesListProps> = ({ title }) => {
+const CoursesList: React.FC<CoursesListProps> = () => {
   const [sortOption, setSortOption] = useState<string>("");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [searchText, setSearchText] = useState("");
+  const [sortDirection] = useState<"asc" | "desc">("asc");
+  const [searchText] = useState("");
   const [openFilter, setOpenFilter] = useState(false);
   const router = useRouter();
 
@@ -53,10 +52,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ title }) => {
   }, [sortOption, sortDirection, searchText]);
 
   // Fetch courses data
-  const { data, error, isLoading } = useSWR(
-    `${fetchUrl}?${params}`,
-    getFetcher
-  );
+  const { data, error } = useSWR(`${fetchUrl}?${params}`, getFetcher);
 
   if (error) {
     return <div>Error loading Courses</div>;
@@ -115,7 +111,7 @@ const CoursesList: React.FC<CoursesListProps> = ({ title }) => {
       {/* Course List */}
       {courses.length === 0 ? (
         <Box mt={4} textAlign="center" width="100%">
-          <Typography variant="h6" color="text.secondary">
+          <Typography variant="h6" color="text.primary">
             No Courses Found
           </Typography>
         </Box>

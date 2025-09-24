@@ -8,15 +8,15 @@ import React, { useState } from "react";
 import useSWR from "swr";
 
 interface SubjectOption {
-    _id: any;
-    name: string;
+  _id: string;
+  name: string;
 }
 
 interface SubjectAutocompleteProps {
-    setValue: any;
-    value: SubjectOption | null;
-    helperText?: string;
-    error?: boolean;
+  setValue: any;
+  value: SubjectOption | null;
+  helperText?: string;
+  error?: boolean;
 }
 
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
@@ -26,32 +26,32 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
     error = false,
     fullWidth
 }) => {
-    const fetchUrl = "/subject";
+  const fetchUrl = "/subject";
 
-    const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState("");
 
-    // Build the query string
-    const params = new URLSearchParams();
-    if (searchText) {
-        params.append("search", searchText);
-    }
+  // Build the query string
+  const params = new URLSearchParams();
+  if (searchText) {
+    params.append("search", searchText);
+  }
 
-    // Fetch data with SWR
-    const {
-        data,
-        error: isError,
-        isLoading,
-    } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
+  // Fetch data with SWR
+  const {
+    data,
+    error: isError,
+    isLoading,
+  } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
 
-    if (isError) {
-        return (
-            <Box>
-                <Typography variant="h6" color="error">
-                    Error fetching subjects
-                </Typography>
-            </Box>
-        );
-    }
+  if (isError) {
+    return (
+      <Box>
+        <Typography variant="h6" color="error">
+          Error fetching subjects
+        </Typography>
+      </Box>
+    );
+  }
 
     return (
         <Autocomplete

@@ -1,22 +1,32 @@
-import { IRole } from "@/models/user/Role.model";
-import { getFetcher } from "@/utils/fetcher";
 import { Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
-import { fetchUrl } from "./constant";
 
-interface RoleAutocompleteProps {
-  setValue: (field: string, value: unknown) => void;
-  value: unknown | null;
+interface CompanyUser {
+  _id: string;
+  name: string;
+  type?: string;
+}
+interface CompanyUserAutocompleteProps {
+  type?: string;
+  setValue: (
+    name: "company_user",
+    value: CompanyUser | null,
+    config?: { shouldValidate: boolean }
+  ) => void;
+  value: CompanyUser | null;
   helperText?: string | undefined;
   error?: boolean;
-  trigger: (field: string) => void;
+  watch?: unknown;
 }
 
-const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
-  const { setValue, value, helperText = "", error = false, trigger } = props;
+const CompanyUserAutocomplete: React.FC<CompanyUserAutocompleteProps> = (
+  props
+) => {
+  const fetchUrl = "user/users";
+  const { setValue, value, helperText = "", error = false, type } = props;
   const [searchText, setSearchText] = useState("");
   // Build the query string for pagination, sorting, and search
   const params = new URLSearchParams();
@@ -24,11 +34,15 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
   if (searchText) {
     params.append("search", searchText);
   }
+
+  if (type) {
+    params.append("type", type);
+  }
   const {
     data,
     error: isError,
     isLoading,
-  } = useSWR(`${fetchUrl}?${params.toString()}`, getFetcher);
+  } = useSWR(`${fetchUrl}?${params.toString()}`);
 
   if (isError) {
     return (
@@ -42,24 +56,24 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
 
   return (
     <Autocomplete
-      options={data?.data || []}
-      getOptionLabel={(option: IRole) => option.name || ""}
-      getOptionKey={(option: IRole) => option._id.toString()}
+      options={(data?.data || []).filter(
+        (user: CompanyUser) => user?.type === "user"
+      )}
+      getOptionLabel={(option: CompanyUser) =>
+        option?.name || option.name || ""
+      }
+      isOptionEqualToValue={(option, val) => option._id === val._id}
+      getOptionKey={(option: CompanyUser) => option._id.toString()}
       loading={isLoading}
       onChange={(_, data) => {
-        setValue("role", { _id: data?._id, name: data?.name });
-        trigger("role");
+        setValue("company_user", data, { shouldValidate: true });
       }}
-      value={value as IRole | null | undefined}
+      value={value || null}
       renderInput={(params) => (
         <TextField
           {...params}
-          InputLabelProps={{ shrink: true ,
-            sx:{
-            color:"primary.main"
-                                    }
-          }}
-          label="Select Role"
+          InputLabelProps={{ shrink: true }}
+          label="Select Company User"
           variant="outlined"
           helperText={helperText}
           error={error}
@@ -73,4 +87,4 @@ const RoleAutocomplete: React.FC<RoleAutocompleteProps> = (props) => {
   );
 };
 
-export default RoleAutocomplete;
+export default CompanyUserAutocomplete;

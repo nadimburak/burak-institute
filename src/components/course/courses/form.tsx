@@ -13,14 +13,12 @@ import {
   Stack,
   TextField,
   Typography,
-  CircularProgress,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNotifications } from "@toolpad/core";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import axios from "axios";
 import { ICourse } from "@/models/course/Course.model";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import ImageUpload from "@/components/form/imageUpload";
@@ -51,7 +49,6 @@ export default function CourseForm({
   id,
   open,
   onClose,
-  payload,
 }: CourseTypeFormProps) {
   const notifications = useNotifications();
   const {
@@ -60,14 +57,13 @@ export default function CourseForm({
     reset,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ICourse>({
     resolver: yupResolver(schema),
     defaultValues,
   });
 
   const subject = watch("subject");
-  const [loading, setLoading] = useState(false);
 
   // ✅ Submit Handler
   const onSubmit = async (data: ICourse) => {
@@ -117,7 +113,7 @@ export default function CourseForm({
     }
   };
 
-  const bindData = async (id: string | number) => {
+  const bindData = useCallback(async (id: string | number) => {
     try {
       const response = await axiosInstance.get(`${fetchUrl}/${id}`);
       console.log("API DATA:", response.data.data);
@@ -125,13 +121,13 @@ export default function CourseForm({
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [reset]);
 
   useEffect(() => {
     if (id && id !== "new") {
       bindData(id);
     }
-  }, [id]);
+  }, [bindData, id]);
 
   return (
     <Dialog fullWidth maxWidth="sm" open={open} onClose={() => onClose(null)}>
@@ -159,7 +155,12 @@ export default function CourseForm({
               <TextField
                 label="Course Name"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 {...register("name")}
@@ -180,7 +181,12 @@ export default function CourseForm({
               select
               label="Duration"
               fullWidth
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{
+                shrink: true,
+                sx: {
+                  color: "primary.main",
+                },
+              }}
               error={!!errors.duration}
               helperText={errors.duration?.message}
               {...register("duration")}
@@ -210,7 +216,12 @@ export default function CourseForm({
                 fullWidth
                 multiline
                 rows={3}
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.description}
                 helperText={errors.description?.message}
                 {...register("description")}

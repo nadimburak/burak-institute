@@ -33,13 +33,13 @@ const CourseEnquirySchema = new Schema<CourseEnquiryType>({
         required:[true, "Course is required"]
         // required:[true,"Course is required"]
     },
-   
-    description:{
-        type:String
+
+    description: {
+        type: String
     }
-},{timestamps:true})
+}, { timestamps: true })
 
 
-const CourseEnquiry:Model<CourseEnquiryType> = mongoose.models.CourseEnquiry || mongoose.model<CourseEnquiryType>("CourseEnquiry",CourseEnquirySchema);
+const CourseEnquiry: Model<CourseEnquiryType> = mongoose.models.CourseEnquiry || mongoose.model<CourseEnquiryType>("CourseEnquiry", CourseEnquirySchema);
 
 export default CourseEnquiry
