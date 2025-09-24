@@ -98,8 +98,9 @@ const CourseEnquiryList = () => {
 
   const handleEdit = useCallback(
     async (id: string) => {
-      const result = await dialogs.open((dialogProps) => (
-        <CourseEnquiryForm {...dialogProps} id={id} />
+      const result = await dialogs.open((Props) => (
+
+        <CourseEnquiryForm {...Props} id={id} />
       ));
       if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
     },
@@ -107,8 +108,8 @@ const CourseEnquiryList = () => {
   );
 
   const handleAdd = useCallback(async () => {
-    const result = await dialogs.open((dialogProps) => (
-      <CourseEnquiryForm {...dialogProps} id="new" />
+    const result = await dialogs.open((Props) => (
+      <CourseEnquiryForm {...Props} id="new" />
     ));
     if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
   }, [dialogs, params]);
