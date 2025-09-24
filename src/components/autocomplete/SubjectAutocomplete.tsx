@@ -17,6 +17,7 @@ interface SubjectAutocompleteProps {
   value: SubjectOption | null;
   helperText?: string;
   error?: boolean;
+  fullWidth:any
 }
 
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
