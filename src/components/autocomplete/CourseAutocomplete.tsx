@@ -1,4 +1,5 @@
 "use client";
+
 import { getFetcher } from "@/utils/fetcher";
 import { Box, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -6,36 +7,37 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 
-interface CourseItem {
+interface CoursestOption {
   _id: string;
   name: string;
 }
 
 interface CoursesAutocompleteProps {
-  setValue: (
-    name: "course", 
-    value: { _id: string; name: string } | null,
-    config?: { shouldValidate: boolean }
-  ) => void;
-  value: CourseItem | null;
+  setValue: any;
+  value: CoursestOption | null;
   helperText?: string;
-  error?: boolean
+  error?: boolean;
+  fullWidth:any
 }
 
-const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = (props) => {
-  const fetchUrl = "/course/courses"; 
-  const [searchText, setSearchText] = useState("");
-  const { setValue, value, helperText = "", error = false } = props;
+const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = ({
+    setValue,
+    value,
+    helperText = "",
+    error = false,
+    fullWidth
+}) => {
+  const fetchUrl = "/course/courses";
 
-  // Build query params
+  const [searchText, setSearchText] = useState("");
+
+  // Build the query string
   const params = new URLSearchParams();
   if (searchText) {
     params.append("search", searchText);
   }
-  params.append("page", "1");
-  params.append("limit", "10");
 
-  // Fetch with SWR
+  // Fetch data with SWR
   const {
     data,
     error: isError,
@@ -46,43 +48,37 @@ const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = (props) => {
     return (
       <Box>
         <Typography variant="h6" color="error">
-          Error fetching courses
+          Error fetching subjects
         </Typography>
       </Box>
     );
   }
 
-  return (
-    <Autocomplete
-      options={data?.data || []} 
-      getOptionLabel={(option: CourseItem) => option.name || ""}
-      isOptionEqualToValue={(option, val) => option._id === val._id}
-      loading={isLoading}
-      value={value ?? null}
-      onChange={(_, selected) => {
-        setValue(
-          "course", 
-          selected ? { _id: selected._id, name: selected.name } : null,
-          { shouldValidate: true }
-        );
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Select Course"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          helperText={helperText}
-          error={error}
-          InputLabelProps={{ shrink: true,sx:{
-          color:"primary.main"
-                                  } }}
-          onChange={(e) => setSearchText(e.target.value)}
+    return (
+        <Autocomplete
+            options={data?.data || []}
+            getOptionLabel={(option: CoursestOption) => option?.name || ""}
+            isOptionEqualToValue={(o, v) => o._id === v._id}
+            loading={isLoading}
+            fullWidth={fullWidth}
+            onChange={(_, selected) => {
+                setValue("courses", selected, { shouldValidate: true });
+            }}
+            value={value ?? null} // ✅ always null instead of undefined
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Select Course"
+                    variant="outlined"
+                    helperText={helperText}
+                    error={error}
+                     fullWidth={fullWidth}
+                    InputLabelProps={{ shrink: true }}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+            )}
         />
-      )}
-    />
-  );
+    );
 };
 
 export default CoursesAutocomplete;
