@@ -70,7 +70,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
                     {...params}
                     label="Select Subject"
                     variant="outlined"
-                    fullWidth
+                  
                     helperText={helperText}
                     error={error}
                     fullWidth={fullWidth}

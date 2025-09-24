@@ -1,14 +1,15 @@
 "use client"
 
 
-import { useState, useEffect } from 'react'
+
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import * as y from 'yup';
 import { useNotifications } from "@toolpad/core";
+import { InferType } from 'yup';
 import { Box, TextField, Button } from "@mui/material"
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CourseAutocomplete from "@/components/autocomplete/CourseAutoComplete"
+import CoursesAutocomplete from "@/components/autocomplete/CourseAutocomplete"
 
 const CouserEnquiryForm = () => {
 
@@ -31,24 +32,21 @@ const CouserEnquiryForm = () => {
         description: y.string().required("description is required!!!")
     })
 
-    interface IcourseEnquiry {
-        username: string,
-        email: string,
-        subject: { _id: string, name: string } | null,
-        courses: { _id: string, name: string } | null,
-        description: string,
-    }
+    type IcourseEnquiry = InferType<typeof FormSchema>;
 
-    const { control, handleSubmit, reset ,setValue, formState: { errors } } = useForm<IcourseEnquiry>({
+
+    const { control, handleSubmit, register, watch, reset, setValue, formState: { errors } } = useForm<IcourseEnquiry>({
         resolver: yupResolver(FormSchema),
         defaultValues: {
             username: '',
             email: "",
-            subject: null,
-            courses: null,
+            subject: { _id: "", name: "" },
+            courses: { _id: "", name: "" },
             description: ""
         }
     })
+    const subject = watch("subject");
+    const course = watch("courses");
 
     const onSubmit: SubmitHandler<IcourseEnquiry> = async (data) => {
         console.log('Form Data:', data);
@@ -58,8 +56,9 @@ const CouserEnquiryForm = () => {
             courses: data.courses?._id, // note: field name in schema is 'courses'
         };
 
+
         try {
-            const response = await fetch('/api/course/course-enquiry', {
+            const response: any = await fetch('/api/course/course-enquiry', {
                 method: 'POST',
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify(payload),
@@ -72,7 +71,7 @@ const CouserEnquiryForm = () => {
                 });
                 const errorResult = await response.json();
                 const message = errorResult.message || "Form submission failed!";
-                notifications.show(message, { severity: "error" }); // "failed" ki jagah "error" standard hai
+                notifications.show(message, { severity: "error" });
                 throw new Error(message);
             }
             const result = await response.json();
@@ -82,7 +81,7 @@ const CouserEnquiryForm = () => {
             })
             console.log('Success:', result);
 
-            reset(); 
+            reset();
 
         } catch (error) {
 
@@ -101,82 +100,69 @@ const CouserEnquiryForm = () => {
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box height={"50vh"} width={"30vw"} flexDirection="column" display="flex" justifyContent={"center"} alignItems={"center"} gap={3}>
-                    <Controller
-                        name="username"
-                        control={control}
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                label="UserName"
-                                variant='outlined'
-                                error={!!errors.username || undefined}
-                                helperText={errors.username?.message}
-                                fullWidth
-                            />
-                        )}
+
+                    <TextField
+                        label="Username"
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                            sx: {
+                                color: "primary.main",
+                            },
+                        }}
+                        error={!!errors.username}
+                        helperText={errors.username?.message}
+                        {...register("username")}
                     />
 
-                    <Controller
-                        name="email"
-                        control={control}
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                label="Email"
-                                variant='outlined'
-                                error={!!errors.email || undefined}
-                                helperText={errors.email?.message}
-                                fullWidth
-                            />
-                        )}
+                    <TextField
+                        label="email"
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                            sx: {
+                                color: "primary.main",
+                            },
+                        }}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                        {...register("email")}
                     />
 
-                    <Controller
-                        name="subject"
-                        control={control}
-                        render={({ field }) => (
-                            <SubjectAutocomplete
-                                {...field}
-                                fullWidth
-                                setValue={setValue}
-                                error={!!errors.subject || undefined}
-                                helperText={errors.subject ? "Subject is required" : ""}
 
-                            />
-                        )}
+                    <SubjectAutocomplete
+                        setValue={setValue}
+                        fullWidth
+                        value={subject}
+                        error={!!errors.subject}
+                        helperText={errors.subject ? "Subject is required" : ""}
                     />
 
-                    <Controller
-                        name="courses"
-                        control={control}
-                        render={({ field }) => (
-                            <CourseAutocomplete
-                                {...field}
-                                setValue={setValue}
-                                fullWidth
-                                error={!!errors.courses || undefined}
-                                helperText={errors.courses ? "Course is required" : ""}
 
-                            />
-                        )}
+                    <CoursesAutocomplete
+                        setValue={setValue}
+                        fullWidth
+                        value={course}
+                        error={!!errors.courses}
+                        helperText={errors.courses ? "Course is required" : ""}
                     />
 
-                    <Controller
-                        name="description"
-                        control={control}
-                        
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                              
-                                label="Description"
-                                variant='outlined'
-                                error={!!errors.description || undefined}
-                                helperText={errors.description?.message}
-                                fullWidth
-                            />
-                        )}
+
+                    <TextField
+
+                        label="description"
+                        fullWidth
+                        InputLabelProps={{
+                            shrink: true,
+                            sx: {
+                                color: "primary.main",
+                            },
+                        }}
+                        error={!!errors.description}
+                        helperText={errors.description?.message}
+                        {...register("description")}
                     />
+
 
                     <Button type="submit" variant="contained" color="primary" sx={{ mt: 2, py: 1.5 }}>
                         Submit
