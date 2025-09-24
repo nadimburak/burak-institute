@@ -19,7 +19,7 @@ interface CoursesAutocompleteProps {
   ) => void;
   value: CourseItem | null;
   helperText?: string;
-  error?: boolean;
+  error?: boolean
 }
 
 const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = (props) => {
