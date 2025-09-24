@@ -20,10 +20,11 @@ interface SubjectAutocompleteProps {
 }
 
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
-  setValue,
-  value,
-  helperText = "",
-  error = false,
+    setValue,
+    value,
+    helperText = "",
+    error = false,
+    fullWidth
 }) => {
   const fetchUrl = "/subject";
 
@@ -52,35 +53,32 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
     );
   }
 
-  return (
-    <Autocomplete
-      options={data?.data || []}
-      getOptionLabel={(option: SubjectOption) => option?.name || ""}
-      isOptionEqualToValue={(o, v) => o._id === v._id}
-      loading={isLoading}
-      onChange={(_, selected) => {
-        setValue("subject", selected, { shouldValidate: true });
-      }}
-      value={value ?? null} // ✅ always null instead of undefined
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Select Subject"
-          variant="outlined"
-          fullWidth
-          helperText={helperText}
-          error={error}
-          InputLabelProps={{
-            shrink: true,
-            sx: {
-              color: "primary.main",
-            },
-          }}
-          onChange={(e) => setSearchText(e.target.value)}
+    return (
+        <Autocomplete
+            options={data?.data || []}
+            getOptionLabel={(option: SubjectOption) => option?.name || ""}
+            isOptionEqualToValue={(o, v) => o._id === v._id}
+            loading={isLoading}
+            fullWidth={fullWidth}
+            onChange={(_, selected) => {
+                setValue("subject", selected, { shouldValidate: true });
+            }}
+            value={value ?? null} // ✅ always null instead of undefined
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Select Subject"
+                    variant="outlined"
+                    fullWidth
+                    helperText={helperText}
+                    error={error}
+                    fullWidth={fullWidth}
+                    InputLabelProps={{ shrink: true }}
+                    onChange={(e) => setSearchText(e.target.value)}
+                />
+            )}
         />
-      )}
-    />
-  );
+    );
 };
 
 export default SubjectAutocomplete;

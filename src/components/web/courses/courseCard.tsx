@@ -31,6 +31,7 @@ interface CoursesCardProps {
 }
 
 const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
+  
   return (
     <Card
       sx={{
@@ -43,10 +44,12 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           boxShadow: 6,
         },
         bgcolor: "background.paper",
+        minHeight:"50h"
       }}
     >
       {/* Course Image */}
-      {data?.image && (
+      <Box height="35%" width="auto" overflow="hidden" p={1}>
+        {data?.image && (
         <Box
           component="img"
           src={`/uploads/${data?.image}`}
@@ -62,6 +65,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           }}
         />
       )}
+      </Box>
 
       <CardContent sx={{ p: 2 }}>
         {/* Course Name */}
@@ -114,6 +118,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
             color: "primary.main",
             fontSize: "10px",
             fontWeight: 600,
+        
           }}
         >
           Description
@@ -125,6 +130,8 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
             WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            minHeight:'20vh',
+          
           }}
         >
           {data?.description}
@@ -132,9 +139,11 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
 
         <Box
           display="flex"
-          justifyContent="space-between"
+          justifyContent="center"
           alignItems="center"
-          gap={1}
+          flexDirection="column"
+
+          gap={2}
             mt={2}
         >
           <Typography
@@ -148,7 +157,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           <Button
             variant="contained"
             LinkComponent={Link}
-            href={`/courses/${data?._id}`}
+            href={`/course/course-enqury?data=${encodeURIComponent(JSON.stringify(data))}`}
             sx={{
               fontWeight: 400,
               borderRadius: 2,

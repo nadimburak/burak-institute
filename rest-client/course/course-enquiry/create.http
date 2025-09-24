@@ -6,7 +6,8 @@ Accept: application/json
 {
   "subject": "64fa12c6f1c2a5f9a8a3b2e1", 
   "duration": "6 months",
-  "name": "Full Stack Web Development",
-  "courses":"xyz",
+  "email":"sayyed@gmail.com",
+  "username": "Full Stack Web Development",
+  "courses":"64fa12c6f1c2a5f9a8a3b2e1",
   "description": "Learn MERN stack with hands-on projects"
 }

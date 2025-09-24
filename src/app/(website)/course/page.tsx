@@ -1,10 +1,12 @@
-import React from "react";
+import CourseEnquiryUserForm from "./course-enqury/page";
 
-const page = () => {
+
+const Page = () => {
   return (
     <>
+      { <CourseEnquiryUserForm /> }
     </>
   );
 };
 
-export default page;
+export default Page;
