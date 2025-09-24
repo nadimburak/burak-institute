@@ -69,7 +69,7 @@ const CourseEnquiryList = () => {
       if (!id) {
         console.warn("ID not provided for deletion");
         return;
-        
+
       }
 
       const confirmed = await dialogs.confirm("Are you sure to delete this?", {
@@ -85,7 +85,7 @@ const CourseEnquiryList = () => {
           severity: "success",
           autoHideDuration: 3000,
         });
-        console.log("Delete clicked for ID:", id); 
+        console.log("Delete clicked for ID:", id);
       } catch (err: unknown) {
         notifications.show(handleErrorMessage(err), {
           severity: "error",
@@ -115,22 +115,23 @@ const CourseEnquiryList = () => {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: "Name", width: 200 },
+      { field: "username", headerName: "Name", width: 200 },
+      { field: "email", headerName: "Email", width: 200 },
       { field: "description", headerName: "Description", width: 300 },
       {
         field: 'actions',
         headerName: "Actions",
         width: 120,
-       renderCell: (params) => (
-  <>
-    <IconButton onClick={() => handleEdit(params.row._id)} color='primary'>
-      <Icon>edit</Icon>
-    </IconButton>
-    <IconButton onClick={() => handleDelete(params.row._id)} color='secondary'>
-      <Icon>delete</Icon>
-    </IconButton>
-  </>
-)
+        renderCell: (params) => (
+          <>
+            <IconButton onClick={() => handleEdit(params.row._id)} color='primary'>
+              <Icon>edit</Icon>
+            </IconButton>
+            <IconButton onClick={() => handleDelete(params.row._id)} color='secondary'>
+              <Icon>delete</Icon>
+            </IconButton>
+          </>
+        )
 
       }
     ],
@@ -157,7 +158,7 @@ const CourseEnquiryList = () => {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems='center' sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs:"12",sm:"6"}} >
             <TextField
               placeholder='Search CourseEnquiry'
               value={searchText}
@@ -173,8 +174,8 @@ const CourseEnquiryList = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <Stack direction='row' spacing={1} justifyContent='flex-end'>
+          <Grid  size={{xs:"12",sm:"6"}} >
+            <Stack direction='row' spacing={50} justifyContent='flex-end'>
               <IconButton
                 sx={{
                   backgroundColor: theme.palette.action.hover,
@@ -184,7 +185,7 @@ const CourseEnquiryList = () => {
                 }}
                 onClick={() => mutate(`${fetchUrl}?${params}`, { revalidate: true })}
               >
-                <Icon>refresh</Icon>
+                <Icon >refresh</Icon>
               </IconButton>
               <Button
                 variant='contained'

@@ -116,7 +116,7 @@ const CourseEnquiryUserForm = () => {
           </Button>
         </CardActions>
       </Card>
-      <Typography variant="h1" width={"100%"} textAlign={'center'} m={4}>Course-Enquiry Form</Typography>
+      <Typography variant="h1" width={"100%"} textAlign={'center'} p={4} m={4}>Course-Enquiry Form</Typography>
        <CouserEnquiryForm/>
     </Box>
 

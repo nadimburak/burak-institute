@@ -146,7 +146,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           alignItems="center"
           flexDirection="column"
 
-          gap={4}
+          gap={2}
             mt={2}
         >
           <Typography

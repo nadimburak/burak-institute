@@ -11,6 +11,7 @@ export async function GET(
         await connectDB();
         const courseenquiry: CourseEnquiryType | null = await CourseEnquiry.findById(params.id)
             .populate('subject', 'name')
+            .populate('courses', 'name')
             .lean()
 
         if (!courseenquiry) {

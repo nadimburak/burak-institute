@@ -7,26 +7,26 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 
-interface SubjectOption {
+interface CourseOption {
     _id: any;
     name: string;
 }
 
-interface SubjectAutocompleteProps {
+interface CourseAutocompleteProps {
     setValue: any;
-    value: SubjectOption | null;
+    value: CourseOption | null;
     helperText?: string;
     error?: boolean;
 }
 
-const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
+const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
     setValue,
     value,
     helperText = "",
     error = false,
     fullWidth
 }) => {
-    const fetchUrl = "/subject";
+    const fetchUrl = "/course/courses";
 
     const [searchText, setSearchText] = useState("");
 
@@ -47,7 +47,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
         return (
             <Box>
                 <Typography variant="h6" color="error">
-                    Error fetching subjects
+                    Error fetching course
                 </Typography>
             </Box>
         );
@@ -56,29 +56,31 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
     return (
         <Autocomplete
             options={data?.data || []}
-            getOptionLabel={(option: SubjectOption) => option?.name || ""}
+            getOptionLabel={(option: CourseOption) => option?.name || ""}
             isOptionEqualToValue={(o, v) => o._id === v._id}
             loading={isLoading}
             fullWidth={fullWidth}
+            onInputChange={(_, newInputValue) => {
+            setSearchText(newInputValue);
+        }}
             onChange={(_, selected) => {
-                setValue("subject", selected, { shouldValidate: true });
+                setValue("courses", selected, { shouldValidate: true });
             }}
             value={value ?? null} // ✅ always null instead of undefined
             renderInput={(params) => (
                 <TextField
                     {...params}
-                    label="Select Subject"
+                    label="Select  Course"
                     variant="outlined"
-                    fullWidth
+                    fullWidth={fullWidth}
                     helperText={helperText}
                     error={error}
-                    fullWidth={fullWidth}
                     InputLabelProps={{ shrink: true }}
-                    onChange={(e) => setSearchText(e.target.value)}
+                   
                 />
             )}
         />
     );
 };
 
-export default SubjectAutocomplete;
+export default CourseAutocomplete;
