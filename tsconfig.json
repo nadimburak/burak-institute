@@ -1,45 +1,78 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2020",                       // thoda modern target
+//     "lib": ["dom", "dom.iterable", "esnext"],
+
+//     "allowJs": true,
+//     "skipLibCheck": true,                     // ✅ perf boost
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noEmit": true,
+
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "module": "esnext",
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+
+//     "isolatedModules": true,
+//     "incremental": true,
+//     "jsx": "preserve",
+
+//     "baseUrl": ".",
+//     "paths": {
+//       "@/*": ["src/*"]
+//     },
+
+//     "plugins": [{ "name": "next" }]
+//   },
+//   "include": [
+//   "next-env.d.ts",
+//   "**/*.ts",
+//   "**/*.tsx",
+//   ".next/types/**/*.ts"
+// ],
+//   "exclude": [
+//     "node_modules",
+//     ".next",
+//     "dist",
+//     "out",
+//     "public",
+//     "temp",
+//     ".vscode",
+//     "*.js"
+//   ]
+// }
 {
   "compilerOptions": {
-    "target": "ES2020",                       // thoda modern target
+    "target": "ES2020",
     "lib": ["dom", "dom.iterable", "esnext"],
-
     "allowJs": true,
-    "skipLibCheck": true,                     // ✅ perf boost
+    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler", // 'node' se behtar hai modern projects ke liye
     "resolveJsonModule": true,
-
     "isolatedModules": true,
-    "incremental": true,
     "jsx": "preserve",
-
+    "incremental": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-
     "plugins": [{ "name": "next" }]
   },
   "include": [
-  "next-env.d.ts",
-  "**/*.ts",
-  "**/*.tsx",
-  ".next/types/**/*.ts"
-],
+    "next-env.d.ts",
+    "src/**/*.ts",     // <-- Sabse important change yahaan hai
+    "src/**/*.tsx",   // <-- Aur yahaan
+    ".next/types/**/*.ts"
+  ],
   "exclude": [
-    "node_modules",
-    ".next",
-    "dist",
-    "out",
-    "public",
-    "temp",
-    ".vscode",
-    "*.js"
+    "node_modules"
+    // Baaki cheezein 'include' specific hone ke kaaran zaroori nahi, but rakh sakte hain
   ]
 }

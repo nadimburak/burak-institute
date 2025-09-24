@@ -1,12 +1,12 @@
-import CoursesCard from "@/components/web/courses/courseCard";
-import React from "react";
+import CourseEnquiryUserForm from "./course-enqury/page";
 
-const page = () => {
+
+const Page = () => {
   return (
     <>
-      {/* <CoursesCard /> */}
+      { <CourseEnquiryUserForm /> }
     </>
   );
 };
 
-export default page;
+export default Page;
