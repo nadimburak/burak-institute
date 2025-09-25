@@ -131,14 +131,14 @@ export default function PermissionList() {
         renderCell: (params) => (
           <>
             <IconButton
-              onClick={() => handleEdit(params.row._id)}
+              onClick={() => handleEdit(params.row.id)}
               aria-label="edit"
               color="primary"
             >
               <Icon>edit</Icon>
             </IconButton>
             <IconButton
-              onClick={() => handleDelete(params.row._id)}
+              onClick={() => handleDelete(params.row.id)}
               aria-label="delete"
               color="secondary"
             >
@@ -147,7 +147,7 @@ export default function PermissionList() {
           </>
         ),
       },
-      
+
       { field: "name", headerName: "Name", width: 200 },
     ],
     [handleDelete, handleEdit]
@@ -183,13 +183,8 @@ export default function PermissionList() {
     <Card>
       <CardContent>
         <Box>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            sx={{ mb: 2 }}
-          >
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+          <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 placeholder="Search Permission"
                 value={searchText}
@@ -206,7 +201,7 @@ export default function PermissionList() {
                 }}
               />
             </Grid>
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+            <Grid item md={6} sm={6} xs={12}>
               <Stack
                 direction="row"
                 spacing={1}

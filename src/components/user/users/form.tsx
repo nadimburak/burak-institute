@@ -32,7 +32,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUserUrl } from "./constant";
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -69,7 +69,7 @@ export default function UserForm({ id, open, onClose }: FormProps) {
 
   const { data: session } = useSession();
 
-  const user = session?.user
+  const user = session?.user;
   const {
     handleSubmit,
     reset,
@@ -83,7 +83,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
   });
 
   const role = watch("role");
-
 
   const onSubmit = async (data: IUser) => {
     let url = `${fetchUserUrl}/`;
@@ -165,11 +164,10 @@ export default function UserForm({ id, open, onClose }: FormProps) {
             <Grid size={12}>
               <RoleAutocomplete
                 value={role}
-                setValue={setValue}   // react-hook-form ka setValue
+                setValue={setValue} // react-hook-form ka setValue
                 error={!!errors.role}
                 helperText={errors.role ? "Role is required" : ""}
               />
-
             </Grid>
 
             <Grid size={12}>
@@ -180,26 +178,32 @@ export default function UserForm({ id, open, onClose }: FormProps) {
               />
             </Grid>
 
-            <Grid size={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Name"
                 fullWidth
-                InputLabelProps={{ shrink: true,sx:{
-color:"primary.main"
-                        } }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 {...register("name")}
               />
             </Grid>
 
-            <Grid size={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Email"
                 fullWidth
-                InputLabelProps={{ shrink: true ,sx:{
-color:"primary.main"
-                        }}}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.email}
                 helperText={errors.email?.message}
                 {...register("email")}
@@ -213,9 +217,12 @@ color:"primary.main"
                 type={showPassword ? "text" : "password"}
                 {...register("password")}
                 error={!!errors.password}
-                InputLabelProps={{ shrink: true,sx:{
-color:"primary.main"
-                        } }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 helperText={
                   errors.password?.type === "required"
                     ? errors.password.message

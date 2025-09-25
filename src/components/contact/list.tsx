@@ -1,10 +1,10 @@
 "use client";
 import {
   Box,
-  Button,
+  // Button,
   Card,
   CardContent,
-  CircularProgress,
+  // CircularProgress,
   Grid,
   Icon,
   IconButton,
@@ -13,7 +13,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+// import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useState, useMemo, useCallback } from "react";
 import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid";
 import { fetchUrl } from "./constant";
@@ -139,7 +139,7 @@ const ContactList = () => {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid item xs={12} sm={6}>
             <TextField
               placeholder="Search Subject"
               value={searchText}
@@ -156,7 +156,7 @@ const ContactList = () => {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid item xs={12} sm={6}>
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <IconButton
                 sx={{

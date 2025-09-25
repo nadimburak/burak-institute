@@ -19,11 +19,7 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridColDef,
-  GridSortModel,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid";
 import { useDialogs, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
 import { JSX, useCallback, useEffect, useMemo, useState } from "react";
@@ -42,8 +38,6 @@ export default function UserList() {
   const notifications = useNotifications();
   const dialogs = useDialogs();
   const theme = useTheme();
-
-
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
@@ -148,8 +142,6 @@ export default function UserList() {
     [dialogs, params]
   );
 
-
-  
   // Column definitions
   const columns: GridColDef[] = useMemo(
     () => [
@@ -159,7 +151,8 @@ export default function UserList() {
         type: "actions",
         width: 120,
         renderCell: (params) => {
-          return (<ActionsCell
+          return (
+            <ActionsCell
               row={params.row}
               handleEdit={handleEdit}
               handleView={handleView}
@@ -208,7 +201,21 @@ export default function UserList() {
         headerName: "Type",
         width: 170,
         renderCell: (params) => {
-          const typeMap: Record<string, { label: string; color: "primary" | "secondary" | "error" | "info" | "success" | "warning" | "default"; icon: JSX.Element }> = {
+          const typeMap: Record<
+            string,
+            {
+              label: string;
+              color:
+                | "primary"
+                | "secondary"
+                | "error"
+                | "info"
+                | "success"
+                | "warning"
+                | "default";
+              icon: JSX.Element;
+            }
+          > = {
             user: {
               label: "User",
               color: "warning",
@@ -221,7 +228,7 @@ export default function UserList() {
             },
             customer: {
               label: "Customer",
-              color: "info", // Alag color customer ke liye
+              color: "info",
               icon: <EmojiPeopleIcon />,
             },
           };
@@ -313,7 +320,7 @@ export default function UserList() {
       <CardContent>
         <Box>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+            <Grid item md={6} sm={6} xs={12}>
               <TextField
                 placeholder="Search"
                 value={searchText}
@@ -330,7 +337,7 @@ export default function UserList() {
                 }}
               />
             </Grid>
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+            <Grid item md={6} sm={6} xs={12}>
               <Stack
                 direction="row"
                 spacing={1}
