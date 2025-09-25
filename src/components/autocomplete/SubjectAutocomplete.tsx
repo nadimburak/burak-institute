@@ -21,18 +21,22 @@ export interface SubjectAutocompleteProps {
   ref?: React.Ref<HTMLInputElement>; // ✅ Instead of any
   helperText?: string;
   error?: boolean;
-  fullWidth: any;
+  label?: string;
+  placeholder?: string;
 }
 
 //
 // ---------- Component ----------
 //
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
-  setValue,
   value,
+  onChange,
+  onBlur,
+  ref,
   helperText = "",
   error = false,
-  fullWidth,
+  label = "Select Subject",
+  placeholder = "Search for a subject...",
 }) => {
   const [searchText, setSearchText] = useState("");
 
@@ -63,23 +67,21 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
       getOptionLabel={(option: SubjectOption) => option?.name || ""}
       isOptionEqualToValue={(o, v) => o._id === v._id}
       loading={isLoading}
-      fullWidth={fullWidth}
-      onChange={(_, selected) => {
-        setValue("subject", selected, { shouldValidate: true });
-      }}
-      value={value ?? null} // ✅ always null instead of undefined
+      value={value ?? null}
+      onChange={(_, selected) => onChange(selected ?? null)} // ✅ Controller-friendly
+      onBlur={onBlur}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Select Subject"
-          variant="outlined"
+          label={label}
+          placeholder={placeholder}
           helperText={helperText}
           error={error}
-          fullWidth={fullWidth}
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ shrink: true, sx: { color: "primary.main" } }}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}
+      ref={ref}
     />
   );
 };
