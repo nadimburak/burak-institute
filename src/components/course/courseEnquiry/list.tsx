@@ -88,6 +88,7 @@ const CourseEnquiryList = () => {
           autoHideDuration: 3000,
         });
         console.log("Delete clicked for ID:", id);
+        console.log("Delete clicked for ID:", id);
       } catch (err: unknown) {
         notifications.show(handleErrorMessage(err), {
           severity: "error",
@@ -109,15 +110,16 @@ const CourseEnquiryList = () => {
   );
 
   const handleAdd = useCallback(async () => {
-    const result = await dialogs.open((dialogProps) => (
-      <CourseEnquiryForm {...dialogProps} id="new" />
+    const result = await dialogs.open((Props) => (
+      <CourseEnquiryForm {...Props} id="new" />
     ));
     if (result) mutate(`${fetchUrl}?${params}`, { revalidate: true });
   }, [dialogs, params]);
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "name", headerName: "Name", width: 200 },
+      { field: "username", headerName: "Name", width: 200 },
+      { field: "email", headerName: "Email", width: 200 },
       { field: "description", headerName: "Description", width: 300 },
       {
         field: "subject",

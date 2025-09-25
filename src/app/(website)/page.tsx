@@ -15,14 +15,14 @@ import Image from "next/image";
 import { Autoplay } from "swiper/modules";
 export default function MainPage() {
   // const theme = useTheme(); // 🎨 theme se colors lena
-  const features = [
-    "Peer learning",
-    "Code reviews",
-    "Virtual hostel",
+  // const features = [
+  //   "Peer learning",
+  //   "Code reviews",
+  //   "Virtual hostel",
 
-    "Doubt sessions",
-    "Bounties",
-  ];
+  //   "Doubt sessions",
+  //   "Bounties",
+  // ];
 
   const slides = [
     { id: 1, image: "/slider-image/education-1.jpg", alt: "" },

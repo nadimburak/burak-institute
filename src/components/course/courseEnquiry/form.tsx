@@ -1,8 +1,11 @@
 "use client";
 
-import { useForm, Controller, SubmitErrorHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { InferType } from "yup";
+import axios from "axios";
+import { useEffect } from "react";
 import {
   TextField,
   Button,
@@ -12,201 +15,197 @@ import {
   DialogActions,
   Grid,
   Box,
+  CircularProgress,
+  Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import axios from "axios";
+
+// Components (Inhe sahi path se import karein)
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-import axiosInstance from "@/utils/axiosInstance";
-import { fetchUrl } from "./constant";
+import CoursesAutocomplete from "@/components/autocomplete/CourseAutocomplete"; // ✅ Course Autocomplete ko bhi import karein
 
-//
-// ---------- Types ----------
-//
-type SubjectOption = { _id: string; name: string };
-
-type FormValues = {
-  name: string;
-  subject: SubjectOption | null;
-  courses: string;
-  description?: string;
-};
-
-const schema: yup.ObjectSchema<FormValues> = yup.object({
-  name: yup.string().required("Name is required"),
+// ✅ Schema ko component ke bahar rakhein
+const schema = yup.object({
+  username: yup.string().required("Name is required"),
+  email: yup
+    .string()
+    .email("Please enter a valid email")
+    .required("Email is required"),
   subject: yup
-    .object({
+    .object()
+    .shape({
       _id: yup.string().required(),
-      name: yup.string().required(),
+      name: yup.string(),
     })
     .nullable()
     .required("Subject is required"),
-  courses: yup.string().required("Courses is required"),
+  courses: yup
+    .object()
+    .shape({
+      _id: yup.string().required(),
+      name: yup.string(),
+    })
+    .nullable()
+    .required("Course is required"),
   description: yup.string().optional(),
 });
 
+type FormValues = InferType<typeof schema>;
+
 interface CourseEnquiryFormProps {
-  id?: string;
+  id?: string; // ID optional hai, "new" ke case mein nahi hoga
   open: boolean;
-  onClose: (result?: unknown) => void;
-  payload?: Partial<FormValues> & { subject?: string };
+  onClose: (result?: boolean) => void;
 }
 
-//
-// ---------- Component ----------
-//
 export default function CourseEnquiryForm({
   id,
   open,
   onClose,
-  // payload,
 }: CourseEnquiryFormProps) {
+  const isEditMode = id && id !== "new";
+
+  // ✅ Sahi Default Values
+  const defaultValues: FormValues = {
+    username: "",
+    email: "",
+    subject: null,
+    courses: null,
+    description: "",
+  };
+
   const {
     control,
     handleSubmit,
     reset,
-    // setValue,
+    watch,
+    setValue,
+    register,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: "",
-      subject: null,
-      courses: "",
-      description: "",
-    },
+    defaultValues: defaultValues,
   });
 
-  // initialize form on open
-  const bindData = async (id: string | number) => {
-    try {
-      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
-      console.log("API DATA:", response.data.data);
-      reset(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  const subject = watch("subject");
+  const course = watch("courses");
 
+  // ✅ Data fetching logic ko form ke andar manage karein
   useEffect(() => {
-    if (id && id !== "new") {
-      bindData(id);
+    // Form khulne par hi action lein
+    if (open) {
+      if (isEditMode) {
+        // Edit mode: ID se data fetch karein
+        axios
+          .get(`/api/course/course-enquiry/${id}`)
+          .then((res) => {
+            reset(res.data.data); // Data aane par form ko populate karein
+          })
+          .catch((err) => console.error("Failed to fetch enquiry data:", err));
+      } else {
+        // Create mode: Form ko default values se reset karein
+        reset(defaultValues);
+      }
     }
-  }, [id]);
+  }, [id, isEditMode, open, reset]);
 
-  // submit handler
-  const onSubmit = async (data: FormValues) => {
-    if (!data.subject) return;
-
-    const transformedData = { ...data, subject: data.subject._id };
-
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      if (id && id !== "new") {
+      // ✅ Data ko API ke liye sahi format mein transform karein
+      const transformedData = {
+        ...data,
+        subject: data.subject?._id,
+        courses: data.courses?._id,
+      };
+
+      if (isEditMode) {
         await axios.put(`/api/course/course-enquiry/${id}`, transformedData);
       } else {
         await axios.post(`/api/course/course-enquiry`, transformedData);
       }
-      reset();
-      onClose(true);
+      onClose(true); // Success par dialog band karein aur list refresh karein
     } catch (err) {
       console.error("Error saving course enquiry:", err);
+      onClose(false);
     }
-  };
-
-  // invalid handler
-  const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
-    console.error("Form validation failed:", errors);
   };
 
   return (
     <Dialog open={open} onClose={() => onClose(false)} maxWidth="sm" fullWidth>
       <DialogTitle>
-        {id === "new" ? "Create Course Enquiry" : "Edit Course Enquiry"}
+        {isEditMode ? "Edit Course Enquiry" : "Create Course Enquiry"}
       </DialogTitle>
 
-      <form
-        id="courseEnquiry-form"
-        onSubmit={handleSubmit(onSubmit, onInvalid)}
-      >
+      <form id="courseEnquiry-form" onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: 1 }}>
             <Grid container spacing={2}>
-              {/* Name */}
-              <Grid item xs={12}>
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Enquiry Name"
-                      fullWidth
-                      error={!!errors.name}
-                      helperText={errors.name?.message}
-                      InputLabelProps={{
-                        shrink: true,
-                        sx: { color: "primary.main" },
-                      }}
-                    />
-                  )}
+              {/* ✅ Grid item ka sahi istemal */}
+              <Grid size={{ xs: 12 }}>
+                {/* ✅ Field ka naam 'username' karein */}
+                <TextField
+                  label="Username"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                    sx: {
+                      color: "primary.main",
+                    },
+                  }}
+                  error={!!errors.username}
+                  helperText={errors.username?.message}
+                  {...register("username")}
                 />
               </Grid>
 
-              {/* Subject */}
-              <Grid item xs={12}>
-                <Controller
-                  name="subject"
-                  control={control}
-                  render={({ field }) => (
-                    <SubjectAutocomplete
-                      {...field}
-                      error={!!errors.subject}
-                      helperText={errors.subject ? "Subject is required" : ""}
-                      label="Subject"
-                      placeholder="Search for a subject..."
-                    />
-                  )}
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="email"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                    sx: {
+                      color: "primary.main",
+                    },
+                  }}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  {...register("email")}
                 />
               </Grid>
 
-              {/* Courses */}
-              <Grid item xs={12}>
-                <Controller
-                  name="courses"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Courses"
-                      fullWidth
-                      error={!!errors.courses}
-                      helperText={errors.courses?.message}
-                      InputLabelProps={{
-                        shrink: true,
-                        sx: { color: "primary.main" },
-                      }}
-                    />
-                  )}
+              <Grid size={{ xs: 12 }}>
+                <SubjectAutocomplete
+                  setValue={setValue}
+                  fullWidth
+                  value={subject}
+                  error={!!errors.subject}
+                  helperText={errors.subject ? "Subject is required" : ""}
                 />
               </Grid>
 
-              {/* Description */}
-              <Grid item xs={12}>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Description (Optional)"
-                      fullWidth
-                      multiline
-                      rows={3}
-                      InputLabelProps={{
-                        shrink: true,
-                        sx: { color: "primary.main" },
-                      }}
-                    />
-                  )}
+              <Grid size={{ xs: 12 }}>
+                <CoursesAutocomplete
+                  setValue={setValue}
+                  fullWidth
+                  value={course}
+                  error={!!errors.courses}
+                  helperText={errors.courses ? "Course is required" : ""}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label="description"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                    sx: {
+                      color: "primary.main",
+                    },
+                  }}
+                  error={!!errors.description}
+                  helperText={errors.description?.message}
+                  {...register("description")}
                 />
               </Grid>
             </Grid>
@@ -215,8 +214,8 @@ export default function CourseEnquiryForm({
 
         <DialogActions>
           <Button onClick={() => onClose(false)}>Cancel</Button>
-          <Button type="submit" form="courseEnquiry-form" variant="contained">
-            {id === "new" ? "Create" : "Update"}
+          <Button type="submit" variant="contained">
+            {isEditMode ? "Update" : "Create"}
           </Button>
         </DialogActions>
       </form>

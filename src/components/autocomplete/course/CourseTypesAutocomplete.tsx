@@ -6,22 +6,26 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import useSWR from "swr";
 
-interface ClassItem {
+interface CourseTypeItem {
   _id: string;
   name: string;
 }
 
-interface ClassSectionAutocompleteProps {
-  setValue: unknown;
-  value: unknown;
+interface CourseTypeAutocompleteProps {
+  setValue: (
+    name: "course_type",
+    value: { _id: string; name: string } | null,
+    config?: { shouldValidate: boolean }
+  ) => void;
+  value: CourseTypeItem | null;
   helperText?: string;
   error?: boolean;
 }
 
-const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (
+const CourseTypeAutocomplete: React.FC<CourseTypeAutocompleteProps> = (
   props
 ) => {
-  const fetchUrl = "/class-section";
+  const fetchUrl = "course/course-types";
   const [searchText, setSearchText] = useState("");
   const { setValue, value, helperText = "", error = false } = props;
 
@@ -44,7 +48,7 @@ const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (
     return (
       <Box>
         <Typography variant="h6" color="error">
-          Error fetching classes
+          Error fetching course types
         </Typography>
       </Box>
     );
@@ -53,35 +57,27 @@ const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (
   return (
     <Autocomplete
       options={data?.data || []}
-      getOptionLabel={(option: ClassItem) => option.name || ""}
-      isOptionEqualToValue={(option: ClassItem, value: ClassItem) =>
-        option._id === value._id
-      }
+      getOptionLabel={(option: CourseTypeItem) => option.name || ""}
+      isOptionEqualToValue={(option, val) => option._id === val._id}
       loading={isLoading}
-      onChange={(_, data) => {
+      value={value ?? null}
+      onChange={(_, selected) => {
         setValue(
-          "class",
-          { _id: data?._id, name: data?.name },
-          {
-            shouldValidate: true,
-          }
+          "course_type",
+          selected ? { _id: selected._id, name: selected.name } : null,
+          { shouldValidate: true }
         );
       }}
-      value={value}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Select Class"
+          label="Select Course Type"
           variant="outlined"
+          margin="normal"
           fullWidth
           helperText={helperText}
           error={error}
-          InputLabelProps={{
-            shrink: true,
-            sx: {
-              color: "primary.main",
-            },
-          }}
+          InputLabelProps={{ shrink: true }}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}
@@ -89,4 +85,4 @@ const ClassSectionAutocomplete: React.FC<ClassSectionAutocompleteProps> = (
   );
 };
 
-export default ClassSectionAutocomplete;
+export default CourseTypeAutocomplete;

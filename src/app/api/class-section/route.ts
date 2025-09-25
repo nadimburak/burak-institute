@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { QueryParams } from "@/types/query.params";
-import ClassSection, { IClassSection } from "@/models/ClassSection";
+import ClassSection from "@/models/ClassSection";
 
 export async function GET(request: NextRequest) {
   try {
@@ -78,7 +78,6 @@ export async function POST(request: NextRequest) {
     //     );
     // }
 
-    const classSection: IClassSection = await ClassSection.create(body);
 
     return NextResponse.json(
       {
