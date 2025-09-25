@@ -13,19 +13,19 @@ interface CoursestOption {
 }
 
 interface CoursesAutocompleteProps {
-  setValue: any;
+  setValue: unknown;
   value: CoursestOption | null;
   helperText?: string;
   error?: boolean;
-  fullWidth:any
+  fullWidth: unknown;
 }
 
 const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = ({
-    setValue,
-    value,
-    helperText = "",
-    error = false,
-    fullWidth
+  setValue,
+  value,
+  helperText = "",
+  error = false,
+  fullWidth,
 }) => {
   const fetchUrl = "/course/courses";
 
@@ -54,31 +54,31 @@ const CoursesAutocomplete: React.FC<CoursesAutocompleteProps> = ({
     );
   }
 
-    return (
-        <Autocomplete
-            options={data?.data || []}
-            getOptionLabel={(option: CoursestOption) => option?.name || ""}
-            isOptionEqualToValue={(o, v) => o._id === v._id}
-            loading={isLoading}
-            fullWidth={fullWidth}
-            onChange={(_, selected) => {
-                setValue("courses", selected, { shouldValidate: true });
-            }}
-            value={value ?? null} // ✅ always null instead of undefined
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label="Select Course"
-                    variant="outlined"
-                    helperText={helperText}
-                    error={error}
-                     fullWidth={fullWidth}
-                    InputLabelProps={{ shrink: true }}
-                    onChange={(e) => setSearchText(e.target.value)}
-                />
-            )}
+  return (
+    <Autocomplete
+      options={data?.data || []}
+      getOptionLabel={(option: CoursestOption) => option?.name || ""}
+      isOptionEqualToValue={(o, v) => o._id === v._id}
+      loading={isLoading}
+      fullWidth={fullWidth}
+      onChange={(_, selected) => {
+        setValue("courses", selected, { shouldValidate: true });
+      }}
+      value={value ?? null} // ✅ always null instead of undefined
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Select Course"
+          variant="outlined"
+          helperText={helperText}
+          error={error}
+          fullWidth={fullWidth}
+          InputLabelProps={{ shrink: true }}
+          onChange={(e) => setSearchText(e.target.value)}
         />
-    );
+      )}
+    />
+  );
 };
 
 export default CoursesAutocomplete;
