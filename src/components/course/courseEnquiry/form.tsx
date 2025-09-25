@@ -140,7 +140,7 @@ export default function CourseEnquiryForm({
           <Box sx={{ mt: 1 }}>
             <Grid container spacing={2}>
               {/* ✅ Grid item ka sahi istemal */}
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 {/* ✅ Field ka naam 'username' karein */}
                 <TextField
                   label="Username"
@@ -157,7 +157,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <TextField
                   label="email"
                   fullWidth
@@ -173,7 +173,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <SubjectAutocomplete
                   setValue={setValue}
                   fullWidth
@@ -183,7 +183,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <CoursesAutocomplete
                   setValue={setValue}
                   fullWidth
@@ -193,7 +193,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <TextField
                   label="description"
                   fullWidth
