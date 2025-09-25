@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitErrorHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
@@ -12,26 +12,31 @@ import {
   DialogActions,
   Grid,
   Box,
-  FormHelperText,
 } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
+import axiosInstance from "@/utils/axiosInstance";
+import { fetchUrl } from "./constant";
+
+//
+// ---------- Types ----------
+//
+type SubjectOption = { _id: string; name: string };
 
 type FormValues = {
   name: string;
-  subject: { id: string; name: string } | null;
+  subject: SubjectOption | null;
   courses: string;
   description?: string;
 };
 
-const schema = yup.object({
+const schema: yup.ObjectSchema<FormValues> = yup.object({
   name: yup.string().required("Name is required"),
   subject: yup
-    .object()
-    .shape({
-      id: yup.string().required(),
-      name: yup.string(),
+    .object({
+      _id: yup.string().required(),
+      name: yup.string().required(),
     })
     .nullable()
     .required("Subject is required"),
@@ -43,20 +48,23 @@ interface CourseEnquiryFormProps {
   id?: string;
   open: boolean;
   onClose: (result?: unknown) => void;
-  payload?: { [key: string]: any; subject: string };
+  payload?: Partial<FormValues> & { subject?: string };
 }
 
+//
+// ---------- Component ----------
+//
 export default function CourseEnquiryForm({
   id,
   open,
   onClose,
-  payload,
+  // payload,
 }: CourseEnquiryFormProps) {
   const {
     control,
     handleSubmit,
     reset,
-    setValue,
+    // setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -68,40 +76,28 @@ export default function CourseEnquiryForm({
     },
   });
 
-  useEffect(() => {
-    const initializeForm = async () => {
-      if (open) {
-        if (payload) {
-          reset({
-            name: payload.name ?? "",
-            courses: payload.courses ?? "",
-            description: payload.description ?? "",
-            subject: null,
-          });
-          if (payload.subject) {
-            try {
-              const res = await axios.get(`/api/subject/${payload.subject}`);
-              if (res.data) {
-                setValue("subject", res.data, { shouldValidate: true });
-              }
-            } catch (err) {
-              console.error("Failed to fetch initial subject", err);
-            }
-          }
-        } else {
-          reset();
-        }
-      }
-    };
-    initializeForm();
-  }, [open, payload?.subject, reset, setValue]);
-
-  const onSubmit = async (data: FormValues) => {
-    if (!data.subject) {
-      console.error("Subject is null, submission stopped.");
-      return;
+  // initialize form on open
+  const bindData = async (id: string | number) => {
+    try {
+      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+      console.log("API DATA:", response.data.data);
+      reset(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    const transformedData = { ...data, subject: data.subject.id };
+  };
+
+  useEffect(() => {
+    if (id && id !== "new") {
+      bindData(id);
+    }
+  }, [id]);
+
+  // submit handler
+  const onSubmit = async (data: FormValues) => {
+    if (!data.subject) return;
+
+    const transformedData = { ...data, subject: data.subject._id };
 
     try {
       if (id && id !== "new") {
@@ -116,7 +112,8 @@ export default function CourseEnquiryForm({
     }
   };
 
-  const onInvalid = (errors: any) => {
+  // invalid handler
+  const onInvalid: SubmitErrorHandler<FormValues> = (errors) => {
     console.error("Form validation failed:", errors);
   };
 
@@ -133,7 +130,8 @@ export default function CourseEnquiryForm({
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Grid container spacing={2}>
-              <Grid size={{ xs: 12 }}>
+              {/* Name */}
+              <Grid item xs={12}>
                 <Controller
                   name="name"
                   control={control}
@@ -146,64 +144,32 @@ export default function CourseEnquiryForm({
                       helperText={errors.name?.message}
                       InputLabelProps={{
                         shrink: true,
-                        sx: {
-                          color: "primary.main",
-                        },
+                        sx: { color: "primary.main" },
                       }}
                     />
                   )}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              {/* Subject */}
+              <Grid item xs={12}>
                 <Controller
                   name="subject"
                   control={control}
-                  render={({ field }) => {
-                    const memoizedAutocomplete = useMemo(() => {
-                      console.log(field);
-
-                      return (
-                        // ✅✅✅ MAIN FIX: onChange ko wrapper ke saath pass karein ✅✅✅
-                        <SubjectAutocomplete
-                          value={field.value}
-                          ref={field.ref}
-                          onBlur={field.onBlur}
-                          onChange={(newValue) => {
-                            // Agar value empty string hai, toh use null bana dein
-                            if (newValue === "") {
-                              field.onChange(null);
-                            } else {
-                              field.onChange(newValue);
-                            }
-                          }}
-                          label="Subject"
-                          placeholder="Search for a subject..."
-                        />
-                      );
-                    }, [
-                      field.value,
-                      errors.subject,
-                      field.ref,
-                      field.onBlur,
-                      field.onChange,
-                    ]);
-
-                    return (
-                      <>
-                        {memoizedAutocomplete}
-                        {errors.subject && (
-                          <FormHelperText error>
-                            {errors.subject.message}
-                          </FormHelperText>
-                        )}
-                      </>
-                    );
-                  }}
+                  render={({ field }) => (
+                    <SubjectAutocomplete
+                      {...field}
+                      error={!!errors.subject}
+                      helperText={errors.subject ? "Subject is required" : ""}
+                      label="Subject"
+                      placeholder="Search for a subject..."
+                    />
+                  )}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              {/* Courses */}
+              <Grid item xs={12}>
                 <Controller
                   name="courses"
                   control={control}
@@ -216,16 +182,15 @@ export default function CourseEnquiryForm({
                       helperText={errors.courses?.message}
                       InputLabelProps={{
                         shrink: true,
-                        sx: {
-                          color: "primary.main",
-                        },
+                        sx: { color: "primary.main" },
                       }}
                     />
                   )}
                 />
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              {/* Description */}
+              <Grid item xs={12}>
                 <Controller
                   name="description"
                   control={control}
@@ -238,9 +203,7 @@ export default function CourseEnquiryForm({
                       rows={3}
                       InputLabelProps={{
                         shrink: true,
-                        sx: {
-                          color: "primary.main",
-                        },
+                        sx: { color: "primary.main" },
                       }}
                     />
                   )}
@@ -249,6 +212,7 @@ export default function CourseEnquiryForm({
             </Grid>
           </Box>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={() => onClose(false)}>Cancel</Button>
           <Button type="submit" form="courseEnquiry-form" variant="contained">

@@ -144,7 +144,7 @@ export default function RoleList() {
           </>
         ),
       },
-      
+
       { field: "name", headerName: "Name", width: 200 },
     ],
     [handleDelete, handleEdit]
@@ -181,7 +181,7 @@ export default function RoleList() {
       <CardContent>
         <Box>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+            <Grid item md={6} sm={6} xs={12}>
               <TextField
                 placeholder="Search"
                 value={searchText}
@@ -198,7 +198,7 @@ export default function RoleList() {
                 }}
               />
             </Grid>
-            <Grid size={{ md: 6, sm: 6, xs: 12 }}>
+            <Grid item md={6} sm={6} xs={12}>
               <Stack
                 direction="row"
                 spacing={1}

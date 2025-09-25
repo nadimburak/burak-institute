@@ -185,7 +185,7 @@ export default function ClassSectionList() {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid item xs={12} sm={6}>
             <TextField
               placeholder="Search Class Section"
               value={searchText}
@@ -200,7 +200,7 @@ export default function ClassSectionList() {
               fullWidth
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid item xs={12} sm={6}>
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <IconButton
                 sx={{
