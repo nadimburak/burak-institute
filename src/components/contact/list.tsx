@@ -144,14 +144,12 @@ const ContactList = () => {
               placeholder="Search Subject"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Icon>search</Icon>
-                    </InputAdornment>
-                  ),
-                },
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Icon>search</Icon>
+                  </InputAdornment>
+                ),
               }}
               fullWidth
             />

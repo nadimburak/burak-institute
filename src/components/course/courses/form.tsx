@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useNotifications } from "@toolpad/core";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -45,11 +45,7 @@ const schema = yup.object({
   description: yup.string().optional(),
 });
 
-export default function CourseForm({
-  id,
-  open,
-  onClose,
-}: CourseTypeFormProps) {
+export default function CourseForm({ id, open, onClose }: CourseTypeFormProps) {
   const notifications = useNotifications();
   const {
     register,
@@ -113,15 +109,18 @@ export default function CourseForm({
     }
   };
 
-  const bindData = useCallback(async (id: string | number) => {
-    try {
-      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
-      console.log("API DATA:", response.data.data);
-      reset(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }, [reset]);
+  const bindData = useCallback(
+    async (id: string | number) => {
+      try {
+        const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+        console.log("API DATA:", response.data.data);
+        reset(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    [reset]
+  );
 
   useEffect(() => {
     if (id && id !== "new") {
