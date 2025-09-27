@@ -44,7 +44,9 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           boxShadow: 6,
         },
         bgcolor: "background.paper",
-        minHeight:"50h"
+        minHeight:"50vh",
+        maxWidth:'30vw',
+        m:1
       }}
     >
       {/* Course Image */}
