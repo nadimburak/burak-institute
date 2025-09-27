@@ -127,7 +127,7 @@ const CourseEnquiryList = () => {
         width: 200,
         renderCell: (params) => {
           // params.row.subject me object hai
-          return params.value.name || "-"; // agar null ho toh "-"
+          return params.value?.name ||"-"; // agar null ho toh "-"
         },
       },
       {
@@ -185,7 +185,7 @@ const CourseEnquiryList = () => {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs:12, sm:6}}>
             <TextField
               placeholder="Search CourseEnquiry"
               value={searchText}
@@ -201,7 +201,7 @@ const CourseEnquiryList = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs:12, sm:6}}>
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <IconButton
                 sx={{

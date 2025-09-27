@@ -47,7 +47,7 @@ export default function RoleAutocomplete({
                 if (!res.ok) throw new Error("Failed to load roles");
                 const data: RoleOption[] = await res.json();
                 setOptions(data);
-            } catch (e) {
+            } catch (e:any) {
                 if ((e).name !== "AbortError") {
                     console.error(e);
                     setOptions([]);

@@ -24,6 +24,7 @@ export interface SubjectAutocompleteProps {
   label?: string;
   placeholder?: string;
     setValue: any;
+    fullWidth:any
   
 }
 
@@ -34,6 +35,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
   value,
   onChange,
   onBlur,
+  fullWidth,
   ref,
   helperText = "",
   error = false,
@@ -69,6 +71,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
       getOptionLabel={(option: SubjectOption) => option?.name || ""}
       isOptionEqualToValue={(o, v) => o._id === v._id}
       loading={isLoading}
+      fullWidth={fullWidth}
       value={value ?? null}
       onChange={(_, selected) => onChange(selected ?? null)} // ✅ Controller-friendly
       onBlur={onBlur}
@@ -78,6 +81,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
           label={label}
           placeholder={placeholder}
           helperText={helperText}
+           fullWidth={fullWidth}
           error={error}
           InputLabelProps={{ shrink: true, sx: { color: "primary.main" } }}
           onChange={(e) => setSearchText(e.target.value)}
