@@ -17,6 +17,7 @@ interface CourseAutocompleteProps {
     value: CourseOption | null;
     helperText?: string;
     error?: boolean;
+    fullWidth?:any
 }
 
 const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({

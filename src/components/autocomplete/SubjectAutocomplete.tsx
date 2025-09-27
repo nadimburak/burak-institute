@@ -23,6 +23,8 @@ export interface SubjectAutocompleteProps {
   error?: boolean;
   label?: string;
   placeholder?: string;
+    setValue: any;
+  
 }
 
 //
