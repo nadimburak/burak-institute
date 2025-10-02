@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Contact from "@/models/contact/contact.modle";
-import { FormData } from "@/app/(website)/components/form/contactForm";
+import { FormData } from "@/components/form/contactForm";
 
 export async function POST(req: NextRequest) {
   try {
