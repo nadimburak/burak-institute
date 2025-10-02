@@ -4,6 +4,7 @@ import Role from "./Role.model";
 import { Gender } from "../../enums/gender";
 import { MaritalStatus } from "../../enums/maritalStatus";
 
+
 export type UserType = "user" | "student" | "super_admin";
 
 export interface IUser extends Document {

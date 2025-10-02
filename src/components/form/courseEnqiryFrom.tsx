@@ -40,13 +40,13 @@ const CouserEnquiryForm = () => {
         defaultValues: {
             username: '',
             email: "",
-            subject: { _id: "", name: "" },
-            courses: { _id: "", name: "" },
+            subject: { _id: '', name: '' },
+            courses: { _id: '', name: '' },
             description: ""
         }
     })
     const subject = watch("subject");
-    const course = watch("courses");
+    const courses = watch("courses");
 
     const onSubmit: SubmitHandler<IcourseEnquiry> = async (data) => {
         console.log('Form Data:', data);
@@ -133,7 +133,6 @@ const CouserEnquiryForm = () => {
                     <SubjectAutocomplete
                         setValue={setValue}
                         fullWidth
-                          
                         value={subject}
                         error={!!errors.subject}
                         helperText={errors.subject ? "Subject is required" : ""}
@@ -143,7 +142,7 @@ const CouserEnquiryForm = () => {
                     <CoursesAutocomplete
                         setValue={setValue}
                         fullWidth
-                        value={course}
+                        value={courses}
                         error={!!errors.courses}
                         helperText={errors.courses ? "Course is required" : ""}
                     />
