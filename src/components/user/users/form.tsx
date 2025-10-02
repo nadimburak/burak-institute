@@ -1,7 +1,7 @@
 "use client";
 
-import ImageFileUpload from "@/components/form/imageUpload";
-import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
+import ImageFileUpload from "@/app/(website)/components/form/imageUpload";
+import RoleAutocomplete from "@/app/(website)/components/user/roles/roleAutocomplete";
 import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";

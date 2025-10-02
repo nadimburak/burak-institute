@@ -1,5 +1,5 @@
-import AddressField from "@/components/address/address"
-import ContactForm from "@/components/form/contactForm"
+import AddressField from "@/app/(website)/components/address/address"
+import ContactForm from "@/app/(website)/components/form/contactForm"
 import Image from "next/image"
 import { Box} from "@mui/material"
 

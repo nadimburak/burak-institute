@@ -5,6 +5,7 @@ import { Box, Typography, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import useSWR from "swr";
 import { getFetcher } from "@/utils/fetcher";
+import { unknown } from "zod";
 
 //
 // ---------- Types ----------
@@ -16,15 +17,15 @@ export interface SubjectOption {
 
 export interface SubjectAutocompleteProps {
   value: SubjectOption | null;
-  onChange: (newValue: SubjectOption | null) => void;
-  onBlur?: () => void;
+  // onChange: (newValue: SubjectOption | null) => void;
+  // onBlur?: () => void;
   ref?: React.Ref<HTMLInputElement>; // ✅ Instead of any
   helperText?: string;
   error?: boolean;
   label?: string;
   placeholder?: string;
     setValue: any;
-    fullWidth:any
+    fullWidth:boolean
   
 }
 
@@ -33,10 +34,11 @@ export interface SubjectAutocompleteProps {
 //
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
   value,
-  onChange,
-  onBlur,
+ 
+  // onBlur,
   fullWidth,
   ref,
+  setValue,
   helperText = "",
   error = false,
   label = "Select Subject",
@@ -73,8 +75,10 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
       loading={isLoading}
       fullWidth={fullWidth}
       value={value ?? null}
-      onChange={(_, selected) => onChange(selected ?? null)} // ✅ Controller-friendly
-      onBlur={onBlur}
+      onChange={(_, selected) => {
+        setValue("subject", selected, { shouldValidate: true });
+      }} // ✅ Controller-friendly
+      // onBlur={onBlur}
       renderInput={(params) => (
         <TextField
           {...params}

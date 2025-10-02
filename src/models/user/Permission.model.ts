@@ -1,9 +1,11 @@
+
 import mongoose, { Schema, Document } from "mongoose";
 
 // Interface for Designation Document
 export interface IPermission extends Document {
   name: string;
   status: boolean;
+  key:string;
   created_at: Date;
   updated_at: Date;
 }
@@ -18,6 +20,10 @@ const PermissionSchema: Schema<IPermission> = new Schema(
     status: {
       type: Boolean,
       required: true,
+    },
+    key:{
+      type:String,
+      required:true,
     },
     created_at: {
       type: Date,

@@ -20,8 +20,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ICourse } from "@/models/course/Course.model";
-import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-import ImageUpload from "@/components/form/imageUpload";
+import SubjectAutocomplete from "@/app/(website)/components/autocomplete/SubjectAutocomplete";
+import ImageUpload from "@/app/(website)/components/form/imageUpload";
 import { defaultValues, fetchUrl } from "./constant";
 import axiosInstance from "@/utils/axiosInstance";
 

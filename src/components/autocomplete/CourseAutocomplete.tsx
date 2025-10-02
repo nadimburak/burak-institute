@@ -23,14 +23,16 @@ interface CourseFormValues {
 }
 
 interface CourseAutocompleteProps {
-  setValue: UseFormSetValue<CourseFormValues>;
+  setValue: any;
   value: CourseOption | null;
   helperText?: string;
   error?: boolean;
+  fullWidth: any;
 }
 
 const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
   setValue,
+  fullWidth,
   value,
   helperText = "",
   error = false,
@@ -72,6 +74,7 @@ const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
         setValue("courses", selected, { shouldValidate: true });
       }}
       value={value ?? null} // ✅ safe fallback
+      fullWidth={fullWidth}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -79,6 +82,7 @@ const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
           variant="outlined"
           helperText={helperText}
           error={error}
+          fullWidth={fullWidth}
           InputLabelProps={{ shrink: true }}
           InputProps={{
             ...params.InputProps,

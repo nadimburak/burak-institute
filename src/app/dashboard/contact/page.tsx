@@ -1,4 +1,4 @@
-import ContactList from "@/components/contact/list"
+import ContactList from "@/app/(website)/components/contact/list"
 
 const page = () => {
 

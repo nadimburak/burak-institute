@@ -1,4 +1,4 @@
-import { ErrorComponent } from "@/components/form/errorComponent";
+import { ErrorComponent } from "@/app/(website)/components/form/errorComponent";
 import { UserModel } from "@/models/user/User.model";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";

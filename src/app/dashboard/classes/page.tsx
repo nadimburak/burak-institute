@@ -1,4 +1,4 @@
-import ClassesList from '@/components/classes/list'
+import ClassesList from '@/app/(website)/components/classes/list'
 import React from 'react'
 
 const page = () => {

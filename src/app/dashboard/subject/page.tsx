@@ -1,4 +1,4 @@
-import SubjectList from '@/components/subject/list'
+import SubjectList from '@/app/(website)/components/subject/list'
 import React from 'react'
 
 const page = () => {

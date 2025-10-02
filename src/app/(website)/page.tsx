@@ -10,7 +10,7 @@ import "swiper/css/navigation";
 // import './styles.css';
 
 // import required modules
-import CoursesList from "@/components/web/courses/list";
+import CoursesList from "@/app/(website)/components/web/courses/list";
 import Image from "next/image";
 import { Autoplay } from "swiper/modules";
 export default function MainPage() {

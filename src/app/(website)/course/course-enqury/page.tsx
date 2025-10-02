@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import useSWR from "swr";
 import { getFetcher } from "@/utils/fetcher"
-import { fetchUrl } from "@/components/course/courses/constant"
-import CouserEnquiryForm from "@/components/form/courseEnqiryFrom"
+import { fetchUrl } from "@/app/(website)/components/course/courses/constant"
+import CouserEnquiryForm from "@/app/(website)/components/form/courseEnqiryFrom"
 // import CouserEnquiryForm from '@/components/form/courseEnquiryFrom'
 
 const CourseEnquiryUserForm = () => {

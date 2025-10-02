@@ -1,4 +1,4 @@
-import CourseEnquiryList from '@/components/course/courseEnquiry/list'
+import CourseEnquiryList from '@/app/(website)/components/course/courseEnquiry/list'
 
 const page = () => {
     return (
