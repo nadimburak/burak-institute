@@ -19,7 +19,7 @@ import * as yup from 'yup';
 import axiosInstance from '@/utils/axiosInstance';
 import { useNotifications } from '@toolpad/core';
 import { handleErrorMessage } from '@/utils/errorHandler';
-import { fetchUrl, defaultValues } from "@/app/(website)/components/course/courseTypes/constant";
+import { fetchUrl, defaultValues } from "@/components/course/courseTypes/constant";
 import { ICourseType } from '@/models/course/CourseType.model';
 
 // Yup validation schema

@@ -7,9 +7,9 @@ import * as y from 'yup';
 import { useNotifications } from "@toolpad/core";
 import { InferType } from 'yup';
 import { Box, TextField, Button } from "@mui/material"
-import SubjectAutocomplete from "@/app/(website)/components/autocomplete/SubjectAutocomplete";
+import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CoursesAutocomplete from "@/app/(website)/components/autocomplete/CourseAutocomplete"
+import CoursesAutocomplete from "@/components/autocomplete/CourseAutocomplete"
 
 const CouserEnquiryForm = () => {
 

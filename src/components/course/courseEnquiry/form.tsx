@@ -18,7 +18,7 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import SubjectAutocomplete from "@/app/(website)/components/autocomplete/SubjectAutocomplete";
+import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 
 // Components (Inhe sahi path se import karein)
 // import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
