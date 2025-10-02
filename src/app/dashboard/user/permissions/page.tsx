@@ -1,6 +1,6 @@
 "use client";
 
-import PermissionList from "@/app/(website)/components/user/permissions/list";
+import PermissionList from "@/components/user/permissions/list";
 
 
 export default function ListPage() {
