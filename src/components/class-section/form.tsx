@@ -59,7 +59,7 @@ export default function ClassSectionForm({
   });
 
   // Fetch existing data for edit - wrapped in useCallback
-  const bindData = async (id: string | number) => {
+  const bindData = useCallback(async (id: string | number) => {
     try {
       const response = await axiosInstance.get(`${fetchUrl}/${id}`);
       console.log("API DATA:", response.data.data);
@@ -67,13 +67,13 @@ export default function ClassSectionForm({
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }, [reset]);
 
   useEffect(() => {
     if (id && id !== "new") {
       bindData(id);
     }
-  }, [id]);
+  }, [bindData, id]);
 
   const onSubmit = async (data: IClassSection) => {
     try {
@@ -123,7 +123,7 @@ export default function ClassSectionForm({
             error={!!errors.class}
             helperText={errors.class?.message ? "Class is required" : ""}
           />
-          {/* <TextField
+          <TextField
             label="Section Name"
             variant="outlined"
             fullWidth
@@ -138,7 +138,7 @@ export default function ClassSectionForm({
             }}
             error={!!errors.name}
             helperText={errors.name?.message}
-          /> */}
+          />
           <Box mt={2} display="flex" justifyContent="space-between">
             <Button
               variant="contained"
