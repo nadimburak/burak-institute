@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import ThemeRegistry from "@/theme/account/ThemeRegistry";
 import { NextAppProvider } from "@toolpad/core/nextjs";
-
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +31,16 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SessionProvider>
-          <ThemeRegistry>
-            <NextAppProvider>
-              {children}
-            </NextAppProvider>
-          </ThemeRegistry>
-        </SessionProvider>
+        <AppRouterCacheProvider>
+
+          <SessionProvider>
+            <ThemeRegistry>
+              <NextAppProvider>
+                {children}
+              </NextAppProvider>
+            </ThemeRegistry>
+          </SessionProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
