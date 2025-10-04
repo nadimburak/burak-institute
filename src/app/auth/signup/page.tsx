@@ -82,7 +82,17 @@ export default function SignUp() {
         router.refresh();
       }
     } catch (err: unknown) {
-      setError(err.message || 'An error occurred during registration');
+      if (
+        err &&
+        typeof err === 'object' &&
+        err !== null &&
+        'message' in err &&
+        typeof (err as { message?: unknown }).message === 'string'
+      ) {
+        setError((err as { message: string }).message);
+      } else {
+        setError('An error occurred during registration');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -173,14 +183,9 @@ export default function SignUp() {
           </Box>
 
           <Box textAlign="center">
-            {/* <NextLink href="/auth/signin" passHref>
-              <Link variant="body2">
-                Already have an account? Sign In
-              </Link>
-            </NextLink> */}
             <Link component={NextLink} href="/auth/signin" variant="body2">
-  Already have an account? Sign In
-          </Link>
+              Already have an account? Sign In
+            </Link>
           </Box>
         </Paper>
       </Box>
