@@ -2,6 +2,7 @@
 
 import ImageFileUpload from "@/components/form/imageUpload";
 import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
+import PasswordInput from "@/components/form/password";
 import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -211,37 +212,12 @@ export default function UserForm({ id, open, onClose }: FormProps) {
             </Grid>
 
             <Grid size={{ md: 12, sm: 12, xs: 12 }}>
-              <TextField
+              <PasswordInput
                 fullWidth
                 label="Password*"
-                type={showPassword ? "text" : "password"}
-                {...register("password")}
-                error={!!errors.password}
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    color: "primary.main",
-                  },
-                }}
-                helperText={
-                  errors.password?.type === "required"
-                    ? errors.password.message
-                    : errors.password?.type === "matches"
-                      ? "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
-                      : ""
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                value={watch("password") || ""}
+                setValue={(e) => setValue("password", e)}
+                errors={errors}
               />
             </Grid>
 

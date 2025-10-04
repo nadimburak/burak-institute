@@ -66,10 +66,21 @@ const UserSchema: Schema<IUser> = new Schema({
   status: { type: Boolean, required: false },
 });
 
-// 🔒 Hash password before saving
+// For creating and saving documents
 UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// For findOneAndUpdate and findByIdAndUpdate
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate() as Partial<IUser>;
+
+  if (update && update.password) {
+    update.password = await bcrypt.hash(update.password, 10);
+  }
+
   next();
 });
 
