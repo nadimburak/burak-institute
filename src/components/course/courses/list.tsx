@@ -175,7 +175,12 @@ export default function CourseList() {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}
+          >
             <TextField
               placeholder="Search Course Type"
               value={searchText}
@@ -190,7 +195,12 @@ export default function CourseList() {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid
+            size={{
+              xs: 12,
+              sm: 6
+            }}
+          >
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <IconButton
                 sx={{
