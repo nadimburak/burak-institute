@@ -1,48 +1,3 @@
-// {
-//   "compilerOptions": {
-//     "target": "ES2020",                       // thoda modern target
-//     "lib": ["dom", "dom.iterable", "esnext"],
-
-//     "allowJs": true,
-//     "skipLibCheck": true,                     // ✅ perf boost
-//     "strict": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "noEmit": true,
-
-//     "esModuleInterop": true,
-//     "allowSyntheticDefaultImports": true,
-//     "module": "esnext",
-//     "moduleResolution": "node",
-//     "resolveJsonModule": true,
-
-//     "isolatedModules": true,
-//     "incremental": true,
-//     "jsx": "preserve",
-
-//     "baseUrl": ".",
-//     "paths": {
-//       "@/*": ["src/*"]
-//     },
-
-//     "plugins": [{ "name": "next" }]
-//   },
-//   "include": [
-//   "next-env.d.ts",
-//   "**/*.ts",
-//   "**/*.tsx",
-//   ".next/types/**/*.ts"
-// ],
-//   "exclude": [
-//     "node_modules",
-//     ".next",
-//     "dist",
-//     "out",
-//     "public",
-//     "temp",
-//     ".vscode",
-//     "*.js"
-//   ]
-// }
 {
   "compilerOptions": {
     "target": "ES2020", // thoda modern target
@@ -57,11 +12,11 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "module": "esnext",
-    "moduleResolution": "bundler", // 'node' se behtar hai modern projects ke liye
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
     "incremental": true,
     "jsx": "preserve",
     "baseUrl": ".",
@@ -77,13 +32,19 @@
     ]
   },
   "include": [
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
-    // Baaki cheezein 'include' specific hone ke kaaran zaroori nahi, but rakh sakte hain
+    "node_modules",
+    ".next",
+    "dist",
+    "out",
+    "public",
+    "temp",
+    ".vscode",
+    "*.js"
   ]
 }
