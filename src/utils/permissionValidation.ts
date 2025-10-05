@@ -1,8 +1,8 @@
 
-import Role from '@/models/user/Role.model';
-import Permission from '@/models/user/Permission.model';
+import Role, { IRole } from '@/models/user/Role.model';
+import Permission, { IPermission } from '@/models/user/Permission.model';
 
-export const hasPermission = async (role, permissionKey: string) => {
+export const hasPermission = async (role: IRole, permissionKey: string) => {
 
     if (!role || !role._id || !permissionKey) {
         console.error("Invalid arguments: Role object with _id and a permissionKey are required.");
@@ -11,7 +11,7 @@ export const hasPermission = async (role, permissionKey: string) => {
 
     try {
 
-        const permission:any = await Permission.findOne({ key: permissionKey }).lean();
+        const permission = await Permission.findOne({ key: permissionKey }).lean() as IPermission | null;
 
         if (!permission) {
             return false;
