@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { InferType } from "yup";
@@ -15,11 +15,10 @@ import {
   DialogActions,
   Grid,
   Box,
-  CircularProgress,
-  Typography,
 } from "@mui/material";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import CourseAutoComplete from "@/components/autocomplete/course/CourseAutoComplete";
+import { useMemo } from "react";
 
 // ✅ Schema ko component ke bahar rakhein
 const schema = yup.object({
@@ -63,16 +62,18 @@ export default function CourseEnquiryForm({
   const isEditMode = id && id !== "new";
 
   // ✅ Sahi Default Values
-  const defaultValues: FormValues = {
-    username: "",
-    email: "",
-    subject: null,
-    courses: null,
-    description: "",
-  };
+  const defaultValues: FormValues = useMemo(
+    () => ({
+      username: "",
+      email: "",
+      subject: null,
+      courses: null,
+      description: "",
+    }),
+    []
+  );
 
   const {
-    control,
     handleSubmit,
     reset,
     watch,
@@ -104,7 +105,7 @@ export default function CourseEnquiryForm({
         reset(defaultValues);
       }
     }
-  }, [id, isEditMode, open, reset]);
+  }, [defaultValues, id, isEditMode, open, reset]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {

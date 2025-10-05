@@ -33,7 +33,7 @@ const CourseEnquiryForm = () => {
 
 
 
-    const { control, handleSubmit, register, watch, reset, setValue, formState: { errors } } = useForm<ICourseEnquiry>({
+    const { handleSubmit, register, watch, reset, setValue, formState: { errors } } = useForm<ICourseEnquiry>({
         resolver: yupResolver(FormSchema),
         defaultValues: {
             username: '',

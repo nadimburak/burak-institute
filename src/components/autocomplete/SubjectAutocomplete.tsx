@@ -24,9 +24,9 @@ export interface SubjectAutocompleteProps {
   error?: boolean;
   label?: string;
   placeholder?: string;
-    setValue: any;
-    fullWidth:boolean
-  
+  setValue: (name: "subject", value: SubjectOption | null, config?: { shouldValidate: boolean }) => void;
+  fullWidth: boolean
+
 }
 
 //
@@ -34,7 +34,7 @@ export interface SubjectAutocompleteProps {
 //
 const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
   value,
- 
+
   // onBlur,
   fullWidth,
   ref,
@@ -85,7 +85,7 @@ const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
           label={label}
           placeholder={placeholder}
           helperText={helperText}
-           fullWidth={fullWidth}
+          fullWidth={fullWidth}
           error={error}
           InputLabelProps={{ shrink: true, sx: { color: "primary.main" } }}
           onChange={(e) => setSearchText(e.target.value)}

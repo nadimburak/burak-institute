@@ -6,7 +6,6 @@ import PasswordInput from "@/components/form/password";
 import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -19,7 +18,6 @@ import {
   Grid,
   Icon,
   IconButton,
-  InputAdornment,
   Radio,
   RadioGroup,
   Stack,
@@ -29,7 +27,7 @@ import {
 } from "@mui/material";
 import { DialogProps, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUserUrl } from "./constant";
@@ -66,7 +64,6 @@ interface FormProps extends DialogProps<undefined, string | null> {
 export default function UserForm({ id, open, onClose }: FormProps) {
   const router = useRouter();
   const notifications = useNotifications();
-  const [showPassword, setShowPassword] = useState(false);
 
   const { data: session } = useSession();
 
