@@ -2,19 +2,18 @@
 
 
 
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import * as y from 'yup';
 import { useNotifications } from "@toolpad/core";
-import { InferType } from 'yup';
 import { Box, TextField, Button } from "@mui/material"
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CourseAutoComplete from '../autocomplete/course/CourseAutoComplete';
+import { ICourseEnquiry } from '@/models/course/CourseEnquiryModel';
 
-const CouserEnquiryForm = () => {
+const CourseEnquiryForm = () => {
+    const notifications = useNotifications()
 
-
-    const notifications: any = useNotifications()
     const FormSchema = y.object({
         username: y.string().required("username is required!!!"),
         email: y.string().email("Please enter a valid email address").required("email is required!!!"),
@@ -32,10 +31,9 @@ const CouserEnquiryForm = () => {
         description: y.string().required("description is required!!!")
     })
 
-    type IcourseEnquiry = InferType<typeof FormSchema>;
 
 
-    const { control, handleSubmit, register, watch, reset, setValue, formState: { errors } } = useForm<IcourseEnquiry>({
+    const { control, handleSubmit, register, watch, reset, setValue, formState: { errors } } = useForm<ICourseEnquiry>({
         resolver: yupResolver(FormSchema),
         defaultValues: {
             username: '',
@@ -48,7 +46,7 @@ const CouserEnquiryForm = () => {
     const subject = watch("subject");
     const courses = watch("courses");
 
-    const onSubmit: SubmitHandler<IcourseEnquiry> = async (data) => {
+    const onSubmit: SubmitHandler<ICourseEnquiry> = async (data) => {
         console.log('Form Data:', data);
         const payload = {
             ...data,
@@ -58,7 +56,7 @@ const CouserEnquiryForm = () => {
 
 
         try {
-            const response: any = await fetch('/api/course/course-enquiry', {
+            const response = await fetch('/api/course/course-enquiry', {
                 method: 'POST',
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify(payload),
@@ -84,14 +82,12 @@ const CouserEnquiryForm = () => {
             reset();
 
         } catch (error) {
-
             notifications.show("Form Submition failed!!!", {
                 severity: "failed",
                 autoHideDuration: 3000,
             });
             console.error('Error submitting form:', error);
         }
-
     }
 
 
@@ -140,7 +136,7 @@ const CouserEnquiryForm = () => {
 
 
                     <CourseAutoComplete
-                        setValue={setValue}
+                        setValue={(value) => setValue("courses", value)}
                         fullWidth
                         value={courses}
                         error={!!errors.courses}
@@ -173,4 +169,4 @@ const CouserEnquiryForm = () => {
     )
 }
 
-export default CouserEnquiryForm
+export default CourseEnquiryForm
