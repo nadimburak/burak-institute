@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import CourseEnquiry, { CourseEnquiryType } from "@/models/course/CourseEnquriyModel"
+import CourseEnquiry, { ICourseEnquiry } from "@/models/course/CourseEnquiryModel";
 
 
 export async function GET(
@@ -9,15 +9,15 @@ export async function GET(
 ) {
     try {
         await connectDB();
-        const courseenquiry: CourseEnquiryType | null = await CourseEnquiry.findById(params.id)
+        const courseEnquiry: ICourseEnquiry | null = await CourseEnquiry.findById(params.id)
             .populate('subject', 'name')
             .populate('courses', 'name')
             .lean()
 
-        if (!courseenquiry) {
+        if (!courseEnquiry) {
             return NextResponse.json({ message: "Course Enquiry not found" }, { status: 404 });
         }
-        return NextResponse.json({ success: true, data: courseenquiry });
+        return NextResponse.json({ success: true, data: courseEnquiry });
 
 
     } catch (error: unknown) {

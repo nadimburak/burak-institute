@@ -2,9 +2,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import CourseEnquiry from "@/models/course/CourseEnquriyModel";
 import { Types } from "mongoose";
 import { z } from "zod"; // ✅ Zod ko import karein
+import CourseEnquiry from "@/models/course/CourseEnquiryModel";
 
 // ✅ FIX 1: Zod ka istemal karke ek validation schema banayein
 const courseEnquirySchema = z.object({
