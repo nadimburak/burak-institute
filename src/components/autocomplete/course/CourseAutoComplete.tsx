@@ -8,18 +8,19 @@ import React, { useState } from "react";
 import useSWR from "swr";
 
 interface CourseOption {
-    _id: any;
+    _id: string;
     name: string;
 }
 
-interface CourseAutocompleteProps {
-    setValue: any;
+interface CourseAutoCompleteProps {
+    setValue: (value: unknown) => void;
     value: CourseOption | null;
     helperText?: string;
     error?: boolean;
+    fullWidth?: boolean;
 }
 
-const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
+const CourseAutoComplete: React.FC<CourseAutoCompleteProps> = ({
     setValue,
     value,
     helperText = "",
@@ -61,10 +62,10 @@ const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
             loading={isLoading}
             fullWidth={fullWidth}
             onInputChange={(_, newInputValue) => {
-            setSearchText(newInputValue);
-        }}
+                setSearchText(newInputValue);
+            }}
             onChange={(_, selected) => {
-                setValue("courses", selected, { shouldValidate: true });
+                setValue(selected);
             }}
             value={value ?? null} // ✅ always null instead of undefined
             renderInput={(params) => (
@@ -76,11 +77,11 @@ const CourseAutocomplete: React.FC<CourseAutocompleteProps> = ({
                     helperText={helperText}
                     error={error}
                     InputLabelProps={{ shrink: true }}
-                   
+
                 />
             )}
         />
     );
 };
 
-export default CourseAutocomplete;
+export default CourseAutoComplete;

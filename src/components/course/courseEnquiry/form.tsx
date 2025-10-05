@@ -19,10 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-
-// Components (Inhe sahi path se import karein)
-// import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
-// import CoursesAutocomplete from "@/components/autocomplete/CourseAutocomplete"; // ✅ Course Autocomplete ko bhi import karein
+import CourseAutoComplete from "@/components/autocomplete/course/CourseAutoComplete";
 
 // ✅ Schema ko component ke bahar rakhein
 const schema = yup.object({
@@ -185,7 +182,7 @@ export default function CourseEnquiryForm({
               </Grid>
 
               <Grid item xs={12}>
-                <CoursesAutocomplete
+                <CourseAutoComplete
                   setValue={setValue}
                   fullWidth
                   value={course}

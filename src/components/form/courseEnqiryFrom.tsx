@@ -9,7 +9,7 @@ import { InferType } from 'yup';
 import { Box, TextField, Button } from "@mui/material"
 import SubjectAutocomplete from "@/components/autocomplete/SubjectAutocomplete";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CoursesAutocomplete from "@/components/autocomplete/CourseAutocomplete"
+import CourseAutoComplete from '../autocomplete/course/CourseAutoComplete';
 
 const CouserEnquiryForm = () => {
 
@@ -139,7 +139,7 @@ const CouserEnquiryForm = () => {
                     />
 
 
-                    <CoursesAutocomplete
+                    <CourseAutoComplete
                         setValue={setValue}
                         fullWidth
                         value={courses}
