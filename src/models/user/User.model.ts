@@ -28,7 +28,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new Schema({
-  role: { type: Schema.Types.ObjectId, ref: Role, required: false },
+  role: { type: Schema.Types.ObjectId, ref: Role, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   mobile: { type: Number, required: false },
@@ -51,11 +51,7 @@ const UserSchema: Schema<IUser> = new Schema({
     enum: Object.values(Gender),
     required: false,
   },
-  type: {
-    type: String,
-    enum: ["user", "student", "super_admin"],
-    required: true,
-  },
+  
   language: [
     {
       type: Schema.Types.ObjectId,

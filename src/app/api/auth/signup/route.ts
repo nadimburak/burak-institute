@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/user/User.model';
 
+
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+   await connectDB();
 
-    const { name, email, password } = await request.json();
+    const { name, email, password,role } = await request.json();
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password ||!role) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -30,12 +31,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+   
 
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      type: "student",
+      role,
+      
     });
 
 
@@ -48,6 +51,7 @@ export async function POST(request: NextRequest) {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role
         }
       },
       { status: 201 }
