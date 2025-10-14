@@ -8,7 +8,7 @@ import { MaritalStatus } from "../../enums/maritalStatus";
 export type UserType = "user" | "student" | "super_admin";
 
 export interface IUser extends Document {
-  role: mongoose.Types.ObjectId;
+  role?: mongoose.Types.ObjectId;
   name: string;
   mobile?: number;
   image?: string;
@@ -28,7 +28,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new Schema({
-  role: { type: Schema.Types.ObjectId, ref: Role, required: true },
+  role: { type: Schema.Types.ObjectId, ref: Role, required: false },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   mobile: { type: Number, required: false },
@@ -51,7 +51,6 @@ const UserSchema: Schema<IUser> = new Schema({
     enum: Object.values(Gender),
     required: false,
   },
-
   language: [
     {
       type: Schema.Types.ObjectId,
@@ -101,8 +100,7 @@ UserSchema.methods.toProfileJSON = function (options?: {
   return obj;
 };
 
-const User: Model<IUser> =
-  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
 export default User;
 

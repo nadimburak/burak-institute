@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const { name, email, password, role, type } = await request.json();
+    const { name, email, password, type } = await request.json();
 
-    if (!name || !email || !password || !role || !type) {
+    if (!name || !email || !password || !type) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -31,16 +31,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
-
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      role,
       type
     });
-
 
     await user.save();
 
