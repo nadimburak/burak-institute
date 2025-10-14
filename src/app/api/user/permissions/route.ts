@@ -27,13 +27,14 @@ export async function GET(request: NextRequest) {
         const query: Record<string, unknown> = {};
         if (search.trim()) {
             query.$or = [
-                { name: { $regex: search.trim(), $options: "i" } },
+                { name: { $regex: search.trim(), $options: "i" },
+            key:{$regex:search.trim(), $options:"i"} },
                 // Add more fields if needed: { description: { $regex: search.trim(), $options: "i" } }
             ];
         }
 
         // Validate sortBy field to prevent injection attacks
-        const allowedSortFields = ['name', 'createdAt', 'updatedAt']; // Add other allowed fields
+        const allowedSortFields = ['name','key', 'createdAt', 'updatedAt']; // Add other allowed fields
         const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : 'name';
 
         // Execute queries in parallel for better performance
@@ -69,6 +70,12 @@ export async function POST(request: NextRequest) {
         if (!body.name || typeof body.name !== 'string') {
             return NextResponse.json(
                 { error: 'Name is required and must be a string' },
+                { status: 400 }
+            );
+        }
+        if (!body.key || typeof body.key !== 'string') {
+            return NextResponse.json(
+                { error: 'key is required and must be a string' },
                 { status: 400 }
             );
         }

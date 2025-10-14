@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/user/User.model';
+import {generateToken} from '@/utils/jwtTokenGenerater'
 
 
 export async function POST(request: NextRequest) {
@@ -31,7 +32,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+<<<<<<< HEAD
     const user = new User({
+=======
+
+
+    const user:any = new User({
+>>>>>>> 8d413867f9e7ce7470111cc2e9fe349b3e550248
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
@@ -40,10 +47,24 @@ export async function POST(request: NextRequest) {
 
     await user.save();
 
+    
+
+    const token = await generateToken(user._id)
+
+    user.token = token
+
+    await user.save()
+
     return NextResponse.json(
       {
         message: 'User created successfully',
-        user: user
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+           token: token,
+        }
       },
       { status: 201 }
     );
