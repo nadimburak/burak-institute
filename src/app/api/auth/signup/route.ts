@@ -6,11 +6,11 @@ import {generateToken} from '@/utils/jwtTokenGenerater'
 
 export async function POST(request: NextRequest) {
   try {
-   await connectDB();
+    await connectDB();
 
-    const { name, email, password,role } = await request.json();
+    const { name, email, password, role, type } = await request.json();
 
-    if (!name || !email || !password ||!role) {
+    if (!name || !email || !password || !role || !type) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -32,14 +32,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-   
+
 
     const user:any = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
       role,
-      
+      type
     });
 
 
@@ -100,6 +100,6 @@ export async function POST(request: NextRequest) {
     }
 
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({  message: errorMessage }, { status: 400 });
+    return NextResponse.json({ message: errorMessage }, { status: 400 });
   }
 }

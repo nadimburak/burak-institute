@@ -1,9 +1,12 @@
-POST {{baseUrl}}auth/sign-up HTTP/1.1
+POST {{baseUrl}}auth/signup HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "Shad",
-    "email": "shad@gmail.com",
+    "name": "Nadim Sheikh",
+    "email": "nadim.sheikh.07@gmail.com",
     "password": "Abcd@1234",
+    "role": "super_admin",
+    "dob":"17-01-1989",
+    "type":"super_admin"
 }

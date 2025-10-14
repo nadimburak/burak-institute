@@ -55,7 +55,7 @@ const UserSchema: Schema<IUser> = new Schema({
     enum: Object.values(Gender),
     required: false,
   },
-  
+
   language: [
     {
       type: Schema.Types.ObjectId,
