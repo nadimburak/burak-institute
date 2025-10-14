@@ -72,14 +72,17 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     }
 }
 
-export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
     try {
         await connectDB();
-        const { id } = await context.params;
+
+        const { id } = context.params; // ✅ no await here
+        console.log(id, "dhud");
+
         const deletedPermission: IPermission | null = await Permission.findByIdAndDelete(id);
 
         if (!deletedPermission) {
-            return NextResponse.json({ error: 'permission not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Permission not found' }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, data: {} });
