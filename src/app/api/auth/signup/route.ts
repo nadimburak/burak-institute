@@ -32,13 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-<<<<<<< HEAD
     const user = new User({
-=======
-
-
-    const user:any = new User({
->>>>>>> 8d413867f9e7ce7470111cc2e9fe349b3e550248
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
@@ -47,9 +41,7 @@ export async function POST(request: NextRequest) {
 
     await user.save();
 
-    
-
-    const token = await generateToken(user._id)
+    const token = await generateToken(String(user._id))
 
     user.token = token
 
