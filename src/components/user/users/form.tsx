@@ -2,10 +2,10 @@
 
 import ImageFileUpload from "@/components/form/imageUpload";
 import RoleAutocomplete from "@/components/user/roles/roleAutocomplete";
+import PasswordInput from "@/components/form/password";
 import { IUser } from "@/models/user/User.model";
 import axiosInstance from "@/utils/axiosInstance";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -18,7 +18,6 @@ import {
   Grid,
   Icon,
   IconButton,
-  InputAdornment,
   Radio,
   RadioGroup,
   Stack,
@@ -28,11 +27,11 @@ import {
 } from "@mui/material";
 import { DialogProps, useNotifications } from "@toolpad/core";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { defaultValues, fetchUserUrl } from "./constant";
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
 // Validation schema
 const validationSchema = yup.object().shape({
@@ -65,11 +64,10 @@ interface FormProps extends DialogProps<undefined, string | null> {
 export default function UserForm({ id, open, onClose }: FormProps) {
   const router = useRouter();
   const notifications = useNotifications();
-  const [showPassword, setShowPassword] = useState(false);
 
   const { data: session } = useSession();
 
-  const user = session?.user
+  const user = session?.user;
   const {
     handleSubmit,
     reset,
@@ -83,7 +81,6 @@ export default function UserForm({ id, open, onClose }: FormProps) {
   });
 
   const role = watch("role");
-
 
   const onSubmit = async (data: IUser) => {
     let url = `${fetchUserUrl}/`;
@@ -165,11 +162,10 @@ export default function UserForm({ id, open, onClose }: FormProps) {
             <Grid size={12}>
               <RoleAutocomplete
                 value={role}
-                setValue={setValue}   // react-hook-form ka setValue
+                setValue={setValue} // react-hook-form ka setValue
                 error={!!errors.role}
                 helperText={errors.role ? "Role is required" : ""}
               />
-
             </Grid>
 
             <Grid size={12}>
@@ -180,22 +176,32 @@ export default function UserForm({ id, open, onClose }: FormProps) {
               />
             </Grid>
 
-            <Grid size={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Name"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.name}
                 helperText={errors.name?.message}
                 {...register("name")}
               />
             </Grid>
 
-            <Grid size={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Email"
                 fullWidth
-                InputLabelProps={{ shrink: true }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: "primary.main",
+                  },
+                }}
                 error={!!errors.email}
                 helperText={errors.email?.message}
                 {...register("email")}
@@ -203,32 +209,12 @@ export default function UserForm({ id, open, onClose }: FormProps) {
             </Grid>
 
             <Grid size={{ md: 12, sm: 12, xs: 12 }}>
-              <TextField
+              <PasswordInput
                 fullWidth
                 label="Password*"
-                type={showPassword ? "text" : "password"}
-                {...register("password")}
-                error={!!errors.password}
-                InputLabelProps={{ shrink: true }}
-                helperText={
-                  errors.password?.type === "required"
-                    ? errors.password.message
-                    : errors.password?.type === "matches"
-                      ? "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
-                      : ""
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                value={watch("password") || ""}
+                setValue={(e) => setValue("password", e)}
+                errors={errors}
               />
             </Grid>
 

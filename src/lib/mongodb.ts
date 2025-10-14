@@ -23,6 +23,7 @@ if (!global.mongoose) {
 
 async function connectDB() {
     if (cached.conn) {
+        
         return cached.conn;
     }
 
@@ -32,11 +33,14 @@ async function connectDB() {
         };
 
         cached.promise = mongoose.connect(MONGODB_URI, opts);
+         
     }
 
     try {
         cached.conn = await cached.promise;
+         
     } catch (e) {
+        
         cached.promise = null;
         throw e;
     }

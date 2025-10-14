@@ -1,121 +1,71 @@
 "use client";
 
-import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
-import CoursePage from "./courses/page";
+import { Box } from "@mui/material";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import "swiper/css/navigation";
+
+// import './styles.css';
+
+// import required modules
+import CoursesList from "@/components/web/courses/list";
+import Image from "next/image";
+import { Autoplay } from "swiper/modules";
 export default function MainPage() {
-  const theme = useTheme(); // 🎨 theme se colors lena
-  const features = [
-    "Peer learning",
-    "Code reviews",
-    "Virtual hostel",
-    "Doubt sessions",
-    "Bounties",
+  // const theme = useTheme(); // 🎨 theme se colors lena
+  // const features = [
+  //   "Peer learning",
+  //   "Code reviews",
+  //   "Virtual hostel",
+
+  //   "Doubt sessions",
+  //   "Bounties",
+  // ];
+
+  const slides = [
+    { id: 1, image: "/slider-image/education-1.jpg", alt: "" },
+    { id: 2, image: "/slider-image/education-2.png", alt: "" },
+    { id: 3, image: "/slider-image/education-3.jpg", alt: "" },
+    { id: 4, image: "/slider-image/education-3.jpg", alt: "" },
   ];
 
   return (
     <>
-      <Box
-        sx={{
-          bgcolor: theme.palette.background.default,
-          textAlign: "center",
-          py: 10,
-          px: 3,
-        }}
-      >
-        {/* Heading */}
-        <Typography
-          variant="h2"
-          fontWeight="bold"
-          sx={{
-            color: theme.palette.text.primary,
-            fontSize: { xs: "2rem", md: "3.5rem" },
-            mb: 3,
+      <Box>
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
           }}
+          loop={true}
+          spaceBetween={30}
+          slidesPerView={1}
+          className="mySwiper"
+          style={{ height: "500px" }}
         >
-          Consistency and{" "}
-          <Box
-            component="span"
-            sx={{
-              position: "relative",
-              display: "inline-block",
-              color: theme.palette.primary.main,
-              "&::after": {
-                content: '""',
-                position: "absolute",
-                left: 0,
-                bottom: 4,
-                width: "100%",
-                height: "6px",
-                bgcolor: theme.palette.secondary.main, // light purple underline
-                zIndex: -1,
-              },
-            }}
-          >
-            Community
-          </Box>
-        </Typography>
-
-        {/* Subheading */}
-        <Typography
-          variant="h6"
-          sx={{
-            maxWidth: "700px",
-            mx: "auto",
-            color: theme.palette.text.secondary,
-            mb: 4,
-          }}
-        >
-          An unmatched Learning Experience for coding courses — bounties, peer
-          learning, code reviews, virtual hostel, alumni network, doubt sessions,
-          and group projects.
-        </Typography>
-
-        {/* Feature Pills */}
-        <Stack
-          direction="row"
-          flexWrap="wrap"
-          justifyContent="center"
-          gap={2}
-          mb={5}
-        >
-          {features.map((feature, index) => (
-            <Chip
-              key={index}
-              label={feature}
-              variant="outlined"
-              sx={{
-                borderColor: theme.palette.primary.main,
-                color: theme.palette.primary.main,
-                fontWeight: 500,
-                "&:hover": {
-                  bgcolor: theme.palette.primary.main,
-                  color: theme.palette.primary.contrastText,
-                },
-              }}
-            />
+          {slides.map((slide) => (
+            <SwiperSlide key={slide.id}>
+              <Image
+                src={slide.image || "/10.png"}
+                alt={slide.alt}
+                width={1200}
+                height={500}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
+            </SwiperSlide>
           ))}
-        </Stack>
-
-        {/* CTA Button */}
-        <Button
-          variant="contained"
-          sx={(theme) => ({
-            bgcolor: theme.palette.primary.main,
-            px: 4,
-            py: 1.5,
-            fontSize: "1rem",
-            borderRadius: "12px",
-            "&:hover": {
-              bgcolor: theme.palette.primary.dark,
-            },
-          })}
-        >
-          Check all Live Cohorts
-        </Button>
-
+        </Swiper>
       </Box>
-      <CoursePage />
+
+      <CoursesList />
     </>
   );
 }

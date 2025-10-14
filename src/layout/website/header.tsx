@@ -127,7 +127,7 @@ const WebsiteHeader = () => {
                     cursor: "pointer",
                     fontWeight: 500,
                     px: 1,
-                    color: theme.palette.text.primary,
+                    color: "text.primary",
                     position: "relative",
                     "&::after": {
                       content: '""',

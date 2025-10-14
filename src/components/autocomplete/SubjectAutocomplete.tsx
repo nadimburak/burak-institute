@@ -1,135 +1,99 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
+import { Box, Typography, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import CircularProgress from "@mui/material/CircularProgress";
+import useSWR from "swr";
+import { getFetcher } from "@/utils/fetcher";
 
-// API se aane wale data ka asli format
-type SubjectFromAPI = {
-  _id: string; // Underscore ke saath
+
+//
+// ---------- Types ----------
+//
+export interface SubjectOption {
+  _id: string;
   name: string;
-};
-
-// Component mein use hone wala standard format
-type SubjectOption = {
-  id:string; // Bina underscore ke
-  name: string;
-};
-
-// API response ka poora format
-type ApiResponse = {
-  data: SubjectFromAPI[];
-};
-
-type Props = {
-    value: SubjectOption | null;
-    onChange: (value: SubjectOption | null) => void;
-    label?: string;
-    placeholder?: string;
-    multiple?: boolean; // multiple prop ko handle karne ke liye code rakha gaya hai
-    disabled?: boolean;
-    limit?: number;
-};
-
-export default function SubjectAutocomplete({
-    value,
-    onChange,
-    label = "Subject",
-    placeholder = "Search subjects…",
-    multiple = false,
-    disabled,
-    limit = 10,
-}: Props) {
-    const [inputValue, setInputValue] = React.useState("");
-    const [options, setOptions] = React.useState<readonly SubjectOption[]>([]);
-    const [loading, setLoading] = React.useState(false);
-
-    // ✅ FIX 1: Edit mode mein value dikhane ke liye
-    const allOptions = React.useMemo(() => {
-        const selectedValues = Array.isArray(value) ? value : value ? [value] : [];
-        const uniqueOptions = new Map<string, SubjectOption>();
-        selectedValues.forEach(val => val && uniqueOptions.set(val.id, val));
-        options.forEach(opt => uniqueOptions.set(opt.id, opt));
-        return Array.from(uniqueOptions.values());
-    }, [options, value]);
-
-    // Aapka purana setTimeout wala structure
-    React.useEffect(() => {
-        const controller = new AbortController();
-        const t = setTimeout(async () => {
-            // Jab tak user type na kare, API call na karein
-            if (inputValue === "") {
-              setOptions([]);
-              return;
-            }
-            try {
-                setLoading(true);
-                const params = new URLSearchParams({
-                    q: inputValue,
-                    limit: String(limit),
-                });
-                const res = await fetch(`/api/subject?${params}`, {
-                    signal: controller.signal,
-                    cache: "no-store",
-                });
-                if (!res.ok) throw new Error("Failed to load subjects");
-
-                const json: ApiResponse = await res.json();
-
-                // ✅ FIX 2: API se aaye data ko sahi format mein laane ke liye
-                // Isse '.filter' aur 'id' validation, dono error theek honge
-                const transformedData = (json.data || []).map(item => ({
-                  id: item._id, // _id ko 'id' banaya
-                  name: item.name,
-                }));
-                
-                setOptions(transformedData);
-
-            } catch (e) {
-                if ((e as Error).name !== "AbortError") {
-                    console.error(e);
-                    setOptions([]);
-                }
-            } finally {
-                setLoading(false);
-            }
-        }, 300);
-
-        return () => {
-            controller.abort();
-            clearTimeout(t);
-        };
-    }, [inputValue, limit]);
-
-    return (
-        <Autocomplete
-            multiple={multiple}
-            disabled={disabled}
-            options={allOptions} // Yahan 'allOptions' ka istemal karein
-            value={value}
-            onChange={(_, v) => onChange(v as any)}
-            onInputChange={(_, v) => setInputValue(v)} // Aapka purana onInputChange
-            getOptionLabel={(o) => o?.name ?? ""}
-            isOptionEqualToValue={(o, v) => o.id === v.id}
-            loading={loading}
-            filterOptions={(x) => x}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={label}
-                    placeholder={placeholder}
-                    InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                            <>
-                                {loading ? <CircularProgress size={20} /> : null}
-                                {params.InputProps.endAdornment}
-                            </>
-                        ),
-                    }}
-                />
-            )}
-        />
-    );
 }
+
+export interface SubjectAutocompleteProps {
+  value: SubjectOption | null;
+  // onChange: (newValue: SubjectOption | null) => void;
+  // onBlur?: () => void;
+  ref?: React.Ref<HTMLInputElement>; // ✅ Instead of any
+  helperText?: string;
+  error?: boolean;
+  label?: string;
+  placeholder?: string;
+  setValue: (name: "subject", value: SubjectOption | null, config?: { shouldValidate: boolean }) => void;
+  fullWidth: boolean
+
+}
+
+//
+// ---------- Component ----------
+//
+const SubjectAutocomplete: React.FC<SubjectAutocompleteProps> = ({
+  value,
+
+  // onBlur,
+  fullWidth,
+  ref,
+  setValue,
+  helperText = "",
+  error = false,
+  label = "Select Subject",
+  placeholder = "Search for a subject...",
+}) => {
+  const [searchText, setSearchText] = useState("");
+
+  // Build the query string
+  const params = new URLSearchParams();
+  if (searchText) params.append("search", searchText);
+
+  // Fetch data using SWR
+  const {
+    data,
+    error: isError,
+    isLoading,
+  } = useSWR(`/subject?${params.toString()}`, getFetcher);
+
+  if (isError) {
+    return (
+      <Box>
+        <Typography variant="h6" color="error">
+          Error fetching subjects
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Autocomplete
+      options={data?.data || []}
+      getOptionLabel={(option: SubjectOption) => option?.name || ""}
+      isOptionEqualToValue={(o, v) => o._id === v._id}
+      loading={isLoading}
+      fullWidth={fullWidth}
+      value={value ?? null}
+      onChange={(_, selected) => {
+        setValue("subject", selected, { shouldValidate: true });
+      }} // ✅ Controller-friendly
+      // onBlur={onBlur}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label}
+          placeholder={placeholder}
+          helperText={helperText}
+          fullWidth={fullWidth}
+          error={error}
+          InputLabelProps={{ shrink: true, sx: { color: "primary.main" } }}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      )}
+      ref={ref}
+    />
+  );
+};
+
+export default SubjectAutocomplete;

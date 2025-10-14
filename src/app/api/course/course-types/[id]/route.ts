@@ -1,4 +1,4 @@
-// app/api/course-types/[id]/route.ts
+
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import CourseType from '@/models/course/CourseType.model';
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         return NextResponse.json({ data: courseType });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
@@ -74,7 +74,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }
 
@@ -91,6 +91,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
         return NextResponse.json({ message: 'Course type deleted successfully' });
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        return NextResponse.json({  message: errorMessage }, { status: 400 });
+        return NextResponse.json({ message: errorMessage }, { status: 400 });
     }
 }

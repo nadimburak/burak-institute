@@ -4,6 +4,7 @@ import Role from "./Role.model";
 import { Gender } from "../../enums/gender";
 import { MaritalStatus } from "../../enums/maritalStatus";
 
+
 export type UserType = "user" | "student" | "super_admin";
 
 export interface IUser extends Document {
@@ -27,7 +28,7 @@ export interface IUser extends Document {
 }
 
 const UserSchema: Schema<IUser> = new Schema({
-  role: { type: Schema.Types.ObjectId, ref: Role, required: false },
+  role: { type: Schema.Types.ObjectId, ref: Role, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   mobile: { type: Number, required: false },
@@ -50,11 +51,7 @@ const UserSchema: Schema<IUser> = new Schema({
     enum: Object.values(Gender),
     required: false,
   },
-  type: {
-    type: String,
-    enum: ["user", "student", "super_admin"],
-    required: true,
-  },
+  
   language: [
     {
       type: Schema.Types.ObjectId,
@@ -65,10 +62,21 @@ const UserSchema: Schema<IUser> = new Schema({
   status: { type: Boolean, required: false },
 });
 
-// 🔒 Hash password before saving
+// For creating and saving documents
 UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// For findOneAndUpdate and findByIdAndUpdate
+UserSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate() as Partial<IUser>;
+
+  if (update && update.password) {
+    update.password = await bcrypt.hash(update.password, 10);
+  }
+
   next();
 });
 

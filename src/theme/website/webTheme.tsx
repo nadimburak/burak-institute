@@ -148,7 +148,6 @@ const websiteTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
-          backgroundColor: "#F1F5F9",
         },
       },
     },

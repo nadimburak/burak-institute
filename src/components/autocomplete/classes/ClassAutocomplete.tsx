@@ -12,8 +12,12 @@ interface ClassesItem {
 }
 
 interface ClassesAutocompleteProps {
-  setValue: any;
-  value: any;
+  setValue: (
+    name: "class",
+    value: { _id: string; name: string } | null,
+    config?: { shouldValidate: boolean }
+  ) => void;
+  value: ClassesItem | null;
   helperText?: string;
   error?: boolean;
 }
@@ -54,7 +58,7 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
       getOptionLabel={(option: ClassesItem) => option.name || ""}
       isOptionEqualToValue={(option, val) => option._id === val._id}
       loading={isLoading}
-      value={value ?? null}         // 👈 yeh ensure karega ki kabhi undefined nahi hoga
+      value={value ?? null} // 👈 yeh ensure karega ki kabhi undefined nahi hoga
       onChange={(_, selected) => {
         setValue(
           "class",
@@ -71,11 +75,13 @@ const ClassesAutocomplete: React.FC<ClassesAutocompleteProps> = (props) => {
           fullWidth
           helperText={helperText}
           error={error}
-          InputLabelProps={{ shrink: true }}
+          InputLabelProps={{ shrink: true ,sx:{
+          color:"primary.main"
+                                  }}}
           onChange={(e) => setSearchText(e.target.value)}
         />
       )}
     />
   );
-}
+};
 export default ClassesAutocomplete;

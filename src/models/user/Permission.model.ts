@@ -1,11 +1,11 @@
+
 import mongoose, { Schema, Document } from "mongoose";
 
 // Interface for Designation Document
 export interface IPermission extends Document {
   name: string;
   status: boolean;
-  created_at: Date;
-  updated_at: Date;
+  key:string;
 }
 
 // Schema Definition
@@ -19,23 +19,20 @@ const PermissionSchema: Schema<IPermission> = new Schema(
       type: Boolean,
       required: true,
     },
-    created_at: {
-      type: Date,
-      default: Date.now,
-    },
-    updated_at: {
-      type: Date,
-      default: Date.now,
+    key:{
+      type:String,
+      required:true,
     },
   },
-  {
-    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
-  }
+  
 );
 PermissionSchema.index({ name: 1 }, { unique: true });
 // Model Definition
 const Permission =
   mongoose.models.Permission ||
   mongoose.model<IPermission>("Permission", PermissionSchema);
+
+
+  
 
 export default Permission;

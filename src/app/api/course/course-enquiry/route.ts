@@ -1,20 +1,23 @@
-// file: app/api/course/course-enquiry/route.ts
+
 
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import CourseEnquiry from "@/models/course/CourseEnquriyModel";
 import { Types } from "mongoose";
 import { z } from "zod"; // ✅ Zod ko import karein
+import CourseEnquiry from "@/models/course/CourseEnquiryModel";
 
 // ✅ FIX 1: Zod ka istemal karke ek validation schema banayein
 const courseEnquirySchema = z.object({
-    name: z.string().min(1, { message: "Name is required" }),
-    
+    username: z.string().min(1, { message: "Name is required" }),
+
     // ✅ FIX: Ab 'mongoose.Types' ki jagah seedhe 'Types' ka istemal karein
     subject: z.string().refine((val) => Types.ObjectId.isValid(val), {
         message: "Invalid Subject ID format",
     }),
-    courses: z.string(),
+    courses: z.string().refine((val) => Types.ObjectId.isValid(val), {
+        message: "Invalid Course ID format",
+    }),
+    email:z.string(),
     description: z.string().optional(),
 });
 
@@ -33,22 +36,23 @@ export async function GET(request: NextRequest) {
         const parsedLimit = Math.max(limit, 1);
         const sortOrder = order.toLowerCase() === "asc" ? 1 : -1;
 
-        const query: Record<string, any> = {};
+        const query: Record<string, unknown> = {};
 
         // ✅ FIX 2: Search query ko theek kiya gaya hai
         if (search.trim()) {
             query.$or = [ // '$of' ko '$or' kiya
-                { name: { $regex: search.trim(), $options: 'i' } },
+                { username: { $regex: search.trim(), $options: 'i' } },
                 { description: { $regex: search.trim(), $options: 'i' } } // '$option' ko '$options' kiya
             ];
         }
 
-        const allowedSortFields = ["name", "subject", "courses", "createdAt", "updatedAt"];
-        const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "name";
+        const allowedSortFields = ["username", "subject", "courses","email", "createdAt", "updatedAt"];
+        const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "username";
 
         const [data, totalData] = await Promise.all([
             CourseEnquiry.find(query)
                 .populate('subject', 'name')
+                .populate('courses', 'name')
                 .sort({ [safeSortBy]: sortOrder })
                 .skip((parsedPage - 1) * parsedLimit)
                 .limit(parsedLimit)
@@ -74,15 +78,15 @@ export async function POST(request: NextRequest) {
     try {
         await connectDB();
         const body = await request.json();
-       
+
         const validatedData = courseEnquirySchema.parse(body);
-     
+
         console.log(validatedData);
-        
+
 
         const courseEnquiry = await CourseEnquiry.create(validatedData);
 
-       
+
 
         return NextResponse.json({ success: true, data: courseEnquiry }, { status: 201 });
 
@@ -91,7 +95,7 @@ export async function POST(request: NextRequest) {
 
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { message: "Invalid data provided", errors: error},
+                { message: "Invalid data provided", errors: error },
                 { status: 400 }
             );
         }

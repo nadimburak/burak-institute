@@ -9,11 +9,11 @@ import {
   DialogTitle,
   Icon,
   IconButton,
-  Stack,
   TextField,
+  Stack,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -22,21 +22,17 @@ import { useNotifications } from "@toolpad/core";
 import { handleErrorMessage } from "@/utils/errorHandler";
 import { defaultValues, fetchUrl } from "./constant";
 import ClassesAutocomplete from "../autocomplete/classes/ClassAutocomplete";
+import { IClassSection } from "@/models/ClassSection";
 
 // Yup validation schema
 const validationSchema = yup.object({
   name: yup.string().required("Name is required"),
   class: yup.object().shape({
-    _id: yup.string().required("class is required"),
+    _id: yup.string().required("Class is required"),
   }),
 });
 
-interface IClassSection {
-  name: string;
-  class: any;
-}
-
-interface FormProps {
+interface ClassSectionFormProps {
   id?: string | "new";
   open: boolean;
   onClose: (success?: boolean) => void;
@@ -46,8 +42,8 @@ export default function ClassSectionForm({
   id = "new",
   open,
   onClose,
-}: FormProps) {
-  const router = useRouter();
+}: ClassSectionFormProps) {
+  // const router = useRouter();
   const notifications = useNotifications();
 
   const {
@@ -62,37 +58,22 @@ export default function ClassSectionForm({
     defaultValues,
   });
 
-  // Fetch existing data for edit
-  const bindData = useCallback(
-    async (id: string) => {
-      try {
-        const res = await axiosInstance.get(`${fetchUrl}/${id}`);
-        const data = res.data.data;
-        reset({
-          name: data.name,
-          class: {
-            _id: data.class?._id || data.class,
-            name: data.class?.name || "",
-          }
-        });
-      } catch (error: unknown) {
-        const errorMessage = handleErrorMessage(error);
-        notifications.show(errorMessage, {
-          severity: "error",
-          autoHideDuration: 3000,
-        });
-      }
-    },
-    [notifications, reset]
-  );
+  // Fetch existing data for edit - wrapped in useCallback
+  const bindData = useCallback(async (id: string | number) => {
+    try {
+      const response = await axiosInstance.get(`${fetchUrl}/${id}`);
+      console.log("API DATA:", response.data.data);
+      reset(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }, [reset]);
 
   useEffect(() => {
     if (id && id !== "new") {
       bindData(id);
-    } else {
-      reset(defaultValues);
     }
-  }, [id, bindData, reset]);
+  }, [bindData, id]);
 
   const onSubmit = async (data: IClassSection) => {
     try {
@@ -126,9 +107,7 @@ export default function ClassSectionForm({
           alignItems="center"
         >
           <Typography variant="h5">
-            {id !== "new"
-              ? "Update Class Section Type"
-              : "Create Class Section Type"}
+            {id !== "new" ? "Update Class Section" : "Create Class Section"}
           </Typography>
           <IconButton onClick={() => onClose()}>
             <Icon>close</Icon>
@@ -144,14 +123,19 @@ export default function ClassSectionForm({
             error={!!errors.class}
             helperText={errors.class?.message ? "Class is required" : ""}
           />
-
           <TextField
             label="Section Name"
-            variant="outlined" // ya "filled"/"standard" jo tum use karte ho
+            variant="outlined"
             fullWidth
             margin="normal"
-            size="medium" // chhota chahiye to
+            size="medium"
             {...register("name")}
+            InputLabelProps={{
+              shrink: true,
+              sx: {
+                color: "text.primary",
+              },
+            }}
             error={!!errors.name}
             helperText={errors.name?.message}
           />
