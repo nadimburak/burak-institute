@@ -70,34 +70,29 @@ export default function PermissionList() {
 
   // Handle deletion of a row
   const handleDelete = useCallback(
-    async (id: number) => {
-      const confirmed = await dialogs.confirm("Are you sure to delete this ?", {
-        okText: "Yes",
-        cancelText: "No",
-      });
-
-      if (confirmed) {
+      async (id: string) => {
+        const confirmed = await dialogs.confirm("Are you sure to delete this?", {
+          okText: "Yes",
+          cancelText: "No",
+        });
+        if (!confirmed) return;
+  
         try {
-          const response = await axiosInstance.delete(`${fetchUrl}/${id}`);
-          // Revalidate the data after deleting the category
-          mutate(`${fetchUrl}?${params.toString()}`, { revalidate: true });
-
-          const { data } = response;
-          notifications.show(data.message, {
+          const res = await axiosInstance.delete(`${fetchUrl}/${id}`);
+          mutate(`${fetchUrl}?${params}`, { revalidate: true });
+          notifications.show(res.data.message, {
             severity: "success",
             autoHideDuration: 3000,
           });
-        } catch (error: unknown) {
-          const message = handleErrorMessage(error);
-          notifications.show(message, {
+        } catch (err: unknown) {
+          notifications.show(handleErrorMessage(err), {
             severity: "error",
             autoHideDuration: 3000,
           });
         }
-      }
-    },
-    [dialogs, notifications, params]
-  );
+      },
+      [dialogs, notifications, params]
+    );
   // Handle editing of a row
   const handleEdit = useCallback(
     async (id: number) => {
@@ -184,7 +179,7 @@ export default function PermissionList() {
       <CardContent>
         <Box>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{xs:12, sm:6}}>
               <TextField
                 placeholder="Search Permission"
                 value={searchText}
@@ -201,7 +196,7 @@ export default function PermissionList() {
                 }}
               />
             </Grid>
-            <Grid item md={6} sm={6} xs={12}>
+            <Grid size={{xs:12, sm:6, md:6}}>
               <Stack
                 direction="row"
                 spacing={1}
