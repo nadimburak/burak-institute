@@ -28,6 +28,8 @@ import { handleErrorMessage } from "@/utils/errorHandler";
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
+  status:yup.boolean().required("Stauts is required"),
+  key:yup.string().required("Key is required")
 });
 
 interface FormProps extends DialogProps<undefined, string | null> {
@@ -150,7 +152,19 @@ color:"primary.main"
             helperText={errors.name?.message}
             {...register("name")}
           />
-
+          
+          <TextField
+            label="Key"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{ shrink: true ,sx:{
+color:"primary.main"
+                        }}}
+            error={!!errors.key}
+            helperText={errors.key?.message}
+            {...register("key")}
+          />
+         
           <FormControlLabel
             control={
               <Switch

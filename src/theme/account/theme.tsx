@@ -6,6 +6,7 @@ const theme = createTheme({
   cssVariables: {
     colorSchemeSelector: "data-toolpad-color-scheme",
   },
+  
   colorSchemes: {
     light: {
       palette: {
@@ -36,28 +37,31 @@ const theme = createTheme({
       palette: {
         mode: "dark",
         primary: {
-          main: "#7C3AED", // Purple
+          main: "#6366F1", // Purple
           contrastText: "#ffffff",
         },
         secondary: {
-          main: "#E11D48",
+          main: "#8B5CF6",
           contrastText: "#ffffff",
         },
         background: {
-          default: "#111827",
-          paper: "#1F2937",
+          default: "#0f172a",
+          paper: "#1e293b",
         },
         error: {
-          main: "#F87171",
+          main: "#EF4444",
         },
         text: {
-          primary: "#F3F4F6",
-          secondary: "#9CA3AF",
+          primary: "#F1F5F9",
+          secondary: "#94A3B8",
         },
-        divider: "#374151",
+        divider: "#334155",
+        
       },
+      
     },
   },
+  
   shape: { borderRadius: 12 },
   spacing: 8,
   typography: {
