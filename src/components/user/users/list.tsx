@@ -145,33 +145,17 @@ export default function UserList() {
   // Column definitions
   const columns: GridColDef[] = useMemo(
     () => [
-      {
-        field: "actions",
-        headerName: "Actions",
-        type: "actions",
-        width: 120,
-        renderCell: (params) => {
-          return (
-            <ActionsCell
-              row={params.row}
-              handleEdit={handleEdit}
-              handleView={handleView}
-              handlePassword={handlePassword}
-              handleDelete={handleDelete}
-            />
-          );
-        },
-      },
+     
       {
         field: "role",
         headerName: "Role",
         width: 200,
         renderCell: (params) => {
-          const isCustomer = params?.row?.type === "customer";
+          // const isCustomer = params?.row?.type === "customer";
           const roleName = params?.row?.role?.name;
 
           // Customer without role
-          if (isCustomer && !roleName) {
+          if ( !roleName) {
             return (
               <Chip
                 label="No Role Assigned"
@@ -196,95 +180,26 @@ export default function UserList() {
           );
         },
       },
-      {
-        field: "type",
-        headerName: "Type",
-        width: 170,
+      { field: "name", headerName: "Name", width: 200 },
+      { field: "email", headerName: "Email", width: 250 },
+      
+       {
+        field: "actions",
+        headerName: "Actions",
+        type: "actions",
+        width: 120,
         renderCell: (params) => {
-          const typeMap: Record<
-            string,
-            {
-              label: string;
-              color:
-                | "primary"
-                | "secondary"
-                | "error"
-                | "info"
-                | "success"
-                | "warning"
-                | "default";
-              icon: JSX.Element;
-            }
-          > = {
-            user: {
-              label: "User",
-              color: "warning",
-              icon: <PersonIcon />,
-            },
-            super_admin: {
-              label: "Super Admin",
-              color: "secondary",
-              icon: <SecurityIcon />,
-            },
-            customer: {
-              label: "Customer",
-              color: "info",
-              icon: <EmojiPeopleIcon />,
-            },
-          };
-
-          const typeValue = params?.row?.type as keyof typeof typeMap;
-          const { label, color, icon } = typeMap[typeValue] || {
-            label: "N / A",
-            color: "default" as const,
-            icon: <></>,
-          };
-
           return (
-            <Chip
-              icon={icon}
-              label={label}
-              color={color}
-              sx={{ textTransform: "capitalize", px: 1, fontWeight: "bold" }}
+            <ActionsCell
+              row={params.row}
+              handleEdit={handleEdit}
+              handleView={handleView}
+              handlePassword={handlePassword}
+              handleDelete={handleDelete}
             />
           );
         },
       },
-      {
-        field: "image",
-        headerName: "Profile",
-        width: 120,
-        sortable: false,
-        renderCell: (params) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            <Box
-              component="img"
-              src={
-                params?.row?.image
-                  ? `/uploads/${params?.row?.image}`
-                  : "/avatar.jpg"
-              }
-              alt="Document"
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: "8px",
-                objectFit: "cover",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-              }}
-            />
-          </Box>
-        ),
-      },
-      { field: "name", headerName: "Name", width: 200 },
-      { field: "email", headerName: "Email", width: 250 },
     ],
     [handleEdit, handleView, handlePassword, handleDelete]
   );

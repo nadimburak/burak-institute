@@ -17,7 +17,7 @@ export const generateToken = async(id:string)=>{
         _id: users?._id
     },
     secret,
-     { expiresIn: "7m" } 
+     { expiresIn: "1h" } 
     
 )
 }

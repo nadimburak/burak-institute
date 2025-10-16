@@ -5,6 +5,7 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { type Navigation } from "@toolpad/core/AppProvider";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SubjectIcon from '@mui/icons-material/Subject';
+import ContactIcon from '@mui/icons-material/Subject';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ClassIcon from '@mui/icons-material/Class';
 
@@ -83,6 +84,11 @@ const accountNavigation: Navigation = [
     segment: "dashboard/subject",
     title: "Subject",
     icon: <SubjectIcon />,
+  },
+  {
+    segment: "dashboard/contact",
+    title: "Contact",
+    icon: <ContactIcon />,
   },
 
 ];

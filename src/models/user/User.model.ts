@@ -14,14 +14,13 @@ export interface IUser extends Document {
   image?: string;
   email: string;
   password: string;
-  isVerified:boolean;
-  token:string;
+  isVerified?:boolean;
+  token?:string;
   dob: Date;
   spouse_name?: string;
   father_name?: string;
   mother_name?: string;
   status: boolean;
-  type: UserType;
   marital_status?: MaritalStatus;
   gender?: Gender;
   language?: mongoose.Types.ObjectId[];
@@ -36,7 +35,7 @@ const UserSchema: Schema<IUser> = new Schema({
   mobile: { type: Number, required: false },
   image: { type: String, required: false },
   password: { type: String, required: true },
-  isVerified:{type: Boolean},
+  isVerified:{type: Boolean, default:false},
   token:{type:String},
   spouse_name: { type: String, required: false },
   father_name: { type: String, required: false },

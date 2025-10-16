@@ -14,7 +14,7 @@ import {
   useTheme,
 } from "@mui/material";
 // import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { useState, useMemo, useCallback } from "react";
+import { useState,useEffect, useMemo, useCallback } from "react";
 import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid";
 import { fetchUrl } from "./constant";
 import useSWR, { mutate } from "swr";
@@ -35,23 +35,43 @@ const ContactList = () => {
   const [sortModel, setSortModel] = useState<GridSortModel>([]);
   const router = useRouter();
   const notifications = useNotifications();
+ const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
 
   const params = useMemo(() => {
     const searchParams = new URLSearchParams();
     searchParams.append("page", (paginationModel.page + 1).toString());
     searchParams.append("limit", paginationModel.pageSize.toString());
-    if (searchText) searchParams.append("search", searchText);
+
+    // Yahan 'debouncedSearchText' ka istemal karein
+    if (debouncedSearchText) {
+      searchParams.append("search", debouncedSearchText);
+    }
+
     if (sortModel?.[0]) {
-      searchParams.append("sortBy", sortModel[0].field);
+      searchParams.append("sort", sortModel[0].field);
       searchParams.append("order", sortModel[0].sort ?? "");
     }
     return searchParams.toString();
-  }, [paginationModel, searchText, sortModel]);
+  }, [paginationModel, debouncedSearchText, sortModel]);
+
 
   const { data, error, isLoading } = useSWR(
     `${fetchUrl}?${params}`,
     getFetcher
   );
+  
+   useEffect(() => {
+      // Ek timer set karo jo 500ms baad state update karega
+      const timerId = setTimeout(() => {
+        setDebouncedSearchText(searchText);
+      }, 1500); // 500ms ka delay
+  
+      // Cleanup function: Agar user 500ms se pehle dobara type karta hai,
+      // toh purana timer clear kar do.
+      return () => {
+        clearTimeout(timerId);
+      };
+    }, [searchText]);
 
   if (
     error &&
@@ -139,7 +159,7 @@ const ContactList = () => {
     <Card>
       <CardContent>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-          <Grid item xs={12} sm={6}>
+          <Grid size ={{xs:12, sm:12}}>
             <TextField
               placeholder="Search Subject"
               value={searchText}
@@ -154,7 +174,7 @@ const ContactList = () => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size ={{xs:12, sm:12}}>
             <Stack direction="row" spacing={1} justifyContent="flex-end">
               <IconButton
                 sx={{
