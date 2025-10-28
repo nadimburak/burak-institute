@@ -62,6 +62,8 @@ export default function PermissionList() {
     `${fetchUrl}?${params.toString()}`,
     getFetcher
   );
+ 
+  
 
    useEffect(() => {
       // Ek timer set karo jo 500ms baad state update karega
@@ -158,6 +160,8 @@ export default function PermissionList() {
       },
 
       { field: "name", headerName: "Name", width: 200 },
+      { field: "key", headerName: "Key", width: 200 },
+      { field: "status", headerName: "Status", width: 200 },
     ],
     [handleDelete, handleEdit]
   );

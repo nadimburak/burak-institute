@@ -4,7 +4,8 @@ import {
   CardContent,
   Typography,
   Box,
-  FormLabel,
+  CardActions,
+  
 } from "@mui/material";
 import Link from "next/link";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -37,6 +38,9 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
       sx={{
         borderRadius: 1,
         boxShadow: 3,
+        justifyContent:'space-between',
+        display:"flex",
+        flexDirection:'column',
         overflow: "hidden",
         transition: "transform 0.25s ease, box-shadow 0.25s ease",
         "&:hover": {
@@ -44,13 +48,17 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           boxShadow: 6,
         },
         bgcolor: "background.paper",
-        minHeight:"50vh",
+        minHeight:"60vh",
         maxWidth:'30vw',
         m:1
       }}
     >
       {/* Course Image */}
-      <Box height="35%" width="auto" overflow="hidden" p={1}>
+      
+
+      <CardContent sx={{ p: 2, }}>
+
+        <Box  height="35%" width="auto" overflow="hidden" p={1}>
         {data?.image && (
         <Box
           component="img"
@@ -58,7 +66,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           alt={data?.name}
           sx={{
             width: "100%",
-            height: 200,
+            height: 140,
             objectFit: "cover",
             transition: "transform 0.3s ease",
             "&:hover": {
@@ -68,8 +76,6 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
         />
       )}
       </Box>
-
-      <CardContent sx={{ p: 2 }}>
         {/* Course Name */}
         <Typography
           variant="h6"
@@ -86,16 +92,10 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           {data?.name}
         </Typography>
 
-        {/* Course Type */}
-        {/* <Box display="flex" alignItems="center" gap={0.5} mb={1}>
-          <MenuBookIcon fontSize="small" color="action" />
-          <Typography variant="caption" fontWeight={600} color="text.primary">
-            {data?.courseType || "Course Type"}
-          </Typography>
-        </Box> */}
-
         {/* Subject */}
-        <Box display="flex" alignItems="center" gap={0.5} mb={1}>
+        <Box display="flex" alignItems="center" gap={1.5} mb={1}>
+
+          <Box display="flex" alignItems="center" justifyContent='center' >
           <MenuBookIcon fontSize="small" sx={{ color: "primary.main" }} />
           <Typography variant="caption" fontWeight={600} color="text.primary">
             {typeof data?.subject === "object" &&
@@ -104,59 +104,26 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
               ? (data.subject as ISubject).name
               : "Subject"}
           </Typography>
-        </Box>
-
-        {/* Duration */}
-        <Box display="flex" alignItems="center" gap={0.5} mb={1}>
+          </Box>
+        
+        <Box display="flex" alignItems="center" justifyContent='center'>     
           <AccessTimeIcon fontSize="small" sx={{ color: "primary.main" }} />
           <Typography variant="caption" fontWeight={600} color="text.primary">
             {data?.duration || "Duration"}
           </Typography>
+          </Box>
         </Box>
 
-        {/* Description */}
-        <FormLabel
-          sx={{
-            color: "primary.main",
-            fontSize: "10px",
-            fontWeight: 600,
         
-          }}
-        >
-          Description
-        </FormLabel>
-        <Typography
-          variant="body2"
-          sx={{
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            minHeight:'20vh',
-          
-          }}
-        >
-          {data?.description}
-        </Typography>
-
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          flexDirection="column"
-
-          gap={2}
-            mt={2}
-        >
-          <Typography
-            variant="body2"
-            color="text.primary"
-            sx={{ fontWeight: 600 }}
-          >
-            Price: $3000
-          </Typography>
-          {/* View Button */}
-          <Button
+      </CardContent>
+      <CardActions sx={{
+        display:"flex",
+          justifyContent:"center",
+          alignItems:"center",
+          flexDirection:"column",
+          m:2
+      }} >
+            <Button
             variant="contained"
             LinkComponent={Link}
             href={`/course/course-enqury?data=${encodeURIComponent(JSON.stringify(data))}`}
@@ -169,8 +136,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           >
             More Details
           </Button>
-        </Box>
-      </CardContent>
+      </CardActions>
     </Card>
   );
 };

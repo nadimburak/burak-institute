@@ -235,7 +235,7 @@ export default function UserList() {
       <CardContent>
         <Box>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item md={6} sm={6} xs={12}>
+            <Grid size={{md:6,sm:6,xs:12}}>
               <TextField
                 placeholder="Search"
                 value={searchText}
@@ -252,7 +252,7 @@ export default function UserList() {
                 }}
               />
             </Grid>
-            <Grid item md={6} sm={6} xs={12}>
+            <Grid size={{md:6,sm:6,xs:12}} >
               <Stack
                 direction="row"
                 spacing={1}

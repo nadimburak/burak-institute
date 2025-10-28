@@ -3,11 +3,32 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { QueryParams } from '@/types/query.params';
 import Subject, { ISubject } from '@/models/Subject';
-
-
+import {auth} from '@/app/api/auth/[...nextauth]/route'
+import User from "@/models/user/User.model"
+import Permission from "@/models/user/Permission.model"
 export async function GET(request: NextRequest) {
     try {
         await connectDB();
+
+        const session = await auth()
+
+        const user = await User.findById(session?.user.id)
+        const permission = await Permission.find()
+
+        if(!user){
+             return NextResponse.json(
+           { message: 'Unauthorized  access, user id not found' },
+            { status: 404 }
+        );}
+        if(!permission){
+             return NextResponse.json(
+           { message: "You don't have permission!!" },
+            { status: 404 })
+        }
+
+        
+        
+
 
         const { searchParams } = new URL(request.url);
         const queryParams: QueryParams = Object.fromEntries(searchParams.entries());
