@@ -28,8 +28,12 @@ import { handleErrorMessage } from "@/utils/errorHandler";
 // Define the validation schema using Yup
 const validationSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  status:yup.boolean().required("Stauts is required"),
-  key:yup.string().required("Key is required")
+  status: yup.boolean().required("Stauts is required"),
+  key: yup.string().required("Key is required"),
+  category: yup
+    .array()
+    .of(yup.string().required("Each category must be a string"))
+    .required("Category is required"),
 });
 
 interface FormProps extends DialogProps<undefined, string | null> {
@@ -145,26 +149,44 @@ export default function PermissionForm({ id, open, onClose }: FormProps) {
             label="Name"
             fullWidth
             margin="normal"
-            InputLabelProps={{ shrink: true ,sx:{
-color:"primary.main"
-                        }}}
+            InputLabelProps={{
+              shrink: true, sx: {
+                color: "primary.main"
+              }
+            }}
             error={!!errors.name}
             helperText={errors.name?.message}
             {...register("name")}
           />
-          
+
           <TextField
             label="Key"
             fullWidth
             margin="normal"
-            InputLabelProps={{ shrink: true ,sx:{
-color:"primary.main"
-                        }}}
+            InputLabelProps={{
+              shrink: true, sx: {
+                color: "primary.main"
+              }
+            }}
             error={!!errors.key}
             helperText={errors.key?.message}
             {...register("key")}
           />
-         
+
+          <TextField
+            label="Category"
+            fullWidth
+            margin="normal"
+            InputLabelProps={{
+              shrink: true, sx: {
+                color: "primary.main"
+              }
+            }}
+            error={!!errors.category}
+            helperText={errors.category?.message}
+            {...register("category")}
+          />
+
           <FormControlLabel
             control={
               <Switch

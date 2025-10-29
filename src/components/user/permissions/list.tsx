@@ -162,6 +162,7 @@ export default function PermissionList() {
       { field: "name", headerName: "Name", width: 200 },
       { field: "key", headerName: "Key", width: 200 },
       { field: "status", headerName: "Status", width: 200 },
+      { field: "category", headerName: "Category:", width: 200 },
     ],
     [handleDelete, handleEdit]
   );

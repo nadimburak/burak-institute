@@ -80,6 +80,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
         <Typography
           variant="h6"
           fontWeight={700}
+          p={1}
           sx={{
             mb: 0.8,
             display: "-webkit-box",
@@ -93,11 +94,11 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
         </Typography>
 
         {/* Subject */}
-        <Box display="flex" alignItems="center" gap={1.5} mb={1}>
+        <Box display="flex" alignItems="center" gap={1.5} mb={1} p={0.5}>
 
-          <Box display="flex" alignItems="center" justifyContent='center' >
+          <Box display="flex" alignItems="center" justifyContent='center' border={'1px solid #a808ffff'} borderRadius={20} p={'3px'} >
           <MenuBookIcon fontSize="small" sx={{ color: "primary.main" }} />
-          <Typography variant="caption" fontWeight={600} color="text.primary">
+          <Typography variant="caption" fontWeight={600} color="text.primary" >
             {typeof data?.subject === "object" &&
             data?.subject !== null &&
             "name" in data.subject
@@ -106,7 +107,7 @@ const CoursesCard: React.FC<CoursesCardProps> = ({ data }) => {
           </Typography>
           </Box>
         
-        <Box display="flex" alignItems="center" justifyContent='center'>     
+        <Box display="flex" alignItems="center" justifyContent='center' border={'1px solid #a808ffff'} borderRadius={20} p={'3px'}>     
           <AccessTimeIcon fontSize="small" sx={{ color: "primary.main" }} />
           <Typography variant="caption" fontWeight={600} color="text.primary">
             {data?.duration || "Duration"}
