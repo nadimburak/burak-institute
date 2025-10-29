@@ -37,6 +37,7 @@ export default function PermissionList() {
   const [searchText, setSearchText] = useState("");
   const notifications = useNotifications();
   const dialogs = useDialogs();
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
 
   // Build the query string for pagination, sorting, and search
   const params = useMemo(() => {
@@ -44,23 +45,38 @@ export default function PermissionList() {
     searchParams.append("page", (paginationModel.page + 1).toString());
     searchParams.append("limit", paginationModel.pageSize.toString());
 
-    if (searchText) {
-      searchParams.append("search", searchText);
+    // Yahan 'debouncedSearchText' ka istemal karein
+    if (debouncedSearchText) {
+      searchParams.append("search", debouncedSearchText);
     }
 
     if (sortModel?.[0]) {
       searchParams.append("sort", sortModel[0].field);
       searchParams.append("order", sortModel[0].sort ?? "");
     }
-
-    return searchParams.toString(); // Return a string to use as a stable key
-  }, [paginationModel, searchText, sortModel]);
+    return searchParams.toString();
+  }, [paginationModel, debouncedSearchText, sortModel]);
 
   // Fetch data with SWR
   const { data, error, isLoading } = useSWR(
     `${fetchUrl}?${params.toString()}`,
     getFetcher
   );
+ 
+  
+
+   useEffect(() => {
+      // Ek timer set karo jo 500ms baad state update karega
+      const timerId = setTimeout(() => {
+        setDebouncedSearchText(searchText);
+      }, 1500); // 500ms ka delay
+  
+      // Cleanup function: Agar user 500ms se pehle dobara type karta hai,
+      // toh purana timer clear kar do.
+      return () => {
+        clearTimeout(timerId);
+      };
+    }, [searchText]);
 
   useEffect(() => {
     if (error && error.status == 403) {
@@ -144,6 +160,9 @@ export default function PermissionList() {
       },
 
       { field: "name", headerName: "Name", width: 200 },
+      { field: "key", headerName: "Key", width: 200 },
+      { field: "status", headerName: "Status", width: 200 },
+      { field: "category", headerName: "Category:", width: 200 },
     ],
     [handleDelete, handleEdit]
   );

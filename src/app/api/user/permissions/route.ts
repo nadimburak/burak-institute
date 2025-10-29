@@ -25,13 +25,13 @@ export async function GET(request: NextRequest) {
 
         // Build search query
         const query: Record<string, unknown> = {};
-        if (search.trim()) {
-            query.$or = [
-                { name: { $regex: search.trim(), $options: "i" },
-            key:{$regex:search.trim(), $options:"i"} },
-                // Add more fields if needed: { description: { $regex: search.trim(), $options: "i" } }
-            ];
-        }
+      if (search.trim()) {
+    const searchTerm = search.trim();
+    query.$or = [
+        { name: { $regex: searchTerm, $options: "i" } }, // Condition 1: name mein search karo
+        { key: { $regex: searchTerm, $options: "i" } }   // Condition 2: YA FIR key mein search karo
+    ];
+}
 
         // Validate sortBy field to prevent injection attacks
         const allowedSortFields = ['name','key', 'createdAt', 'updatedAt']; // Add other allowed fields

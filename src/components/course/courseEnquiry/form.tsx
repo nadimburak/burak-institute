@@ -31,7 +31,7 @@ const schema = yup.object({
     .object()
     .shape({
       _id: yup.string().required(),
-      name: yup.string(),
+      name: yup.string().required(),
     })
     .nullable()
     .required("Subject is required"),
@@ -39,7 +39,7 @@ const schema = yup.object({
     .object()
     .shape({
       _id: yup.string().required(),
-      name: yup.string(),
+      name: yup.string().required(),
     })
     .nullable()
     .required("Course is required"),
@@ -66,8 +66,8 @@ export default function CourseEnquiryForm({
     () => ({
       username: "",
       email: "",
-      subject: null,
-      courses: null,
+      subject: {_id:"",name:""},
+      courses: {_id:"",name:""},
       description: "",
     }),
     []
@@ -139,7 +139,7 @@ export default function CourseEnquiryForm({
           <Box sx={{ mt: 1 }}>
             <Grid container spacing={2}>
               {/* ✅ Grid item ka sahi istemal */}
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 {/* ✅ Field ka naam 'username' karein */}
                 <TextField
                   label="Username"
@@ -156,7 +156,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 <TextField
                   label="email"
                   fullWidth
@@ -172,7 +172,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 <SubjectAutocomplete
                   setValue={setValue}
                   fullWidth
@@ -182,7 +182,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 <CourseAutoComplete
                   setValue={setValue}
                   fullWidth
@@ -192,7 +192,7 @@ export default function CourseEnquiryForm({
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid size={{xs:12}}>
                 <TextField
                   label="description"
                   fullWidth

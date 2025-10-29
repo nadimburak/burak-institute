@@ -6,6 +6,7 @@ export interface IPermission extends Document {
   name: string;
   status: boolean;
   key:string;
+  category:[string];
 }
 
 // Schema Definition
@@ -23,6 +24,10 @@ const PermissionSchema: Schema<IPermission> = new Schema(
       type:String,
       required:true,
     },
+    category:{
+      type:[String],
+      required:true,
+    }
   },
   
 );

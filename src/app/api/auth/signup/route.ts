@@ -2,15 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/user/User.model';
 import {generateToken} from '@/utils/jwtTokenGenerater'
+import {mailSender} from '@/utils/email/emailSender'
 
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const { name, email, password, type } = await request.json();
+    const { name, email, password,role } = await request.json();
 
-    if (!name || !email || !password || !type) {
+    if (!name || !email || !password || !role) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
@@ -36,16 +37,26 @@ export async function POST(request: NextRequest) {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password,
-      type
+     role
     });
 
     await user.save();
 
     const token = await generateToken(String(user._id))
-
+    console.log(token)
     user.token = token
 
+// `https://burak-institute.vercel.app/verify-email?token=${user.token}`
+    
     await user.save()
+
+  const mail =  await mailSender("verification",user.email,"Verification Email",user.name,`http://localhost:3008/verify-email?token=${user.token}`)
+
+  if(!mail){
+    throw new Error("Can't send verification email!!")
+  }
+
+  
 
     return NextResponse.json(
       {

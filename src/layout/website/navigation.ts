@@ -1,8 +1,7 @@
 export const websiteNavigation = [
     { segment: '', title: 'Home' },
-    { segment: 'about', title: 'About' },
-    { segment: 'users', title: 'Teachers' },
-    { segment: 'contact', title: 'Contact' },
+    { segment: 'course', title: 'Courses' },
     { segment: 'menu', title: 'Menu' },
-    { segment: 'courses', title: 'Courses' },
+    { segment: 'contact', title: 'Contact' },
+    { segment: 'about', title: 'About' },
 ]

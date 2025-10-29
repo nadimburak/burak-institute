@@ -36,28 +36,48 @@ export default function RoleList() {
   const notifications = useNotifications();
   const dialogs = useDialogs();
   const theme = useTheme();
-  // Build the query string for pagination, sorting, and search
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
+
+
   const params = useMemo(() => {
     const searchParams = new URLSearchParams();
     searchParams.append("page", (paginationModel.page + 1).toString());
     searchParams.append("limit", paginationModel.pageSize.toString());
 
-    if (searchText) {
-      searchParams.append("search", searchText);
+    // Yahan 'debouncedSearchText' ka istemal karein
+    if (debouncedSearchText) {
+      searchParams.append("search", debouncedSearchText);
     }
 
     if (sortModel?.[0]) {
       searchParams.append("sort", sortModel[0].field);
       searchParams.append("order", sortModel[0].sort ?? "");
     }
-    return searchParams.toString(); // Return a string to use as a stable key
-  }, [paginationModel, searchText, sortModel]);
+    return searchParams.toString();
+  }, [paginationModel, debouncedSearchText, sortModel]);
 
-  // Fetch data with SWR
   const { data, error, isLoading } = useSWR(
-    `${fetchUrl}?${params.toString()}`,
+    `${fetchUrl}?${params}`,
     getFetcher
   );
+
+  useEffect(() => {
+    // Ek timer set karo jo 500ms baad state update karega
+    const timerId = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 1500); // 500ms ka delay
+
+    // Cleanup function: Agar user 500ms se pehle dobara type karta hai,
+    // toh purana timer clear kar do.
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchText]);
+
+
+
+  // Fetch data with SWR
+
 
   useEffect(() => {
     if (error && error.status == 403) {
@@ -181,7 +201,7 @@ export default function RoleList() {
       <CardContent>
         <Box>
           <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Grid item md={6} sm={6} xs={12}>
+            <Grid  size={{md:6,sm:6,xs:12}}>
               <TextField
                 placeholder="Search"
                 value={searchText}
@@ -198,7 +218,7 @@ export default function RoleList() {
                 }}
               />
             </Grid>
-            <Grid item md={6} sm={6} xs={12}>
+            <Grid size={{md:6,sm:6,xs:12}}>
               <Stack
                 direction="row"
                 spacing={1}

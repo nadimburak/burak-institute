@@ -20,7 +20,7 @@ export const authOptions: NextAuthOptions = {
 
                 const user = await UserModel.findOne({ email: credentials.email.toLowerCase() })
                     .select('+password')
-                    .exec() as { _id: unknown; email: string; name: string; comparePassword: (password: string) => Promise<boolean> } | null;
+                    .exec() as { _id: unknown; email: string; username: string; comparePassword: (password: string) => Promise<boolean> } | null;
 
                 // Ensure user is correctly typed
                 if (!user || typeof user.comparePassword !== 'function') {
@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
                 return {
                     id: (user._id as string).toString(),
                     email: user.email,
-                    name: user.name,
+                    name: user.username,
                 };
             }
         }),

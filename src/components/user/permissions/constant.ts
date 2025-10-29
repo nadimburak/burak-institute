@@ -3,4 +3,5 @@ export const defaultValues = {
     name: '',
     key:'',
     status: true,
+    category:['']
 }

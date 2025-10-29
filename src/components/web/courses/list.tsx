@@ -135,7 +135,7 @@ const CoursesList: React.FC<CoursesListProps> = () => {
                 padding: "8px 16px",
                 fontSize: "16px",
               }}
-              onClick={() => router.push("/courses")}
+              onClick={() => router.push("/course")}
             >
               View All Courses
             </Button>
